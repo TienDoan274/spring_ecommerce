@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: ecommerce
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mysql:
+    image: mysql:8.0
+    container_name: ecommerce_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root             # Root password (vẫn giữ để admin)
+      MYSQL_DATABASE: ecommerce_product     # Tên database
+      MYSQL_USER: tiendoan                  # User trong application.properties
+      MYSQL_PASSWORD: tiendoan
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql            # Persist data even if container is removed
+    networks:
+      - ecommerce_network
+
+
+volumes:
+  mysql_data:                                # Named volume for data persistence
+  mongodb_data:
+  postgres_data:
+networks:
+  ecommerce_network:
+    driver: bridge
