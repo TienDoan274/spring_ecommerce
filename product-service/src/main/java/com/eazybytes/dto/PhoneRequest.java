@@ -2,18 +2,21 @@ package com.eazybytes.dto;
 
 import jakarta.persistence.Id;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-@Builder
+@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class PhoneRequest extends ProductRequest{
-    private String OS;
+    private String os;
     private String processor; // chip
-    private String cpu_speed; // tốc độ chip
+    private String cpuSpeed; // tốc độ chip
     private String gpu; // chip đồ họa
     private String ram;
     private String storage; // dung lượng
@@ -45,8 +48,8 @@ public class PhoneRequest extends ProductRequest{
     private List<String> specialFeatures; // tính năng đặc biệt
     private String waterResistance;
     private List<String> recording; // ghi âm
-    private List<String> video; // xem phim
-    private List<String> audio; // nghe nhạc
+    private Boolean video; // xem phim
+    private Boolean audio; // nghe nhạc
 
     //Kết nối
     private String mobileNetwork; // mạng di động
@@ -56,13 +59,14 @@ public class PhoneRequest extends ProductRequest{
     private String bluetooth;
     private String chargingPort;
     private String headphoneJack;
-    private String otherConnectivity;
+    private List<String> otherConnectivity;
 
     //Thiết kế và chất lượng
-    private String design_type; // kiểu thiết kế
+    private String designType; // kiểu thiết kế
     private String materials; // nguyên liệu
     private String sizeWeight; // kích thước khối lượng
-    private String release; // thời điểm ra mắt
+
+    private String color;
 
 }
 

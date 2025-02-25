@@ -9,7 +9,6 @@ import com.eazybytes.repository.UserRepository;
 import com.eazybytes.security.JwtUtils;
 import com.eazybytes.security.UserDetailsImpl;
 import com.eazybytes.security.UserDetailsServiceImpl;
-import com.eazybytes.service.TokenBlacklistService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +38,7 @@ public class AuthController {
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
-    private final TokenBlacklistService tokenBlacklistService; // Added missing service
+    private final RestTemplate restTemplate;
 
 
 
@@ -104,7 +104,7 @@ public class AuthController {
 
             String token = authHeader.substring(7);
 
-            if (!validateJwtToken(token)) {
+            if (!!jwtUtils.validateJwtToken(token)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Invalid token"));
             }
 
@@ -150,14 +150,9 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
-        tokenBlacklistService.addToBlacklist(token);
+        // Gọi API Gateway để blacklist token
+        BlacklistRequest request = new BlacklistRequest(token);
+        restTemplate.postForEntity("http://api-gateway/api/internal/blacklist", request, Void.class);
         return ResponseEntity.ok().build();
-    }
-
-    public boolean validateJwtToken(String token) {
-        if (tokenBlacklistService.isBlacklisted(token)) {
-            return false;
-        }
-        return jwtUtils.validateJwtToken(token); // Added missing return statement
     }
 }

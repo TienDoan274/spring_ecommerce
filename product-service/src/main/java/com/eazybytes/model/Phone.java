@@ -14,9 +14,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Phone extends Product {
-    private String OS;
+    private String os;
     private String processor; // chip
-    private String cpu_speed; // tốc độ chip
+    private String cpuSpeed; // tốc độ chip
     private String gpu; // chip đồ họa
     private String ram;
     private String storage; // dung lượng
@@ -48,8 +48,8 @@ public class Phone extends Product {
     private List<String> specialFeatures; // tính năng đặc biệt
     private String waterResistance;
     private List<String> recording; // ghi âm
-    private List<String> video; // xem phim
-    private List<String> audio; // nghe nhạc
+    private Boolean video; // xem phim
+    private Boolean audio; // nghe nhạc
 
     //Kết nối
     private String mobileNetwork; // mạng di động
@@ -59,13 +59,14 @@ public class Phone extends Product {
     private String bluetooth;
     private String chargingPort;
     private String headphoneJack;
-    private String otherConnectivity;
+    private List<String> otherConnectivity;
 
     //Thiết kế và chất lượng
-    private String design_type; // kiểu thiết kế
+    private String designType; // kiểu thiết kế
     private String materials; // nguyên liệu
     private String sizeWeight; // kích thước khối lượng
-    private String release; // thời điểm ra mắt
+
+    private String color;
 
 
     public Phone() {

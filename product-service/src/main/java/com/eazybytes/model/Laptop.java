@@ -49,7 +49,7 @@ public class Laptop extends Product {
     private String size;
     private String material;
     private String battery;
-    private String OS;
+    private String os;
 
     public Laptop() {
         setType("LAPTOP");

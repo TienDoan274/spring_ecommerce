@@ -1,7 +1,5 @@
 package com.eazybytes.security;
 
-import com.eazybytes.security.UserDetailsImpl;
-import com.eazybytes.service.TokenBlacklistService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

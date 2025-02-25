@@ -1,15 +1,16 @@
 package com.eazybytes.dto;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 
 @Data
-@Builder
+@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class LaptopRequest extends ProductRequest{
 
     // Bộ xử lý
@@ -46,5 +47,5 @@ public class LaptopRequest extends ProductRequest{
     private String size;
     private String material;
     private String battery;
-    private String OS;
+    private String os;
 }

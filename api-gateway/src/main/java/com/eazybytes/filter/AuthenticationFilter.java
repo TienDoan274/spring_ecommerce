@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import com.eazybytes.config.RouterValidator;
+
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
     private final JwtUtils jwtUtils;
@@ -31,11 +31,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 }
 
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-                if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                    authHeader = authHeader.substring(7);
-                }
+                String token = authHeader.substring(7);
+
                 try {
-                    jwtUtils.validateJwtToken(authHeader);
+                    // Validate token, including blacklist check
+                    if (!jwtUtils.validateJwtToken(token)) {
+                        return onError(exchange, "Invalid JWT token", HttpStatus.UNAUTHORIZED);
+                    }
                 } catch (Exception e) {
                     return onError(exchange, "Invalid JWT token", HttpStatus.UNAUTHORIZED);
                 }
