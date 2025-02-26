@@ -98,7 +98,7 @@ public class ProductService {
 
         phone.setColor(phoneRequest.getColor());
 
-        Phone savedPhone = (Phone) productRepository.save(phone);
+        Phone savedPhone = (Phone) phoneRepository.save(phone);
         log.info("Phone {} is saved", savedPhone.getId());
         return mapToPhoneResponse(savedPhone);
     }
@@ -155,7 +155,7 @@ public class ProductService {
         laptop.setBattery(laptopRequest.getBattery());
         laptop.setOs(laptopRequest.getOs());
 
-        Laptop savedLaptop = (Laptop) productRepository.save(laptop);
+        Laptop savedLaptop = (Laptop) laptopRepository.save(laptop);
         log.info("Laptop {} is saved", savedLaptop.getId());
         return mapToLaptopResponse(savedLaptop);
     }

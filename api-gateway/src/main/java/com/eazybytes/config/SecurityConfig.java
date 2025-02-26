@@ -1,4 +1,3 @@
-// src/main/java/com/eazybytes/config/SecurityConfig.java
 package com.eazybytes.config;
 
 import org.springframework.context.annotation.Bean;
@@ -10,17 +9,13 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
-
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeExchange(auth -> auth
-                        .pathMatchers("/api/auth/**").permitAll()
-                        .pathMatchers("/api/products/**").permitAll()
-
-                        .anyExchange().authenticated()
+                        .anyExchange().permitAll()
                 );
         return http.build();
     }

@@ -95,41 +95,6 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
-    @GetMapping("/validate")
-    public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authHeader) {
-        try {
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Invalid token format"));
-            }
-
-            String token = authHeader.substring(7);
-
-            if (!!jwtUtils.validateJwtToken(token)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Invalid token"));
-            }
-
-            String username = jwtUtils.getUserNameFromJwtToken(token);
-            UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
-
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
-
-            // Generate new refresh token for validation response
-            String refreshToken = jwtUtils.generateRefreshToken(userDetails);
-
-            return ResponseEntity.ok(new JwtResponse(
-                    token,
-                    refreshToken,
-                    userDetails.getId(),
-                    userDetails.getUsername(),
-                    userDetails.getEmail(),
-                    roles
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Error validating token"));
-        }
-    }
 
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
@@ -142,6 +107,9 @@ public class AuthController {
             String newAccessToken = jwtUtils.generateJwtToken(userDetails);
             String newRefreshToken = jwtUtils.generateRefreshToken(userDetails);
 
+            BlacklistRequest blacklistRequest = new BlacklistRequest(requestRefreshToken);
+            restTemplate.postForEntity("http://api-gateway/api/internal/blacklist", blacklistRequest, Void.class);
+
             return ResponseEntity.ok(new TokenRefreshResponse(newAccessToken, newRefreshToken));
         }
 
@@ -149,10 +117,18 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
-        // Gọi API Gateway để blacklist token
-        BlacklistRequest request = new BlacklistRequest(token);
-        restTemplate.postForEntity("http://api-gateway/api/internal/blacklist", request, Void.class);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> logout(
+            @RequestHeader("Authorization") String token,
+            @RequestHeader(value = "X-Refresh-Token", required = false) String refreshToken) {
+
+        BlacklistRequest accessTokenRequest = new BlacklistRequest(token);
+        restTemplate.postForEntity("http://api-gateway/api/internal/blacklist", accessTokenRequest, Void.class);
+
+        if (refreshToken != null && !refreshToken.isEmpty()) {
+            BlacklistRequest refreshTokenRequest = new BlacklistRequest(refreshToken);
+            restTemplate.postForEntity("http://api-gateway/api/internal/blacklist", refreshTokenRequest, Void.class);
+        }
+
+        return ResponseEntity.ok(new MessageResponse("Logged out successfully"));
     }
 }

@@ -21,7 +21,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody CreateUserRequest request) {
         UserDTO userDTO = UserDTO.builder()
                 .username(request.getUsername())
@@ -37,27 +37,37 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+    @PreAuthorize("#authUserId.equals(#id.toString())")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO,
+                                              @RequestHeader(value = "X-Auth-UserId") String authUserId) {
+
         return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+    @PreAuthorize("@roleChecker.hasRole('ADMIN') or #authUserId.equals(#id.toString())")
+    public ResponseEntity<UserDTO> getUserById(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-Auth-UserId") String authUserId) {
+
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @GetMapping
+    @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/email/{email}")
+    @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }

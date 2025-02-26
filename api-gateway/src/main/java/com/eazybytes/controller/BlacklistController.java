@@ -1,14 +1,13 @@
 // src/main/java/com/eazybytes/controller/BlacklistController.java
 package com.eazybytes.controller;
 
+import com.eazybytes.dto.BlacklistCheckResponse;
+import com.eazybytes.dto.TokenBlacklistRequest;
 import com.eazybytes.security.JwtUtils;
 import com.eazybytes.service.TokenBlacklistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/internal/blacklist")
@@ -33,15 +32,10 @@ public class BlacklistController {
         return ResponseEntity.ok().build();
     }
 
-    public static class TokenBlacklistRequest {
-        private String token;
-
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
-        }
+    @GetMapping("/check")
+    public ResponseEntity<BlacklistCheckResponse> checkToken(@RequestParam String token) {
+        boolean isBlacklisted = blacklistService.isBlacklisted(token);
+        return ResponseEntity.ok(new BlacklistCheckResponse(isBlacklisted));
     }
+
 }

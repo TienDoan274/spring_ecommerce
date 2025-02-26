@@ -39,7 +39,7 @@ public class JwtUtils {
         return claimsResolver.apply(claims);
     }
 
-    private Claims getAllClaimsFromToken(String token) {
+    public Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -88,4 +88,6 @@ public class JwtUtils {
         Date expiration = getExpirationDateFromToken(token);
         return (expiration.getTime() - System.currentTimeMillis()) / 1000;
     }
+
+
 }

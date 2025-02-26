@@ -23,7 +23,7 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/search/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponse getProduct(@PathVariable String id) {
         return productService.getProduct(id);
@@ -41,14 +41,14 @@ public class ProductController {
         return productService.searchProducts(name);
     }
 
-    @PostMapping("/phone")
+    @PostMapping("/createPhone")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public PhoneResponse createPhone(@RequestBody PhoneRequest phoneRequest) {
         return productService.createPhone(phoneRequest);
     }
 
-    @PostMapping("/laptop")
+    @PostMapping("/createLaptop")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public LaptopResponse createLaptop(@RequestBody LaptopRequest laptopRequest) {
@@ -56,14 +56,14 @@ public class ProductController {
     }
 
 
-    @PutMapping("/phone/{id}")
+    @PutMapping("/updatePhone/{id}")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public PhoneResponse updatePhone(@PathVariable String id, @RequestBody PhoneRequest phoneRequest) {
         return productService.updatePhone(id, phoneRequest);
     }
 
-    @PutMapping("/laptop/{id}")
+    @PutMapping("/updateLaptop/{id}")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public LaptopResponse updateLaptop(@PathVariable String id, @RequestBody LaptopRequest laptopRequest) {
