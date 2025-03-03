@@ -66,7 +66,7 @@ public class Phone extends Product {
     private String materials; // nguyên liệu
     private String sizeWeight; // kích thước khối lượng
 
-    private String color;
+    private List<String> colors;
 
 
     public Phone() {

@@ -37,7 +37,6 @@ public class ProductService {
         phone.setCurrentPrice(phoneRequest.getCurrentPrice());
         phone.setBrand(phoneRequest.getBrand());
         phone.setImage(phoneRequest.getImage());
-        phone.setStockQuantity(phoneRequest.getStockQuantity());
         phone.setIsAvailable(true);
         phone.setWarrantyPeriod(phoneRequest.getWarrantyPeriod());
         phone.setProductReview(phoneRequest.getProductReview());
@@ -96,7 +95,7 @@ public class ProductService {
         phone.setMaterials(phoneRequest.getMaterials());
         phone.setSizeWeight(phoneRequest.getSizeWeight());
 
-        phone.setColor(phoneRequest.getColor());
+        phone.setColors(phoneRequest.getColors());
 
         Phone savedPhone = (Phone) phoneRepository.save(phone);
         log.info("Phone {} is saved", savedPhone.getId());
@@ -112,7 +111,6 @@ public class ProductService {
         laptop.setCurrentPrice(laptopRequest.getCurrentPrice());
         laptop.setBrand(laptopRequest.getBrand());
         laptop.setImage(laptopRequest.getImage());
-        laptop.setStockQuantity(laptopRequest.getStockQuantity());
         laptop.setIsAvailable(true);
         laptop.setWarrantyPeriod(laptopRequest.getWarrantyPeriod());
         laptop.setProductReview(laptopRequest.getProductReview());
@@ -160,13 +158,6 @@ public class ProductService {
         return mapToLaptopResponse(savedLaptop);
     }
 
-    public List<ProductResponse> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        return products.stream()
-                .map(this::mapToProductResponse)
-                .collect(Collectors.toList());
-    }
-
     public List<PhoneResponse> getAllPhones() {
         List<Phone> phones = phoneRepository.findByType("PHONE");
         return phones.stream()
@@ -181,63 +172,50 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public ProductResponse getProduct(String id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
+    public PhoneResponse getPhoneById(String id) {
+        Phone phone = phoneRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Phone not found with id: " + id));
 
-        if (product instanceof Phone) {
-            return mapToPhoneResponse((Phone) product);
-        } else if (product instanceof Laptop) {
-            return mapToLaptopResponse((Laptop) product);
-        }
-
-        return mapToProductResponse(product);
+        return mapToPhoneResponse(phone);
     }
 
-    public List<ProductResponse> getProductsByCategory(String category) {
-        List<Product> products = productRepository.findByBrand(category);
-        return products.stream()
-                .map(this::mapToProductResponse)
+    public LaptopResponse getLaptopById(String id) {
+        Laptop laptop = laptopRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Laptop not found with id: " + id));
+
+        return mapToLaptopResponse(laptop);
+    }
+
+    public List<PhoneResponse> getPhonesByNames(String name) {
+        List<Phone> phones = phoneRepository.findByNameContainingIgnoreCase(name);
+        return phones.stream()
+                .map(this::mapToPhoneResponse)
                 .collect(Collectors.toList());
     }
 
-    public List<ProductResponse> searchProducts(String name) {
-        List<Product> products = productRepository.findByNameContainingIgnoreCase(name);
-        return products.stream()
-                .map(this::mapToProductResponse)
+    public List<LaptopResponse> getLaptopsByNames(String name) {
+        List<Laptop> laptops = laptopRepository.findByNameContainingIgnoreCase(name);
+        return laptops.stream()
+                .map(this::mapToLaptopResponse)
                 .collect(Collectors.toList());
     }
 
-    public void deleteProduct(String id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
-        productRepository.delete(product);
-        log.info("Product {} is deleted", id);
+    public String deletePhone(String id) {
+        Phone phone = phoneRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Phone not found with id: " + id));
+        phoneRepository.delete(phone);
+        log.info("Phone {} is deleted", id);
+        return "Phone with id: " + id + " has been successfully deleted";
+
     }
 
-    private ProductResponse mapToProductResponse(Product product) {
-        if (product instanceof Phone) {
-            return mapToPhoneResponse((Phone) product);
-        } else if (product instanceof Laptop) {
-            return mapToLaptopResponse((Laptop) product);
-        }
+    public String deleteLaptop(String id) {
+        Laptop laptop = laptopRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Laptop not found with id: " + id));
+        laptopRepository.delete(laptop);
+        log.info("Laptop {} is deleted", id);
+        return "Laptop with id: " + id + " has been successfully deleted";
 
-        return ProductResponse.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .description(product.getDescription())
-                .originalPrice(product.getOriginalPrice())
-                .currentPrice(product.getCurrentPrice())
-                .brand(product.getBrand())
-                .image(product.getImage())
-                .stockQuantity(product.getStockQuantity())
-                .isAvailable(product.getIsAvailable())
-                .type(product.getType())
-                .warrantyPeriod(product.getWarrantyPeriod())
-                .productReview(product.getProductReview())
-                .promotion(product.getPromotion())
-                .release(product.getRelease())
-                .build();
     }
 
     private PhoneResponse mapToPhoneResponse(Phone phone) {
@@ -250,7 +228,6 @@ public class ProductService {
                 .currentPrice(phone.getCurrentPrice())
                 .brand(phone.getBrand())
                 .image(phone.getImage())
-                .stockQuantity(phone.getStockQuantity())
                 .isAvailable(phone.getIsAvailable())
                 .type(phone.getType())
                 .warrantyPeriod(phone.getWarrantyPeriod())
@@ -309,6 +286,8 @@ public class ProductService {
                 .designType(phone.getDesignType())
                 .materials(phone.getMaterials())
                 .sizeWeight(phone.getSizeWeight())
+                .colors(phone.getColors())
+
                 .build();
     }
 
@@ -322,7 +301,6 @@ public class ProductService {
                 .currentPrice(laptop.getCurrentPrice())
                 .brand(laptop.getBrand())
                 .image(laptop.getImage())
-                .stockQuantity(laptop.getStockQuantity())
                 .isAvailable(laptop.getIsAvailable())
                 .type(laptop.getType())
                 .warrantyPeriod(laptop.getWarrantyPeriod())
@@ -379,7 +357,6 @@ public class ProductService {
         phone.setCurrentPrice(phoneRequest.getCurrentPrice());
         phone.setBrand(phoneRequest.getBrand());
         phone.setImage(phoneRequest.getImage());
-        phone.setStockQuantity(phoneRequest.getStockQuantity());
         phone.setIsAvailable(true);
         phone.setWarrantyPeriod(phoneRequest.getWarrantyPeriod());
         phone.setProductReview(phoneRequest.getProductReview());
@@ -438,6 +415,8 @@ public class ProductService {
         phone.setMaterials(phoneRequest.getMaterials());
         phone.setSizeWeight(phoneRequest.getSizeWeight());
 
+        phone.setColors(phoneRequest.getColors());
+
         Phone updatedPhone = phoneRepository.save(phone);
         log.info("Phone {} is updated", updatedPhone.getId());
         return mapToPhoneResponse(updatedPhone);
@@ -453,7 +432,6 @@ public class ProductService {
         laptop.setCurrentPrice(laptopRequest.getCurrentPrice());
         laptop.setBrand(laptopRequest.getBrand());
         laptop.setImage(laptopRequest.getImage());
-        laptop.setStockQuantity(laptopRequest.getStockQuantity());
         laptop.setIsAvailable(true);
         laptop.setWarrantyPeriod(laptopRequest.getWarrantyPeriod());
         laptop.setProductReview(laptopRequest.getProductReview());

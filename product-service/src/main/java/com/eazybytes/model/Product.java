@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-@Document(collection = "Product")
+//@Document(collection = "Product")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +26,6 @@ public class Product {
     private BigDecimal currentPrice; // giá khuyến mãi
     private String brand;
     private String image;
-    private Integer stockQuantity;
     private Boolean isAvailable;
     private String type;  // "PHONE" or "LAPTOP"
     private String warrantyPeriod; // thời gian bảo hành

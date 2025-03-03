@@ -22,7 +22,6 @@ public class ProductRequest {
     private BigDecimal currentPrice; // giá khuyến mãi
     private String brand;
     private String image;
-    private Integer stockQuantity;
     private String type;  // "PHONE" or "LAPTOP"
     private String warrantyPeriod; // thời gian bảo hành
     private Map<String,String> productReview; // bài đánh giá sản phẩm

@@ -16,10 +16,9 @@ public class PhoneResponse extends ProductResponse{
     private String cpuSpeed; // tốc độ chip
     private String gpu; // chip đồ họa
     private String ram;
-    private String storage; // dung lượng
-    private String availableStorage; // dung lượng khả dụng
     private String contactLimit; // danh bạ
-
+    private String storage;
+    private String availableStorage;
     // Camera và màn hình
     private String rearCameraResolution ; // độ phân giải cam sau
     private List<String> rearVideoRecording; // quay phim cam sau
@@ -63,7 +62,8 @@ public class PhoneResponse extends ProductResponse{
     private String materials; // nguyên liệu
     private String sizeWeight; // kích thước khối lượng
 
-    private String color;
+    private List<String> colors;
+
 }
 
 

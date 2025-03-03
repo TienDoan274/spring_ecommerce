@@ -51,4 +51,6 @@ public class LaptopResponse extends ProductResponse{
     private String material;
     private String battery;
     private String os;
+
+    private List<String> colors;
 }

@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 @RestController
@@ -15,30 +17,55 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-
-
-    @GetMapping
+    @GetMapping("/type/{type}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponse> getAllProducts() {
-        return productService.getAllProducts();
+    public List<?> getProductsByType(@PathVariable String type) {
+        if ("laptop".equals(type))
+            return productService.getAllLaptops();
+        else if("phone".equals(type))
+            return productService.getAllPhones();
+        else{
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Invalid product type: " + type + ". Supported types are 'laptop' and 'phone'."
+            );
+        }
     }
 
-    @GetMapping("/search/{id}")
+    @GetMapping("/getPhone/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponse getProduct(@PathVariable String id) {
-        return productService.getProduct(id);
+    public PhoneResponse getPhone(@PathVariable String id) {
+        return productService.getPhoneById(id);
     }
 
-    @GetMapping("/category/{category}")
+    @GetMapping("/getLaptop/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponse> getProductsByCategory(@PathVariable String category) {
-        return productService.getProductsByCategory(category);
+    public LaptopResponse getLaptop(@PathVariable String id) {
+        return productService.getLaptopById(id);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/getAllPhone")
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponse> searchProducts(@RequestParam String name) {
-        return productService.searchProducts(name);
+    public List<PhoneResponse> getAllPhone() {
+        return productService.getAllPhones();
+    }
+
+    @GetMapping("/getAllLaptop")
+    @ResponseStatus(HttpStatus.OK)
+    public List<LaptopResponse> getAllLaptop() {
+        return productService.getAllLaptops();
+    }
+
+
+    @GetMapping("/searchPhones")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PhoneResponse> searchPhones(@RequestParam String name) {
+        return productService.getPhonesByNames(name);
+    }
+
+    @GetMapping("/searchLaptops")
+    @ResponseStatus(HttpStatus.OK)
+    public List<LaptopResponse> searchLaptops(@RequestParam String name) {
+        return productService.getLaptopsByNames(name);
     }
 
     @PostMapping("/createPhone")
@@ -70,10 +97,17 @@ public class ProductController {
         return productService.updateLaptop(id, laptopRequest);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deletePhone/{id}")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteProduct(@PathVariable String id) {
-        productService.deleteProduct(id);
+    public void deletePhone(@PathVariable String id) {
+        productService.deletePhone(id);
+    }
+
+    @DeleteMapping("/deleteLaptop/{id}")
+    @PreAuthorize("@roleChecker.hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLaptop(@PathVariable String id) {
+        productService.deleteLaptop(id);
     }
 }

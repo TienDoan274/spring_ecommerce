@@ -51,6 +51,8 @@ public class Laptop extends Product {
     private String battery;
     private String os;
 
+    private List<String> colors;
+
     public Laptop() {
         setType("LAPTOP");
     }

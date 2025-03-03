@@ -1,11 +1,8 @@
 package com.eazybytes.dto;
 
-import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -19,8 +16,8 @@ public class PhoneRequest extends ProductRequest{
     private String cpuSpeed; // tốc độ chip
     private String gpu; // chip đồ họa
     private String ram;
-    private String storage; // dung lượng
-    private String availableStorage; // dung lượng khả dụng
+    private String storage;
+    private String availableStorage;
     private String contactLimit; // danh bạ
 
     // Camera và màn hình
@@ -66,7 +63,7 @@ public class PhoneRequest extends ProductRequest{
     private String materials; // nguyên liệu
     private String sizeWeight; // kích thước khối lượng
 
-    private String color;
+    private List<String> colors;
 
 }
 
