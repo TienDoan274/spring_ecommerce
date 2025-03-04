@@ -25,7 +25,7 @@ public class LaptopInventory {
     private Long id;
 
     @Column(name = "laptop_id", nullable = false)
-    private String laptopId;  // ID tham chiếu đến Phone trong service product
+    private String laptopId;  // ID tham chiếu đến Phone voi moi phien ban dung luong
 
     @Column(nullable = false)
     @Min(value = 0, message = "Quantity cannot be negative")
@@ -33,6 +33,14 @@ public class LaptopInventory {
 
     @Column(nullable = false)
     private String color;
+
+    @Column(nullable = false)
+    @Min(value = 0, message = "Price cannot be negative")
+    private Integer originalPrice;
+
+    @Column(nullable = false)
+    @Min(value = 0, message = "Price cannot be negative")
+    private Integer currentPrice;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

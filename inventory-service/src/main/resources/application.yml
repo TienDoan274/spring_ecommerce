@@ -4,8 +4,12 @@ server:
     context-path: /ecommerce
 
 spring:
+  application:
+    name: inventory-service
+  config:
+    import: "optional:configserver:http://localhost:8888"
   datasource:
-    url: jdbc:mysql://localhost:3307/ecommerce_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3307/ecommerce_inventory?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -34,6 +38,11 @@ spring:
   mvc:
     async:
       request-timeout: 300000
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
 
 logging:
   level:

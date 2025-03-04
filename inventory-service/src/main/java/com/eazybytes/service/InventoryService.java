@@ -1,6 +1,8 @@
 package com.eazybytes.service;
 
-import com.eazybytes.dto.UpdateQuantityRequest;
+import com.eazybytes.dto.CreateInventoryRequest;
+import com.eazybytes.dto.UpdateInventoryRequest;
+import com.eazybytes.exception.InventoryAlreadyExistsException;
 import com.eazybytes.exception.InventoryNotFoundException;
 import com.eazybytes.model.PhoneInventory;
 import com.eazybytes.model.LaptopInventory;
@@ -10,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class InventoryService {
@@ -17,11 +21,54 @@ public class InventoryService {
     private final PhoneInventoryRepository phoneInventoryRepository;
     private final LaptopInventoryRepository laptopInventoryRepository;
 
-    /**
-     * Cập nhật số lượng điện thoại
-     */
     @Transactional
-    public PhoneInventory updatePhoneQuantity(UpdateQuantityRequest request) {
+    public PhoneInventory createPhoneInventory(CreateInventoryRequest request) {
+        // Kiểm tra xem tồn kho đã tồn tại chưa
+        Optional<PhoneInventory> existingInventory = phoneInventoryRepository
+                .findByPhoneIdAndColor(request.getProductId(), request.getColor());
+
+        PhoneInventory inventory;
+        if (existingInventory.isPresent()) {
+            // Nếu đã tồn tại, có thể ném ngoại lệ hoặc cập nhật
+            throw new InventoryAlreadyExistsException(
+                    "Tồn kho đã tồn tại cho phone với ID: " + request.getProductId() +
+                            " và màu: " + request.getColor());
+        } else {
+            inventory = new PhoneInventory();
+            inventory.setPhoneId(request.getProductId());
+            inventory.setColor(request.getColor());
+        }
+
+        inventory.setQuantity(request.getQuantity());
+        inventory.setOriginalPrice(request.getOriginalPrice());
+        inventory.setCurrentPrice(request.getCurrentPrice());
+        return phoneInventoryRepository.save(inventory);
+    }
+
+    @Transactional
+    public LaptopInventory createLaptopInventory(CreateInventoryRequest request) {
+        Optional<LaptopInventory> existingInventory = laptopInventoryRepository
+                .findByLaptopIdAndColor(request.getProductId(), request.getColor());
+
+        LaptopInventory inventory;
+        if (existingInventory.isPresent()) {
+            throw new InventoryAlreadyExistsException(
+                    "Tồn kho đã tồn tại cho laptop với ID: " + request.getProductId() +
+                            " và màu: " + request.getColor());
+        } else {
+            inventory = new LaptopInventory();
+            inventory.setLaptopId(request.getProductId());
+            inventory.setColor(request.getColor());
+        }
+
+        inventory.setQuantity(request.getQuantity());
+        inventory.setOriginalPrice(request.getOriginalPrice());
+        inventory.setCurrentPrice(request.getCurrentPrice());
+        return laptopInventoryRepository.save(inventory);
+    }
+
+    @Transactional
+    public PhoneInventory updatePhoneInventory (UpdateInventoryRequest request) {
         PhoneInventory inventory = phoneInventoryRepository
                 .findByPhoneIdAndColor(request.getProductId(), request.getColor())
                 .orElseThrow(() -> new InventoryNotFoundException(
@@ -29,6 +76,9 @@ public class InventoryService {
                                 " và màu: " + request.getColor()));
 
         inventory.setQuantity(request.getQuantity());
+        inventory.setOriginalPrice(request.getOriginalPrice());
+        inventory.setCurrentPrice(request.getCurrentPrice());
+
         return phoneInventoryRepository.save(inventory);
     }
 
@@ -36,7 +86,7 @@ public class InventoryService {
      * Cập nhật số lượng laptop
      */
     @Transactional
-    public LaptopInventory updateLaptopQuantity(UpdateQuantityRequest request) {
+    public LaptopInventory updateLaptopInventory(UpdateInventoryRequest request) {
         LaptopInventory inventory = laptopInventoryRepository
                 .findByLaptopIdAndColor(request.getProductId(), request.getColor())
                 .orElseThrow(() -> new InventoryNotFoundException(
@@ -44,6 +94,8 @@ public class InventoryService {
                                 " và màu: " + request.getColor()));
 
         inventory.setQuantity(request.getQuantity());
+        inventory.setOriginalPrice(request.getOriginalPrice());
+        inventory.setCurrentPrice(request.getCurrentPrice());
         return laptopInventoryRepository.save(inventory);
     }
 

@@ -33,14 +33,13 @@ public class ProductService {
         // Thiết lập các trường cơ bản của Product
         phone.setName(phoneRequest.getName());
         phone.setDescription(phoneRequest.getDescription());
-        phone.setOriginalPrice(phoneRequest.getOriginalPrice());
-        phone.setCurrentPrice(phoneRequest.getCurrentPrice());
+
         phone.setBrand(phoneRequest.getBrand());
-        phone.setImage(phoneRequest.getImage());
+        phone.setImages(phoneRequest.getImages());
         phone.setIsAvailable(true);
         phone.setWarrantyPeriod(phoneRequest.getWarrantyPeriod());
-        phone.setProductReview(phoneRequest.getProductReview());
-        phone.setPromotion(phoneRequest.getPromotion());
+        phone.setProductReviews(phoneRequest.getProductReviews());
+        phone.setPromotions(phoneRequest.getPromotions());
         phone.setRelease(phoneRequest.getRelease());
 
         // Thiết lập các trường riêng của Phone
@@ -61,7 +60,7 @@ public class ProductService {
         phone.setFrontCameraResolution(phoneRequest.getFrontCameraResolution());
         phone.setFrontCameraFeatures(phoneRequest.getFrontCameraFeatures());
         phone.setDisplayTechnology(phoneRequest.getDisplayTechnology());
-        phone.setDisplayResolutiona(phoneRequest.getDisplayResolutiona());
+        phone.setDisplayResolution(phoneRequest.getDisplayResolution());
         phone.setScreenSize(phoneRequest.getScreenSize());
         phone.setMaxBrightness(phoneRequest.getMaxBrightness());
         phone.setScreenProtection(phoneRequest.getScreenProtection());
@@ -107,14 +106,13 @@ public class ProductService {
         // Thiết lập các trường cơ bản của Product
         laptop.setName(laptopRequest.getName());
         laptop.setDescription(laptopRequest.getDescription());
-        laptop.setOriginalPrice(laptopRequest.getOriginalPrice());
-        laptop.setCurrentPrice(laptopRequest.getCurrentPrice());
+
         laptop.setBrand(laptopRequest.getBrand());
-        laptop.setImage(laptopRequest.getImage());
+        laptop.setImages(laptopRequest.getImages());
         laptop.setIsAvailable(true);
         laptop.setWarrantyPeriod(laptopRequest.getWarrantyPeriod());
-        laptop.setProductReview(laptopRequest.getProductReview());
-        laptop.setPromotion(laptopRequest.getPromotion());
+        laptop.setProductReviews(laptopRequest.getProductReviews());
+        laptop.setPromotions(laptopRequest.getPromotions());
         laptop.setRelease(laptopRequest.getRelease());
 
         // Thiết lập các trường riêng của Laptop
@@ -224,15 +222,13 @@ public class ProductService {
                 .id(phone.getId())
                 .name(phone.getName())
                 .description(phone.getDescription())
-                .originalPrice(phone.getOriginalPrice())
-                .currentPrice(phone.getCurrentPrice())
                 .brand(phone.getBrand())
-                .image(phone.getImage())
+                .images(phone.getImages())
                 .isAvailable(phone.getIsAvailable())
                 .type(phone.getType())
                 .warrantyPeriod(phone.getWarrantyPeriod())
-                .productReview(phone.getProductReview())
-                .promotion(phone.getPromotion())
+                .productReviews(phone.getProductReviews())
+                .promotions(phone.getPromotions())
                 .release(phone.getRelease())
 
                 // Map phone-specific fields
@@ -253,7 +249,7 @@ public class ProductService {
                 .frontCameraResolution(phone.getFrontCameraResolution())
                 .frontCameraFeatures(phone.getFrontCameraFeatures())
                 .displayTechnology(phone.getDisplayTechnology())
-                .displayResolutiona(phone.getDisplayResolutiona())
+                .displayResolution(phone.getDisplayResolution())
                 .screenSize(phone.getScreenSize())
                 .maxBrightness(phone.getMaxBrightness())
                 .screenProtection(phone.getScreenProtection())
@@ -297,15 +293,13 @@ public class ProductService {
                 .id(laptop.getId())
                 .name(laptop.getName())
                 .description(laptop.getDescription())
-                .originalPrice(laptop.getOriginalPrice())
-                .currentPrice(laptop.getCurrentPrice())
                 .brand(laptop.getBrand())
-                .image(laptop.getImage())
+                .images(laptop.getImages())
                 .isAvailable(laptop.getIsAvailable())
                 .type(laptop.getType())
                 .warrantyPeriod(laptop.getWarrantyPeriod())
-                .productReview(laptop.getProductReview())
-                .promotion(laptop.getPromotion())
+                .productReviews(laptop.getProductReviews())
+                .promotions(laptop.getPromotions())
                 .release(laptop.getRelease())
 
                 // Bộ xử lý
@@ -353,14 +347,13 @@ public class ProductService {
         // Thiết lập các trường cơ bản của Product
         phone.setName(phoneRequest.getName());
         phone.setDescription(phoneRequest.getDescription());
-        phone.setOriginalPrice(phoneRequest.getOriginalPrice());
-        phone.setCurrentPrice(phoneRequest.getCurrentPrice());
+
         phone.setBrand(phoneRequest.getBrand());
-        phone.setImage(phoneRequest.getImage());
+        phone.setImages(phoneRequest.getImages());
         phone.setIsAvailable(true);
         phone.setWarrantyPeriod(phoneRequest.getWarrantyPeriod());
-        phone.setProductReview(phoneRequest.getProductReview());
-        phone.setPromotion(phoneRequest.getPromotion());
+        phone.setProductReviews(phoneRequest.getProductReviews());
+        phone.setPromotions(phoneRequest.getPromotions());
         phone.setRelease(phoneRequest.getRelease());
 
         // Thiết lập các trường riêng của Phone
@@ -381,7 +374,7 @@ public class ProductService {
         phone.setFrontCameraResolution(phoneRequest.getFrontCameraResolution());
         phone.setFrontCameraFeatures(phoneRequest.getFrontCameraFeatures());
         phone.setDisplayTechnology(phoneRequest.getDisplayTechnology());
-        phone.setDisplayResolutiona(phoneRequest.getDisplayResolutiona());
+        phone.setDisplayResolution(phoneRequest.getDisplayResolution());
         phone.setScreenSize(phoneRequest.getScreenSize());
         phone.setMaxBrightness(phoneRequest.getMaxBrightness());
         phone.setScreenProtection(phoneRequest.getScreenProtection());
@@ -428,14 +421,13 @@ public class ProductService {
 
         laptop.setName(laptopRequest.getName());
         laptop.setDescription(laptopRequest.getDescription());
-        laptop.setOriginalPrice(laptopRequest.getOriginalPrice());
-        laptop.setCurrentPrice(laptopRequest.getCurrentPrice());
+
         laptop.setBrand(laptopRequest.getBrand());
-        laptop.setImage(laptopRequest.getImage());
+        laptop.setImages(laptopRequest.getImages());
         laptop.setIsAvailable(true);
         laptop.setWarrantyPeriod(laptopRequest.getWarrantyPeriod());
-        laptop.setProductReview(laptopRequest.getProductReview());
-        laptop.setPromotion(laptopRequest.getPromotion());
+        laptop.setProductReviews(laptopRequest.getProductReviews());
+        laptop.setPromotions(laptopRequest.getPromotions());
         laptop.setRelease(laptopRequest.getRelease());
 
         // Thiết lập các trường riêng của Laptop

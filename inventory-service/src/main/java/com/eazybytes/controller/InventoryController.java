@@ -1,6 +1,7 @@
 package com.eazybytes.controller;
 
-import com.eazybytes.dto.UpdateQuantityRequest;
+import com.eazybytes.dto.CreateInventoryRequest;
+import com.eazybytes.dto.UpdateInventoryRequest;
 import com.eazybytes.exception.InventoryNotFoundException;
 import com.eazybytes.model.PhoneInventory;
 import com.eazybytes.model.LaptopInventory;
@@ -18,23 +19,31 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
 
-    /**
-     * Cập nhật số lượng điện thoại
-     */
-    @PutMapping("/phone")
-    public ResponseEntity<PhoneInventory> updatePhoneQuantity(
-            @Valid @RequestBody UpdateQuantityRequest request) {
-        PhoneInventory updatedInventory = inventoryService.updatePhoneQuantity(request);
+    @PostMapping("/phone")
+    public ResponseEntity<PhoneInventory> createPhoneInventory(
+            @Valid @RequestBody CreateInventoryRequest request) {
+        PhoneInventory updatedInventory = inventoryService.createPhoneInventory(request);
         return ResponseEntity.ok(updatedInventory);
     }
 
-    /**
-     * Cập nhật số lượng laptop
-     */
+    @PostMapping("/laptop")
+    public ResponseEntity<LaptopInventory> createLaptopInventory(
+            @Valid @RequestBody CreateInventoryRequest request) {
+        LaptopInventory updatedInventory = inventoryService.createLaptopInventory(request);
+        return ResponseEntity.ok(updatedInventory);
+    }
+
+    @PutMapping("/phone")
+    public ResponseEntity<PhoneInventory> updatePhoneInventory(
+            @Valid @RequestBody UpdateInventoryRequest request) {
+        PhoneInventory updatedInventory = inventoryService.updatePhoneInventory(request);
+        return ResponseEntity.ok(updatedInventory);
+    }
+
     @PutMapping("/laptop")
-    public ResponseEntity<LaptopInventory> updateLaptopQuantity(
-            @Valid @RequestBody UpdateQuantityRequest request) {
-        LaptopInventory updatedInventory = inventoryService.updateLaptopQuantity(request);
+    public ResponseEntity<LaptopInventory> updateLaptopInventory(
+            @Valid @RequestBody UpdateInventoryRequest request) {
+        LaptopInventory updatedInventory = inventoryService.updateLaptopInventory(request);
         return ResponseEntity.ok(updatedInventory);
     }
 
@@ -86,16 +95,4 @@ public class InventoryController {
         return ResponseEntity.ok(updatedInventory);
     }
 
-    /**
-     * Exception handler
-     */
-    @ExceptionHandler(InventoryNotFoundException.class)
-    public ResponseEntity<String> handleInventoryNotFoundException(InventoryNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
 }

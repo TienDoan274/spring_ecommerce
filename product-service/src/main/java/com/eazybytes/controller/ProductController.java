@@ -1,8 +1,10 @@
 package com.eazybytes.controller;
 
+import com.eazybytes.client.InventoryClient;
 import com.eazybytes.dto.*;
 import com.eazybytes.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
+@Slf4j
 public class ProductController {
     private final ProductService productService;
+    private final InventoryClient inventoryClient;
 
     @GetMapping("/type/{type}")
     @ResponseStatus(HttpStatus.OK)
@@ -72,7 +76,46 @@ public class ProductController {
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public PhoneResponse createPhone(@RequestBody PhoneRequest phoneRequest) {
-        return productService.createPhone(phoneRequest);
+        // Tạo phone trước
+        PhoneResponse phoneResponse = productService.createPhone(phoneRequest);
+        String phoneId = phoneResponse.getId();
+
+        try {
+            // Xử lý các variants
+            if (phoneRequest.getColors() != null && !phoneRequest.getColors().isEmpty()) {
+                // Có các phiên bản màu khác nhau
+                for (String color : phoneRequest.getColors()) {
+                    CreateInventoryRequest inventoryRequest = CreateInventoryRequest.builder()
+                            .productId(phoneId)
+                            .quantity(0)             // Khởi tạo với số lượng 0
+                            .originalPrice(0)        // Khởi tạo với giá gốc 0
+                            .currentPrice(0)         // Khởi tạo với giá hiện tại 0
+                            .color(color)
+                            .build();
+
+                    // Gọi API inventory service
+                    inventoryClient.createPhoneQuantity(inventoryRequest);
+                }
+            } else {
+                // Không có phiên bản màu, tạo một inventory với color trống
+                CreateInventoryRequest inventoryRequest = CreateInventoryRequest.builder()
+                        .productId(phoneId)
+                        .quantity(0)                 // Khởi tạo với số lượng 0
+                        .originalPrice(0)            // Khởi tạo với giá gốc 0
+                        .currentPrice(0)             // Khởi tạo với giá hiện tại 0
+                        .color("")                   // Color trống
+                        .build();
+
+                // Gọi API inventory service
+                inventoryClient.createPhoneQuantity(inventoryRequest);
+            }
+
+        } catch (Exception e) {
+            log.error("Error creating inventory for phone ID {}: {}", phoneId, e.getMessage());
+            // Tùy vào yêu cầu, bạn có thể tiếp tục hoặc throw exception
+        }
+
+        return phoneResponse;
     }
 
     @PostMapping("/createLaptop")
@@ -101,6 +144,18 @@ public class ProductController {
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePhone(@PathVariable String id) {
+        try {
+            // Xóa inventory trước
+            inventoryClient.deleteInventoriesByProductId(id);
+            log.info("Successfully deleted inventories for phone ID: {}", id);
+        } catch (Exception e) {
+            log.error("Error deleting inventories for phone ID {}: {}", id, e.getMessage());
+            // Tùy thuộc vào yêu cầu, bạn có thể quyết định tiếp tục hoặc throw exception
+            // Nếu xóa inventory thất bại nhưng vẫn muốn xóa phone, tiếp tục thực hiện
+            // Nếu muốn đảm bảo tính toàn vẹn dữ liệu, có thể throw exception ở đây
+        }
+
+        // Xóa phone
         productService.deletePhone(id);
     }
 

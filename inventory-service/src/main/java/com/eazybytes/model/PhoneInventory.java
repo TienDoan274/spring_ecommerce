@@ -32,6 +32,14 @@ public class PhoneInventory {
     private Integer quantity;
 
     @Column(nullable = false)
+    @Min(value = 0, message = "Price cannot be negative")
+    private Integer originalPrice;
+
+    @Column(nullable = false)
+    @Min(value = 0, message = "Price cannot be negative")
+    private Integer currentPrice;
+
+    @Column(nullable = false)
     private String color;
 
     @Column(name = "created_at")

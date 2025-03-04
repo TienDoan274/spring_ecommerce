@@ -22,14 +22,12 @@ public class Product {
     private String id;
     private String name;
     private String description;
-    private BigDecimal originalPrice; // giá gốc
-    private BigDecimal currentPrice; // giá khuyến mãi
     private String brand;
-    private String image;
+    private List<Map<String,String>> images;
     private Boolean isAvailable;
     private String type;  // "PHONE" or "LAPTOP"
     private String warrantyPeriod; // thời gian bảo hành
-    private Map<String,String> productReview; // bài đánh giá sản phẩm
-    private List<String> promotion; // chương trình khuyến mãi
+    private List<Map<String,String>> productReviews; // bài đánh giá sản phẩm
+    private List<String> promotions; // chương trình khuyến mãi
     private String release; // thời điểm ra mắt
 }

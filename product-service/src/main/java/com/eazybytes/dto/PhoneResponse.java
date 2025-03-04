@@ -22,13 +22,13 @@ public class PhoneResponse extends ProductResponse{
     // Camera và màn hình
     private String rearCameraResolution ; // độ phân giải cam sau
     private List<String> rearVideoRecording; // quay phim cam sau
-    private Boolean rearFlash; // flash cam sau
+    private String rearFlash; // flash cam sau
     private List<String>  rearCameraFeatures; // tính năng cam sau
     private String frontCameraResolution; // độ phân giải cam trước
     private List<String> frontCameraFeatures; // tính năng cam trước
 
     private String displayTechnology; // công nghệ màn hình
-    private String displayResolutiona; // độ phân giải màn hình
+    private String displayResolution; // độ phân giải màn hình
     private String screenSize; // màn hình rộng
     private String maxBrightness; // độ sáng tối đa
     private String screenProtection; // mặt kính cảm ứng
@@ -44,8 +44,8 @@ public class PhoneResponse extends ProductResponse{
     private List<String> specialFeatures; // tính năng đặc biệt
     private String waterResistance;
     private List<String> recording; // ghi âm
-    private Boolean video; // xem phim
-    private Boolean audio; // nghe nhạc
+    private List<String> video; // xem phim
+    private List<String> audio; // nghe nhạc
 
     //Kết nối
     private String mobileNetwork; // mạng di động

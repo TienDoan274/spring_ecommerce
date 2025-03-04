@@ -1,21 +1,32 @@
 package com.eazybytes.dto;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateQuantityRequest {
+public class CreateInventoryRequest {
     @NotBlank(message = "Product ID cannot be blank")
     private String productId;
 
-    @NotBlank(message = "Color cannot be blank")
     private String color;
 
     @Min(value = 0, message = "Quantity cannot be negative")
     private Integer quantity;
+
+    @Column(nullable = false)
+    @Min(value = 0, message = "Price cannot be negative")
+    private Integer originalPrice;
+
+    @Column(nullable = false)
+    @Min(value = 0, message = "Price cannot be negative")
+    private Integer currentPrice;
+
 }
