@@ -20,7 +20,7 @@ public class ProductRequest {
     private String description;
 
     private String brand;
-    private List<Map<String,String>> images; // [{'title':'...','url':'...'}]
+    private Map<String,List<Map<String,String>>> images;
     private String type;  // "PHONE" or "LAPTOP"
     private String warrantyPeriod; // thời gian bảo hành
     private List<Map<String,String>> productReviews; // bài đánh giá sản phẩm [{'title':'...','content':'...'}]

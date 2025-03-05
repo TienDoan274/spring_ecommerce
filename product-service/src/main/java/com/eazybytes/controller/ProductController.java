@@ -94,7 +94,7 @@ public class ProductController {
                             .build();
 
                     // Gọi API inventory service
-                    inventoryClient.createPhoneQuantity(inventoryRequest);
+                    inventoryClient.createProductInventory(inventoryRequest);
                 }
             } else {
                 // Không có phiên bản màu, tạo một inventory với color trống
@@ -107,7 +107,7 @@ public class ProductController {
                         .build();
 
                 // Gọi API inventory service
-                inventoryClient.createPhoneQuantity(inventoryRequest);
+                inventoryClient.createProductInventory(inventoryRequest);
             }
 
         } catch (Exception e) {

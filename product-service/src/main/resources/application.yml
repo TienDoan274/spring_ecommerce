@@ -30,3 +30,6 @@ eureka:
 logging:
   level:
     com.eazybytes: DEBUG
+
+inventory-service:
+  url: http://localhost:8100

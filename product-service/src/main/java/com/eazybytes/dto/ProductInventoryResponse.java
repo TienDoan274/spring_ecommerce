@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PhoneInventoryResponse {
+public class ProductInventoryResponse {
     @NotBlank(message = "Product ID cannot be blank")
     private String productId;
 

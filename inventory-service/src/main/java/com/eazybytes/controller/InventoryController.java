@@ -2,9 +2,7 @@ package com.eazybytes.controller;
 
 import com.eazybytes.dto.CreateInventoryRequest;
 import com.eazybytes.dto.UpdateInventoryRequest;
-import com.eazybytes.exception.InventoryNotFoundException;
-import com.eazybytes.model.PhoneInventory;
-import com.eazybytes.model.LaptopInventory;
+import com.eazybytes.model.ProductInventory;
 import com.eazybytes.service.InventoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,80 +17,46 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
 
-    @PostMapping("/phone")
-    public ResponseEntity<PhoneInventory> createPhoneInventory(
+    @PostMapping("/product")
+    public ResponseEntity<ProductInventory> createProductInventory(
             @Valid @RequestBody CreateInventoryRequest request) {
-        PhoneInventory updatedInventory = inventoryService.createPhoneInventory(request);
+        ProductInventory updatedInventory = inventoryService.createProductInventory(request);
         return ResponseEntity.ok(updatedInventory);
     }
 
-    @PostMapping("/laptop")
-    public ResponseEntity<LaptopInventory> createLaptopInventory(
-            @Valid @RequestBody CreateInventoryRequest request) {
-        LaptopInventory updatedInventory = inventoryService.createLaptopInventory(request);
-        return ResponseEntity.ok(updatedInventory);
-    }
-
-    @PutMapping("/phone")
-    public ResponseEntity<PhoneInventory> updatePhoneInventory(
+    @PutMapping("/product")
+    public ResponseEntity<ProductInventory> updateProductInventory(
             @Valid @RequestBody UpdateInventoryRequest request) {
-        PhoneInventory updatedInventory = inventoryService.updatePhoneInventory(request);
+        ProductInventory updatedInventory = inventoryService.updateProductInventory(request);
         return ResponseEntity.ok(updatedInventory);
     }
 
-    @PutMapping("/laptop")
-    public ResponseEntity<LaptopInventory> updateLaptopInventory(
-            @Valid @RequestBody UpdateInventoryRequest request) {
-        LaptopInventory updatedInventory = inventoryService.updateLaptopInventory(request);
-        return ResponseEntity.ok(updatedInventory);
-    }
-
-    /**
-     * Giảm số lượng điện thoại
-     */
-    @PostMapping("/phone/decrease")
-    public ResponseEntity<PhoneInventory> decreasePhoneQuantity(
-            @RequestParam String phoneId,
+    @PostMapping("/decrease")
+    public ResponseEntity<ProductInventory> decreaseProductQuantity(
+            @RequestParam String ProductId,
             @RequestParam String color,
             @RequestParam int quantity) {
-        PhoneInventory updatedInventory = inventoryService.decreasePhoneQuantity(phoneId, color, quantity);
-        return ResponseEntity.ok(updatedInventory);
-    }
-
-    /**
-     * Giảm số lượng laptop
-     */
-    @PostMapping("/laptop/decrease")
-    public ResponseEntity<LaptopInventory> decreaseLaptopQuantity(
-            @RequestParam String laptopId,
-            @RequestParam String color,
-            @RequestParam int quantity) {
-        LaptopInventory updatedInventory = inventoryService.decreaseLaptopQuantity(laptopId, color, quantity);
+        ProductInventory updatedInventory = inventoryService.decreaseProductQuantity(ProductId, color, quantity);
         return ResponseEntity.ok(updatedInventory);
     }
 
     /**
      * Tăng số lượng điện thoại
      */
-    @PostMapping("/phone/increase")
-    public ResponseEntity<PhoneInventory> increasePhoneQuantity(
-            @RequestParam String phoneId,
+    @PostMapping("/increase")
+    public ResponseEntity<ProductInventory> increaseProductQuantity(
+            @RequestParam String ProductId,
             @RequestParam String color,
             @RequestParam int quantity) {
-        PhoneInventory updatedInventory = inventoryService.increasePhoneQuantity(phoneId, color, quantity);
+        ProductInventory updatedInventory = inventoryService.increaseProductQuantity(ProductId, color, quantity);
         return ResponseEntity.ok(updatedInventory);
     }
 
-    /**
-     * Tăng số lượng laptop
-     */
-    @PostMapping("/laptop/increase")
-    public ResponseEntity<LaptopInventory> increaseLaptopQuantity(
-            @RequestParam String laptopId,
-            @RequestParam String color,
-            @RequestParam int quantity) {
-        LaptopInventory updatedInventory = inventoryService.increaseLaptopQuantity(laptopId, color, quantity);
-        return ResponseEntity.ok(updatedInventory);
+    @DeleteMapping("/delete/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> deleteInventoriesByProductId(@PathVariable("productId") String productId) {
+        inventoryService.deleteAllByProductId(productId);
+        return ResponseEntity.noContent().build();
     }
 
 }

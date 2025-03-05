@@ -23,7 +23,7 @@ public class Product {
     private String name;
     private String description;
     private String brand;
-    private List<Map<String,String>> images;
+    private Map<String,List<Map<String,String>>> images;
     private Boolean isAvailable;
     private String type;  // "PHONE" or "LAPTOP"
     private String warrantyPeriod; // thời gian bảo hành
