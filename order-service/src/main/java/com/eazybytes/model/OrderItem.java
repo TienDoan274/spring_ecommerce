@@ -31,10 +31,7 @@ public class OrderItem {
     @Column(name = "product_type", nullable = false)
     private String productType; // "PHONE" hoặc "LAPTOP"
 
-    @Column(name = "product_name", nullable = false)
-    private String productName;
-
-    @Column(name = "color", nullable = false)
+    @Column(name = "color", nullable = true)
     private String color;
 
     @Column(name = "storage")

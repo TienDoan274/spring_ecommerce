@@ -35,7 +35,7 @@ public class Order {
     private String shippingAddress;
 
     @Column(name = "phone_number")
-    private String phoneNumber;
+    private String phone;
 
     @Column(name = "email")
     private String email;
@@ -53,8 +53,8 @@ public class Order {
     @Column(name = "shipping_fee")
     private BigDecimal shippingFee;
 
-    @Column(name = "notes")
-    private String notes;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

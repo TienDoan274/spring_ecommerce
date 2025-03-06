@@ -6,6 +6,7 @@ import com.eazybytes.dto.PhoneRequest;
 import com.eazybytes.dto.LaptopRequest;
 import com.eazybytes.dto.PhoneResponse;
 import com.eazybytes.dto.LaptopResponse;
+import com.eazybytes.exception.DuplicateProductNameException;
 import com.eazybytes.model.Product;
 import com.eazybytes.model.Phone;
 import com.eazybytes.model.Laptop;
@@ -29,6 +30,9 @@ public class ProductService {
     private final LaptopRepository laptopRepository;
 
     public PhoneResponse createPhone(PhoneRequest phoneRequest) {
+        if (phoneRepository.existsByName(phoneRequest.getName())) {
+            throw new DuplicateProductNameException("Tên sản phẩm '" + phoneRequest.getName() + "' đã tồn tại");
+        }
         Phone phone = new Phone();
         // Thiết lập các trường cơ bản của Product
         phone.setName(phoneRequest.getName());
@@ -100,6 +104,7 @@ public class ProductService {
         log.info("Phone {} is saved", savedPhone.getId());
         return mapToPhoneResponse(savedPhone);
     }
+
 
     public LaptopResponse createLaptop(LaptopRequest laptopRequest) {
         Laptop laptop = new Laptop();

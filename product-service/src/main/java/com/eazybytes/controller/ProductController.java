@@ -80,41 +80,6 @@ public class ProductController {
         PhoneResponse phoneResponse = productService.createPhone(phoneRequest);
         String phoneId = phoneResponse.getId();
 
-        try {
-            // Xử lý các variants
-            if (phoneRequest.getColors() != null && !phoneRequest.getColors().isEmpty()) {
-                // Có các phiên bản màu khác nhau
-                for (String color : phoneRequest.getColors()) {
-                    CreateInventoryRequest inventoryRequest = CreateInventoryRequest.builder()
-                            .productId(phoneId)
-                            .quantity(0)             // Khởi tạo với số lượng 0
-                            .originalPrice(0)        // Khởi tạo với giá gốc 0
-                            .currentPrice(0)         // Khởi tạo với giá hiện tại 0
-                            .color(color)
-                            .build();
-
-                    // Gọi API inventory service
-                    inventoryClient.createProductInventory(inventoryRequest);
-                }
-            } else {
-                // Không có phiên bản màu, tạo một inventory với color trống
-                CreateInventoryRequest inventoryRequest = CreateInventoryRequest.builder()
-                        .productId(phoneId)
-                        .quantity(0)                 // Khởi tạo với số lượng 0
-                        .originalPrice(0)            // Khởi tạo với giá gốc 0
-                        .currentPrice(0)             // Khởi tạo với giá hiện tại 0
-                        .color("")                   // Color trống
-                        .build();
-
-                // Gọi API inventory service
-                inventoryClient.createProductInventory(inventoryRequest);
-            }
-
-        } catch (Exception e) {
-            log.error("Error creating inventory for phone ID {}: {}", phoneId, e.getMessage());
-            // Tùy vào yêu cầu, bạn có thể tiếp tục hoặc throw exception
-        }
-
         return phoneResponse;
     }
 

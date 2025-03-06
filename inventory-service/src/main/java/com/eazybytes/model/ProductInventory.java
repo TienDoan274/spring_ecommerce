@@ -2,7 +2,6 @@ package com.eazybytes.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "product_inventory",
-        indexes = {
-                @Index(name = "idx_product_variant", columnList = "product_id, color", unique = true)
-        })
+@Table(name = "product_inventory")
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,24 +18,24 @@ import java.time.LocalDateTime;
 public class ProductInventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long inventoryId;
+
+    @Column(name = "product_name", nullable = false)
+    private String name;
 
     @Column(name = "product_id", nullable = false)
     private String productId;
 
-    @Column(nullable = false)
-    @Min(value = 0, message = "Quantity cannot be negative")
-    private Integer quantity = 0;
+    @Column(nullable = true)
+    private Integer quantity;
 
-    @Column(nullable = false)
-    @Min(value = 0, message = "Price cannot be negative")
-    private Integer originalPrice = 0;
+    @Column(nullable = true)
+    private String originalPrice;
 
-    @Column(nullable = false)
-    @Min(value = 0, message = "Price cannot be negative")
-    private Integer currentPrice = 0;
+    @Column(nullable = true)
+    private String currentPrice;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String color;
 
     @Column(name = "created_at")
