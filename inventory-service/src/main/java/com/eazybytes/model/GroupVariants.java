@@ -24,11 +24,11 @@ public class GroupVariants {
     @Column(name = "group_id")
     private Long groupId;
 
-    @Column(name = "product_ids")
-    private List<String> inventoryIds;
-
     @Column(name = "priority_number", nullable = false)
     private Integer priorityNumber;
+
+    @Column(name = "image", nullable = true)
+    private String image;
 
     @CreationTimestamp
     @Column(name = "created_at")

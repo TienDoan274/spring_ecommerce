@@ -2,7 +2,6 @@ package com.eazybytes.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,18 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 
-public class InventoryDto {
-    private Long inventoryId;
-
-    private Long groupId;
-
-    @NotBlank(message = "Product ID cannot be blank")
-    private String productId;
-
+public class InventoryRequest{
+    @NotBlank(message = "Product variant cannot be blank")
     private String variant;
 
-    private String productName;
-
+    @NotBlank(message = "Product color cannot be blank")
     private String color;
 
     private Integer quantity;

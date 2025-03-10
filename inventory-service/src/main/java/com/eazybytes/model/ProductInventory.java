@@ -1,11 +1,12 @@
 package com.eazybytes.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -16,42 +17,41 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductInventory {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "inventory_id")
     private Long inventoryId;
 
-    @Column(name = "product_name", nullable = false)
-    private String name;
+    @Column(name = "group_id")
+    private Long groupId;
 
     @Column(name = "product_id", nullable = false)
     private String productId;
 
-    @Column(nullable = true)
-    private Integer quantity;
+    @Column(name = "variant", nullable = true)
+    private String variant;
 
-    @Column(nullable = true)
-    private String originalPrice;
+    @Column(name = "product_name", nullable = true)
+    private String productName;
 
-    @Column(nullable = true)
-    private String currentPrice;
-
-    @Column(nullable = true)
+    @Column(name = "color", nullable = true)
     private String color;
 
+    @Column(name = "quantity", nullable = true)
+    private Integer quantity;
+
+    @Column(name = "original_price", nullable = true)
+    private String originalPrice;
+
+    @Column(name = "current_price", nullable = true)
+    private String currentPrice;
+
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
 }

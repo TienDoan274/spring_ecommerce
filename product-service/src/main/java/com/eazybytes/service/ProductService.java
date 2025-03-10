@@ -1,11 +1,7 @@
 package com.eazybytes.service;
 
-import com.eazybytes.dto.ProductRequest;
-import com.eazybytes.dto.ProductResponse;
-import com.eazybytes.dto.PhoneRequest;
-import com.eazybytes.dto.LaptopRequest;
-import com.eazybytes.dto.PhoneResponse;
-import com.eazybytes.dto.LaptopResponse;
+import com.eazybytes.client.InventoryClient;
+import com.eazybytes.dto.*;
 import com.eazybytes.exception.DuplicateProductNameException;
 import com.eazybytes.model.Product;
 import com.eazybytes.model.Phone;
@@ -16,8 +12,10 @@ import com.eazybytes.repository.ProductRepository;
 import com.eazybytes.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,19 +26,19 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final PhoneRepository phoneRepository;
     private final LaptopRepository laptopRepository;
+    private final InventoryClient inventoryClient;
 
-    public PhoneResponse createPhone(PhoneRequest phoneRequest) {
-        if (phoneRepository.existsByName(phoneRequest.getName())) {
-            throw new DuplicateProductNameException("Tên sản phẩm '" + phoneRequest.getName() + "' đã tồn tại");
-        }
+    public PhoneResponse createPhone(PhoneWithInventoryRequest phoneWithInventoryRequest) {
         Phone phone = new Phone();
-        // Thiết lập các trường cơ bản của Product
-        phone.setName(phoneRequest.getName());
+
+        PhoneRequest phoneRequest = phoneWithInventoryRequest.getPhoneRequest();
+        List<InventoryRequest> inventoryRequests = phoneWithInventoryRequest.getInventoryRequests();
+
+        phone.setProductName(phoneRequest.getProductName());
         phone.setDescription(phoneRequest.getDescription());
 
         phone.setBrand(phoneRequest.getBrand());
         phone.setImages(phoneRequest.getImages());
-        phone.setIsAvailable(true);
         phone.setWarrantyPeriod(phoneRequest.getWarrantyPeriod());
         phone.setProductReviews(phoneRequest.getProductReviews());
         phone.setPromotions(phoneRequest.getPromotions());
@@ -101,20 +99,41 @@ public class ProductService {
         phone.setColors(phoneRequest.getColors());
 
         Phone savedPhone = (Phone) phoneRepository.save(phone);
-        log.info("Phone {} is saved", savedPhone.getId());
-        return mapToPhoneResponse(savedPhone);
+        List<InventoryDto> inventoryDtos = new ArrayList<>();
+        for (InventoryRequest inventoryRequest : inventoryRequests) {
+
+            InventoryDto inventoryDto = new InventoryDto();
+
+            inventoryDto.setProductName(savedPhone.getProductName());
+            inventoryDto.setProductId(savedPhone.getProductId());
+
+            inventoryDto.setCurrentPrice(inventoryRequest.getCurrentPrice());
+            inventoryDto.setOriginalPrice(inventoryRequest.getOriginalPrice());
+            inventoryDto.setQuantity(inventoryRequest.getQuantity());
+            inventoryDto.setVariant(inventoryRequest.getVariant());
+
+            inventoryDto.setColor(inventoryRequest.getColor());
+
+            inventoryDtos.add(inventoryDto);
+            inventoryClient.createInventory(inventoryDto);
+        }
+
+        log.info("Phone {} is saved", savedPhone.getProductId());
+        return mapToPhoneResponse(savedPhone, inventoryDtos);
     }
 
 
-    public LaptopResponse createLaptop(LaptopRequest laptopRequest) {
+    public LaptopResponse createLaptop(LaptopWithInventoryRequest laptopWithInventoryRequest) {
         Laptop laptop = new Laptop();
-        // Thiết lập các trường cơ bản của Product
-        laptop.setName(laptopRequest.getName());
+
+        LaptopRequest laptopRequest = laptopWithInventoryRequest.getLaptopRequest();
+        List<InventoryRequest> inventoryRequests = laptopWithInventoryRequest.getInventoryRequests();
+
+        laptop.setProductName(laptopRequest.getProductName());
         laptop.setDescription(laptopRequest.getDescription());
 
         laptop.setBrand(laptopRequest.getBrand());
         laptop.setImages(laptopRequest.getImages());
-        laptop.setIsAvailable(true);
         laptop.setWarrantyPeriod(laptopRequest.getWarrantyPeriod());
         laptop.setProductReviews(laptopRequest.getProductReviews());
         laptop.setPromotions(laptopRequest.getPromotions());
@@ -156,51 +175,45 @@ public class ProductService {
         laptop.setBattery(laptopRequest.getBattery());
         laptop.setOs(laptopRequest.getOs());
 
+        laptop.setColors(laptop.getColors());
+
         Laptop savedLaptop = (Laptop) laptopRepository.save(laptop);
-        log.info("Laptop {} is saved", savedLaptop.getId());
-        return mapToLaptopResponse(savedLaptop);
-    }
+        List<InventoryDto> inventoryDtos = new ArrayList<>();
+        for (InventoryRequest inventoryRequest : inventoryRequests) {
 
-    public List<PhoneResponse> getAllPhones() {
-        List<Phone> phones = phoneRepository.findByType("PHONE");
-        return phones.stream()
-                .map(this::mapToPhoneResponse)
-                .collect(Collectors.toList());
-    }
+            InventoryDto inventoryDto = new InventoryDto();
 
-    public List<LaptopResponse> getAllLaptops() {
-        List<Laptop> laptops = laptopRepository.findByType("LAPTOP");
-        return laptops.stream()
-                .map(this::mapToLaptopResponse)
-                .collect(Collectors.toList());
+            inventoryDto.setProductName(savedLaptop.getProductName());
+            inventoryDto.setProductId(savedLaptop.getProductId());
+
+            inventoryDto.setCurrentPrice(inventoryRequest.getCurrentPrice());
+            inventoryDto.setOriginalPrice(inventoryRequest.getOriginalPrice());
+            inventoryDto.setQuantity(inventoryRequest.getQuantity());
+            inventoryDto.setVariant(inventoryRequest.getVariant());
+
+            inventoryDto.setColor(inventoryRequest.getColor());
+
+            inventoryDtos.add(inventoryDto);
+            inventoryClient.createInventory(inventoryDto);
+        }
+        log.info("Laptop {} is saved", savedLaptop.getProductId());
+        return mapToLaptopResponse(savedLaptop,inventoryDtos);
     }
 
     public PhoneResponse getPhoneById(String id) {
         Phone phone = phoneRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Phone not found with id: " + id));
+        List<InventoryDto> variants = inventoryClient.getProductColorVariants(id).getBody();
 
-        return mapToPhoneResponse(phone);
+        return mapToPhoneResponse(phone,variants);
     }
 
     public LaptopResponse getLaptopById(String id) {
         Laptop laptop = laptopRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Laptop not found with id: " + id));
+        List<InventoryDto> variants = inventoryClient.getProductColorVariants(id).getBody();
 
-        return mapToLaptopResponse(laptop);
-    }
-
-    public List<PhoneResponse> getPhonesByNames(String name) {
-        List<Phone> phones = phoneRepository.findByNameContainingIgnoreCase(name);
-        return phones.stream()
-                .map(this::mapToPhoneResponse)
-                .collect(Collectors.toList());
-    }
-
-    public List<LaptopResponse> getLaptopsByNames(String name) {
-        List<Laptop> laptops = laptopRepository.findByNameContainingIgnoreCase(name);
-        return laptops.stream()
-                .map(this::mapToLaptopResponse)
-                .collect(Collectors.toList());
+        return mapToLaptopResponse(laptop,variants);
     }
 
     public String deletePhone(String id) {
@@ -221,141 +234,28 @@ public class ProductService {
 
     }
 
-    private PhoneResponse mapToPhoneResponse(Phone phone) {
-        return PhoneResponse.builder()
-                // Map basic product fields
-                .id(phone.getId())
-                .name(phone.getName())
-                .description(phone.getDescription())
-                .brand(phone.getBrand())
-                .images(phone.getImages())
-                .isAvailable(phone.getIsAvailable())
-                .type(phone.getType())
-                .warrantyPeriod(phone.getWarrantyPeriod())
-                .productReviews(phone.getProductReviews())
-                .promotions(phone.getPromotions())
-                .release(phone.getRelease())
+    private PhoneResponse mapToPhoneResponse(Phone phone, List<InventoryDto> inventoryDtos) {
+        PhoneResponse phoneResponse = PhoneResponse.fromPhone(phone,  inventoryDtos);
 
-                // Map phone-specific fields
-                .os(phone.getOs())
-                .processor(phone.getProcessor())
-                .cpuSpeed(phone.getCpuSpeed())
-                .gpu(phone.getGpu())
-                .ram(phone.getRam())
-                .storage(phone.getStorage())
-                .availableStorage(phone.getAvailableStorage())
-                .contactLimit(phone.getContactLimit())
-
-                // Camera và màn hình
-                .rearCameraResolution(phone.getRearCameraResolution())
-                .rearVideoRecording(phone.getRearVideoRecording())
-                .rearFlash(phone.getRearFlash())
-                .rearCameraFeatures(phone.getRearCameraFeatures())
-                .frontCameraResolution(phone.getFrontCameraResolution())
-                .frontCameraFeatures(phone.getFrontCameraFeatures())
-                .displayTechnology(phone.getDisplayTechnology())
-                .displayResolution(phone.getDisplayResolution())
-                .screenSize(phone.getScreenSize())
-                .maxBrightness(phone.getMaxBrightness())
-                .screenProtection(phone.getScreenProtection())
-
-                // Pin và sạc
-                .batteryCapactity(phone.getBatteryCapactity())
-                .batteryType(phone.getBatteryType())
-                .maxChargingPower(phone.getMaxChargingPower())
-                .batteryFeatures(phone.getBatteryFeatures())
-
-                // Tiện ích
-                .securityFeatures(phone.getSecurityFeatures())
-                .specialFeatures(phone.getSpecialFeatures())
-                .waterResistance(phone.getWaterResistance())
-                .recording(phone.getRecording())
-                .video(phone.getVideo())
-                .audio(phone.getAudio())
-
-                // Kết nối
-                .mobileNetwork(phone.getMobileNetwork())
-                .simType(phone.getSimType())
-                .wifi(phone.getWifi())
-                .gps(phone.getGps())
-                .bluetooth(phone.getBluetooth())
-                .chargingPort(phone.getChargingPort())
-                .headphoneJack(phone.getHeadphoneJack())
-                .otherConnectivity(phone.getOtherConnectivity())
-
-                // Thiết kế và chất lượng
-                .designType(phone.getDesignType())
-                .materials(phone.getMaterials())
-                .sizeWeight(phone.getSizeWeight())
-                .colors(phone.getColors())
-
-                .build();
+        return phoneResponse;
     }
 
-    private LaptopResponse mapToLaptopResponse(Laptop laptop) {
-        return LaptopResponse.builder()
-                // Map basic product fields
-                .id(laptop.getId())
-                .name(laptop.getName())
-                .description(laptop.getDescription())
-                .brand(laptop.getBrand())
-                .images(laptop.getImages())
-                .isAvailable(laptop.getIsAvailable())
-                .type(laptop.getType())
-                .warrantyPeriod(laptop.getWarrantyPeriod())
-                .productReviews(laptop.getProductReviews())
-                .promotions(laptop.getPromotions())
-                .release(laptop.getRelease())
+    private LaptopResponse mapToLaptopResponse(Laptop laptop, List<InventoryDto> inventoryDtos) {
+        LaptopResponse phoneResponse = LaptopResponse.fromLaptop(laptop,  inventoryDtos);
 
-                // Bộ xử lý
-                .processorModel(laptop.getProcessorModel())
-                .coreCount(laptop.getCoreCount())
-                .threadCount(laptop.getThreadCount())
-                .cpuSpeed(laptop.getCpuSpeed())
-                .maxCpuSpeed(laptop.getMaxCpuSpeed())
-
-                // Bộ nhớ ram, ổ cứng
-                .ram(laptop.getRam())
-                .ramType(laptop.getRamType())
-                .ramBusSpeed(laptop.getRamBusSpeed())
-                .maxRam(laptop.getMaxRam())
-                .storage(laptop.getStorage())
-
-                // Màn hình
-                .screenSize(laptop.getScreenSize())
-                .resolution(laptop.getResolution())
-                .refreshRate(laptop.getRefreshRate())
-                .colorGamut(laptop.getColorGamut())
-                .displayTechnology(laptop.getDisplayTechnology())
-
-                // Đồ họa và âm thanh
-                .graphicCard(laptop.getGraphicCard())
-                .audioTechnology(laptop.getAudioTechnology())
-                .ports(laptop.getPorts())
-                .wirelessConnectivity(laptop.getWirelessConnectivity())
-                .webcam(laptop.getWebcam())
-                .otherFeatures(laptop.getOtherFeatures())
-                .keyboardBacklight(laptop.getKeyboardBacklight())
-
-                // Kích thước - khối lượng - pin
-                .size(laptop.getSize())
-                .material(laptop.getMaterial())
-                .battery(laptop.getBattery())
-                .os(laptop.getOs())
-                .build();
+        return phoneResponse;
     }
 
-    public PhoneResponse updatePhone(String id, PhoneRequest phoneRequest) {
+    public PhoneResponse updatePhone(String id, PhoneRequest phoneRequest, List<InventoryDto> inventoryDtos) {
         Phone phone = phoneRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Phone not found with id: " + id));
 
         // Thiết lập các trường cơ bản của Product
-        phone.setName(phoneRequest.getName());
+        phone.setProductName(phoneRequest.getProductName());
         phone.setDescription(phoneRequest.getDescription());
 
         phone.setBrand(phoneRequest.getBrand());
         phone.setImages(phoneRequest.getImages());
-        phone.setIsAvailable(true);
         phone.setWarrantyPeriod(phoneRequest.getWarrantyPeriod());
         phone.setProductReviews(phoneRequest.getProductReviews());
         phone.setPromotions(phoneRequest.getPromotions());
@@ -416,20 +316,31 @@ public class ProductService {
         phone.setColors(phoneRequest.getColors());
 
         Phone updatedPhone = phoneRepository.save(phone);
-        log.info("Phone {} is updated", updatedPhone.getId());
-        return mapToPhoneResponse(updatedPhone);
+
+        for (InventoryDto inventoryDto : inventoryDtos) {
+            inventoryDto.setProductId(updatedPhone.getProductId());
+
+            if (inventoryDto.getColor() == null || inventoryDto.getColor().isEmpty()) {
+                inventoryDto.setColor("Default");
+            }
+
+            inventoryClient.updateProductInventory(inventoryDto);
+
+        }
+
+        log.info("Phone {} is updated", updatedPhone.getProductId());
+        return mapToPhoneResponse(updatedPhone,inventoryDtos);
     }
 
-    public LaptopResponse updateLaptop(String id, LaptopRequest laptopRequest) {
+    public LaptopResponse updateLaptop(String id, LaptopRequest laptopRequest, List<InventoryDto> inventoryDtos) {
         Laptop laptop = laptopRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Laptop not found with id: " + id));
 
-        laptop.setName(laptopRequest.getName());
+        laptop.setProductName(laptopRequest.getProductName());
         laptop.setDescription(laptopRequest.getDescription());
 
         laptop.setBrand(laptopRequest.getBrand());
         laptop.setImages(laptopRequest.getImages());
-        laptop.setIsAvailable(true);
         laptop.setWarrantyPeriod(laptopRequest.getWarrantyPeriod());
         laptop.setProductReviews(laptopRequest.getProductReviews());
         laptop.setPromotions(laptopRequest.getPromotions());
@@ -472,7 +383,18 @@ public class ProductService {
         laptop.setOs(laptopRequest.getOs());
 
         Laptop updatedLaptop = laptopRepository.save(laptop);
-        log.info("Laptop {} is updated", updatedLaptop.getId());
-        return mapToLaptopResponse(updatedLaptop);
+
+        for (InventoryDto inventoryDto : inventoryDtos) {
+            inventoryDto.setProductId(updatedLaptop.getProductId());
+
+            if (inventoryDto.getColor() == null || inventoryDto.getColor().isEmpty()) {
+                inventoryDto.setColor("Default");
+            }
+
+            inventoryClient.updateProductInventory(inventoryDto);
+
+        }
+        log.info("Laptop {} is updated", updatedLaptop.getProductId());
+        return mapToLaptopResponse(updatedLaptop,inventoryDtos);
     }
 }

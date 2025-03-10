@@ -15,8 +15,8 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductResponse {
-    private String id;
-    private String name;
+    private String productId;
+    private String productName;
     private String description;
 
     private String brand;
@@ -26,6 +26,5 @@ public class ProductResponse {
     private List<Map<String,String>> productReviews; // bài đánh giá sản phẩm
     private List<String> promotions; // chương trình khuyến mãi
     private String release; // thời điểm ra mắt
-    private Boolean isAvailable;
 
 }

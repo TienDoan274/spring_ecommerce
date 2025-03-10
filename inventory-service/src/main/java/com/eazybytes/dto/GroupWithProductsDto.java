@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GroupVariantsDto {
-    private Long groupId;
-    private Integer priorityNumber;
-    private String image;
+public class GroupWithProductsDto {
+    private List<GroupProductDto> products;
+    private GroupVariantsDto groupVariantsDto;
 }

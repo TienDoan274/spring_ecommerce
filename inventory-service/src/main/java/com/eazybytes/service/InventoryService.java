@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,27 +41,26 @@ public class InventoryService {
 
     @Transactional
     public ProductInventory createProductInventory(InventoryDto request) {
-        // Kiểm tra xem tồn kho đã tồn tại chưa
         Optional<ProductInventory> existingInventory = productInventoryRepository
                 .findByProductIdAndColor(request.getProductId(), request.getColor());
 
         ProductInventory inventory;
         if (existingInventory.isPresent()) {
-            // Nếu đã tồn tại, có thể ném ngoại lệ hoặc cập nhật
             throw new InventoryAlreadyExistsException(
                     "Tồn kho đã tồn tại cho sản phẩm với ID: " + request.getProductId() +
                             " và màu: " + request.getColor());
         } else {
             inventory = new ProductInventory();
             inventory.setProductId(request.getProductId());
-            inventory.setName(request.getName());
             inventory.setColor(request.getColor());
 
         }
-
+        inventory.setVariant(request.getVariant());
+        inventory.setProductName(request.getProductName());
         inventory.setQuantity(request.getQuantity());
         inventory.setOriginalPrice(request.getOriginalPrice());
         inventory.setCurrentPrice(request.getCurrentPrice());
+
         return productInventoryRepository.save(inventory);
     }
 
@@ -78,9 +79,8 @@ public class InventoryService {
             inventory.setProductId(request.getProductId());
             inventory.setColor(request.getColor());
         }
-
-
-        inventory.setName(request.getName());
+        inventory.setVariant(request.getVariant());
+        inventory.setProductName(request.getProductName());
         inventory.setQuantity(request.getQuantity());
         inventory.setOriginalPrice(request.getOriginalPrice());
         inventory.setCurrentPrice(request.getCurrentPrice());
@@ -129,10 +129,37 @@ public class InventoryService {
         inventory.setQuantity(inventory.getQuantity() + quantity);
         return productInventoryRepository.save(inventory);
     }
-    
+
+    public List<InventoryDto> findAllColorVariantsByProductId(String productId) {
+        List<ProductInventory> inventories = productInventoryRepository.findAllByProductId(productId);
+
+        // Chuyển đổi từ entity thành DTO
+        return inventories.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    private InventoryDto mapToDto(ProductInventory inventory) {
+        return InventoryDto.builder()
+                .inventoryId(inventory.getInventoryId())
+                .productId(inventory.getProductId())
+                .variant(inventory.getVariant())
+                .productName(inventory.getProductName())
+                .color(inventory.getColor())
+                .quantity(inventory.getQuantity())
+                .originalPrice(inventory.getOriginalPrice())
+                .currentPrice(inventory.getCurrentPrice())
+                .build();
+    }
 
     @Transactional
     public void deleteAllByProductId(String productId) {
+
         productInventoryRepository.deleteAllByProductId(productId);
+    }
+
+    @Transactional
+    public void deleteProductInventory(String productId, String color){
+        productInventoryRepository.deleteByProductIdAndColor(productId,color);
     }
 }

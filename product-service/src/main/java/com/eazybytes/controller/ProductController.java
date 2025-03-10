@@ -3,6 +3,7 @@ package com.eazybytes.controller;
 import com.eazybytes.client.InventoryClient;
 import com.eazybytes.dto.*;
 import com.eazybytes.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,19 +22,19 @@ public class ProductController {
     private final ProductService productService;
     private final InventoryClient inventoryClient;
 
-    @GetMapping("/type/{type}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<?> getProductsByType(@PathVariable String type) {
-        if ("laptop".equals(type))
-            return productService.getAllLaptops();
-        else if("phone".equals(type))
-            return productService.getAllPhones();
-        else{
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Invalid product type: " + type + ". Supported types are 'laptop' and 'phone'."
-            );
-        }
-    }
+//    @GetMapping("/type/{type}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<?> getProductsByType(@PathVariable String type) {
+//        if ("laptop".equals(type))
+//            return productService.ge();
+//        else if("phone".equals(type))
+//            return productService.getAllPhones();
+//        else{
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, "Invalid product type: " + type + ". Supported types are 'laptop' and 'phone'."
+//            );
+//        }
+//    }
 
     @GetMapping("/getPhone/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -47,38 +48,26 @@ public class ProductController {
         return productService.getLaptopById(id);
     }
 
-    @GetMapping("/getAllPhone")
-    @ResponseStatus(HttpStatus.OK)
-    public List<PhoneResponse> getAllPhone() {
-        return productService.getAllPhones();
-    }
 
-    @GetMapping("/getAllLaptop")
-    @ResponseStatus(HttpStatus.OK)
-    public List<LaptopResponse> getAllLaptop() {
-        return productService.getAllLaptops();
-    }
-
-
-    @GetMapping("/searchPhones")
-    @ResponseStatus(HttpStatus.OK)
-    public List<PhoneResponse> searchPhones(@RequestParam String name) {
-        return productService.getPhonesByNames(name);
-    }
-
-    @GetMapping("/searchLaptops")
-    @ResponseStatus(HttpStatus.OK)
-    public List<LaptopResponse> searchLaptops(@RequestParam String name) {
-        return productService.getLaptopsByNames(name);
-    }
+//    @GetMapping("/searchPhones")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<PhoneResponse> searchPhones(@RequestParam String name) {
+//        return productService.getPhonesByNames(name);
+//    }
+//
+//    @GetMapping("/searchLaptops")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<LaptopResponse> searchLaptops(@RequestParam String name) {
+//        return productService.getLaptopsByNames(name);
+//    }
 
     @PostMapping("/createPhone")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public PhoneResponse createPhone(@RequestBody PhoneRequest phoneRequest) {
+    public PhoneResponse createPhone(@RequestBody @Valid PhoneWithInventoryRequest phoneWithInventoryRequest) {
         // Tạo phone trước
-        PhoneResponse phoneResponse = productService.createPhone(phoneRequest);
-        String phoneId = phoneResponse.getId();
+        PhoneResponse phoneResponse = productService.createPhone(phoneWithInventoryRequest);
+        String phoneId = phoneResponse.getProductId();
 
         return phoneResponse;
     }
@@ -86,23 +75,26 @@ public class ProductController {
     @PostMapping("/createLaptop")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public LaptopResponse createLaptop(@RequestBody LaptopRequest laptopRequest) {
-        return productService.createLaptop(laptopRequest);
+    public LaptopResponse createLaptop(@RequestBody @Valid LaptopWithInventoryRequest laptopWithInventoryRequest) {
+        LaptopResponse laptopResponse = productService.createLaptop(laptopWithInventoryRequest);
+        String laptopId = laptopResponse.getProductId();
+
+        return laptopResponse;
     }
 
 
     @PutMapping("/updatePhone/{id}")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
-    public PhoneResponse updatePhone(@PathVariable String id, @RequestBody PhoneRequest phoneRequest) {
-        return productService.updatePhone(id, phoneRequest);
+    public PhoneResponse updatePhone(@PathVariable String id, @RequestBody PhoneRequest phoneRequest,@RequestBody List<InventoryDto> inventoryDtos) {
+        return productService.updatePhone(id, phoneRequest,inventoryDtos);
     }
 
     @PutMapping("/updateLaptop/{id}")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
-    public LaptopResponse updateLaptop(@PathVariable String id, @RequestBody LaptopRequest laptopRequest) {
-        return productService.updateLaptop(id, laptopRequest);
+    public LaptopResponse updateLaptop(@PathVariable String id, @RequestBody LaptopRequest laptopRequest,@RequestBody List<InventoryDto> inventoryDtos) {
+        return productService.updateLaptop(id, laptopRequest,inventoryDtos);
     }
 
     @DeleteMapping("/deletePhone/{id}")

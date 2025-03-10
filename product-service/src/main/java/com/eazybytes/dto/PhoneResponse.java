@@ -1,69 +1,135 @@
 package com.eazybytes.dto;
 
+import com.eazybytes.model.Phone;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class PhoneResponse extends ProductResponse{
-    private String os;
-    private String processor; // chip
-    private String cpuSpeed; // tốc độ chip
-    private String gpu; // chip đồ họa
-    private String ram;
-    private String contactLimit; // danh bạ
-    private String storage;
-    private String availableStorage;
-    // Camera và màn hình
-    private String rearCameraResolution ; // độ phân giải cam sau
-    private List<String> rearVideoRecording; // quay phim cam sau
-    private String rearFlash; // flash cam sau
-    private List<String>  rearCameraFeatures; // tính năng cam sau
-    private String frontCameraResolution; // độ phân giải cam trước
-    private List<String> frontCameraFeatures; // tính năng cam trước
+public class PhoneResponse extends ProductResponse {
+    // Các trường bổ sung, không trùng với ProductResponse
+    private List<String> original_prices = new ArrayList<>();
+    private List<String> current_prices = new ArrayList<>();
+    private List<Specification> specifications = new ArrayList<>();
+    private List<String> colors = new ArrayList<>();
+    private List<Integer> quantities = new ArrayList<>();
+    private List<String> variants = new ArrayList<>();
+    private List<String> productNames = new ArrayList<>();
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Specification {
+        private String name;  // Tên tiếng Việt - bỏ comment để sửa lỗi
+        private Object value; // Giá trị
+    }
 
-    private String displayTechnology; // công nghệ màn hình
-    private String displayResolution; // độ phân giải màn hình
-    private String screenSize; // màn hình rộng
-    private String maxBrightness; // độ sáng tối đa
-    private String screenProtection; // mặt kính cảm ứng
+    public static PhoneResponse fromPhone(Phone phone, List<InventoryDto> inventoryDtos) {
+        PhoneResponse response = new PhoneResponse();
 
-    //Pin và sạc
-    private String batteryCapactity; // dung lượng pin
-    private String batteryType; // loại pin
-    private String maxChargingPower; // hỗ trợ sạc tối đa
-    private List<String> batteryFeatures; // công nghệ pin
+        response.setProductId(phone.getProductId());
+        response.setProductName(phone.getProductName());
+        response.setDescription(phone.getDescription());
+        response.setBrand(phone.getBrand());
+        response.setImages(phone.getImages());
+        response.setType(phone.getType());
+        response.setWarrantyPeriod(phone.getWarrantyPeriod());
+        response.setProductReviews(phone.getProductReviews());
+        response.setPromotions(phone.getPromotions());
+        response.setRelease(phone.getRelease());
+        response.setColors(phone.getColors());
+        List<String> originalPrices = new ArrayList<>();
+        List<String> currentPrices = new ArrayList<>();
+        List<Integer> quantities = new ArrayList<>();
+        List<String> variants = new ArrayList<>();
+        List<String> productNames = new ArrayList<>();
 
-    //Tiện ích
-    private List<String> securityFeatures; // bảo mật nâng cao
-    private List<String> specialFeatures; // tính năng đặc biệt
-    private String waterResistance;
-    private List<String> recording; // ghi âm
-    private List<String> video; // xem phim
-    private List<String> audio; // nghe nhạc
+        for (InventoryDto inventoryDto : inventoryDtos) {
+            originalPrices.add(inventoryDto.getOriginalPrice());
+            currentPrices.add(inventoryDto.getCurrentPrice());
+            quantities.add(inventoryDto.getQuantity());
+            variants.add(inventoryDto.getVariant());
+            productNames.add(inventoryDto.getProductName());
+        }
 
-    //Kết nối
-    private String mobileNetwork; // mạng di động
-    private String simType; // sim
-    private List<String> wifi; // wifi
-    private List<String> gps;
-    private String bluetooth;
-    private String chargingPort;
-    private String headphoneJack;
-    private List<String> otherConnectivity;
+        response.setOriginal_prices(originalPrices);
+        response.setCurrent_prices(currentPrices);
+        response.setQuantities(quantities);
+        response.setVariants(variants);
+        response.setProductNames(productNames);
+        List<Specification> specs = new ArrayList<>();
 
-    //Thiết kế và chất lượng
-    private String designType; // kiểu thiết kế
-    private String materials; // nguyên liệu
-    private String sizeWeight; // kích thước khối lượng
+        // Thêm thông số OS
+        addSpecification(specs, "Hệ điều hành", phone.getOs());
+        addSpecification(specs, "Vi xử lý", phone.getProcessor());
+        addSpecification(specs, "Tốc độ chip", phone.getCpuSpeed());
+        addSpecification(specs, "Chip đồ họa", phone.getGpu());
+        addSpecification(specs, "RAM", phone.getRam());
+        addSpecification(specs, "Dung lượng", phone.getStorage());
+        addSpecification(specs, "Dung lượng khả dụng", phone.getAvailableStorage());
+        addSpecification(specs, "Danh bạ", phone.getContactLimit());
 
-    private List<String> colors;
+        // Camera và màn hình
+        addSpecification(specs, "Độ phân giải camera sau", phone.getRearCameraResolution());
+        addSpecification(specs, "Quay phim camera sau", phone.getRearVideoRecording());
+        addSpecification(specs, "Đèn flash", phone.getRearFlash());
+        addSpecification(specs, "Tính năng camera sau", phone.getRearCameraFeatures());
+        addSpecification(specs, "Độ phân giải camera trước", phone.getFrontCameraResolution());
+        addSpecification(specs, "Tính năng camera trước", phone.getFrontCameraFeatures());
 
+        addSpecification(specs, "Công nghệ màn hình", phone.getDisplayTechnology());
+        addSpecification(specs, "Độ phân giải màn hình", phone.getDisplayResolution());
+        addSpecification(specs, "Màn hình rộng", phone.getScreenSize());
+        addSpecification(specs, "Độ sáng tối đa", phone.getMaxBrightness());
+        addSpecification(specs, "Mặt kính cảm ứng", phone.getScreenProtection());
+
+        // Pin và sạc
+        addSpecification(specs, "Dung lượng pin", phone.getBatteryCapactity());
+        addSpecification(specs, "Loại pin", phone.getBatteryType());
+        addSpecification(specs, "Hỗ trợ sạc tối đa", phone.getMaxChargingPower());
+        addSpecification(specs, "Công nghệ pin", phone.getBatteryFeatures());
+
+        // Tiện ích
+        addSpecification(specs, "Bảo mật nâng cao", phone.getSecurityFeatures());
+        addSpecification(specs, "Tính năng đặc biệt", phone.getSpecialFeatures());
+        addSpecification(specs, "Kháng nước, bụi", phone.getWaterResistance());
+        addSpecification(specs, "Ghi âm", phone.getRecording());
+        addSpecification(specs, "Xem phim", phone.getVideo());
+        addSpecification(specs, "Nghe nhạc", phone.getAudio());
+
+        // Kết nối
+        addSpecification(specs, "Mạng di động", phone.getMobileNetwork());
+        addSpecification(specs, "SIM", phone.getSimType());
+        addSpecification(specs, "WiFi", phone.getWifi());
+        addSpecification(specs, "GPS", phone.getGps());
+        addSpecification(specs, "Bluetooth", phone.getBluetooth());
+        addSpecification(specs, "Cổng sạc", phone.getChargingPort());
+        addSpecification(specs, "Jack tai nghe", phone.getHeadphoneJack());
+        addSpecification(specs, "Kết nối khác", phone.getOtherConnectivity());
+
+        // Thiết kế và trọng lượng
+        addSpecification(specs, "Kiểu thiết kế", phone.getDesignType());
+        addSpecification(specs, "Chất liệu", phone.getMaterials());
+        addSpecification(specs, "Kích thước, khối lượng", phone.getSizeWeight());
+
+        response.setSpecifications(specs);
+
+        return response;
+    }
+
+    private static void addSpecification(List<Specification> specs, String name, Object value) {
+        if (value != null) {
+            specs.add(Specification.builder()
+                    .name(name)
+                    .value(value)
+                    .build());
+        }
+    }
 }
-
-

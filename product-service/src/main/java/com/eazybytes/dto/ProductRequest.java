@@ -1,6 +1,5 @@
 package com.eazybytes.dto;
 
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductRequest {
-    private String name;
+    private String productName;
     private String description;
 
     private String brand;

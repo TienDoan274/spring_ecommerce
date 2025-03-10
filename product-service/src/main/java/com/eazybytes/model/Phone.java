@@ -1,6 +1,5 @@
 package com.eazybytes.model;
 
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -56,7 +55,7 @@ public class Phone extends Product {
     private String simType; // sim
     private List<String> wifi; // wifi
     private List<String> gps;
-    private String bluetooth;
+    private List<String> bluetooth;
     private String chargingPort;
     private String headphoneJack;
     private List<String> otherConnectivity;

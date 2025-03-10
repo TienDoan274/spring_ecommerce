@@ -12,11 +12,17 @@ public class RouterValidator {
             "/api/auth/register",
             "/api/auth/login",
             "/api/auth/refresh-token",
+
             "/api/products/type/{type}",
             "/api/products/getPhone/{id}",
             "/api/products/getLaptop/{id}",
             "/api/products/searchPhone",
-            "/api/products/searchLaptop"
+            "/api/products/searchLaptop",
+
+            "/api/inventory/product",
+            "/api/inventory/productColorVariants/{productId}",
+
+            "/api/group-variants/groups"
             );
 
     public Predicate<ServerHttpRequest> isSecured =
@@ -25,10 +31,8 @@ public class RouterValidator {
                     .noneMatch(uri -> matchPath(request.getURI().getPath(), uri));
 
     private boolean matchPath(String requestPath, String pattern) {
-        // Kiểm tra nếu pattern chứa biến đường dẫn
         boolean hasPathVariable = pattern.contains("{") && pattern.contains("}");
 
-        // Nếu là endpoint cố định (không có biến đường dẫn)
         if (!hasPathVariable) {
             return requestPath.equals(pattern);
         }
@@ -42,11 +46,9 @@ public class RouterValidator {
         }
 
         for (int i = 0; i < patternParts.length; i++) {
-            // Nếu là biến đường dẫn, chấp nhận bất kỳ giá trị nào
             if (patternParts[i].startsWith("{") && patternParts[i].endsWith("}")) {
                 continue;
             }
-            // Nếu không phải biến đường dẫn và không khớp
             if (!patternParts[i].equals(requestParts[i])) {
                 return false;
             }

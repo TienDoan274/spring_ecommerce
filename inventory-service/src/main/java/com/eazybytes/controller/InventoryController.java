@@ -10,7 +10,9 @@ import com.eazybytes.repository.ProductInventoryRepository;
 import com.eazybytes.service.InventoryService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.PathParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,16 +22,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/inventory")
 @RequiredArgsConstructor
+@Slf4j
 public class InventoryController {
 
     private final InventoryService inventoryService;
     private final ProductInventoryRepository productInventoryRepository;
     private final GroupVariantsRepository groupVariantsRepository;
+
+    @GetMapping("/productColorVariants/{productId}")
+    public ResponseEntity<List<InventoryDto>> getProductColorVariants(@PathVariable String productId) {
+        List<InventoryDto> variants = inventoryService.findAllColorVariantsByProductId(productId);
+
+        if (variants.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(variants);
+    }
 
     @GetMapping("/product")
     public ResponseEntity<InventoryDto> getProductInventory(
@@ -52,18 +67,30 @@ public class InventoryController {
     @PostMapping
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     public ResponseEntity<InventoryDto> createInventory(@Valid @RequestBody InventoryDto request) {
-        ProductInventory createdInventory = inventoryService.createProductInventory(request);
+        try {
+            ProductInventory createdInventory = inventoryService.createProductInventory(request);
 
-        InventoryDto inventoryDto = InventoryDto.builder()
-                .productId(createdInventory.getProductId())
-                .name(createdInventory.getName())
-                .color(createdInventory.getColor())
-                .quantity(createdInventory.getQuantity())
-                .originalPrice(createdInventory.getOriginalPrice())
-                .currentPrice(createdInventory.getCurrentPrice())
-                .build();
+            InventoryDto inventoryDto = InventoryDto.builder()
+                    .productId(createdInventory.getProductId())
+                    .variant(createdInventory.getVariant())
+                    .productName(createdInventory.getProductName())
+                    .color(createdInventory.getColor())
+                    .quantity(createdInventory.getQuantity())
+                    .originalPrice(createdInventory.getOriginalPrice())
+                    .currentPrice(createdInventory.getCurrentPrice())
+                    .build();
 
-        return new ResponseEntity<>(inventoryDto, HttpStatus.CREATED);
+            return new ResponseEntity<>(inventoryDto, HttpStatus.CREATED);
+        } catch (InventoryAlreadyExistsException e) {
+            log.error("Inventory already exists: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new InventoryDto()); // Or return a more descriptive error DTO
+        } catch (Exception e) {
+            log.error("Error creating inventory: {}", e.getMessage(), e);
+            log.debug("Request data: {}", request);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new InventoryDto()); // Or return a more descriptive error DTO
+        }
     }
 
     @PutMapping("/product")
@@ -76,7 +103,7 @@ public class InventoryController {
                 .inventoryId(updatedInventory.getInventoryId())
                 .productId(updatedInventory.getProductId())
                 .color(updatedInventory.getColor())
-                .name(updatedInventory.getName())
+                .variant(updatedInventory.getVariant())
                 .quantity(updatedInventory.getQuantity())
                 .originalPrice(updatedInventory.getOriginalPrice())
                 .currentPrice(updatedInventory.getCurrentPrice())
@@ -127,6 +154,7 @@ public class InventoryController {
         return ResponseEntity.ok(inventoryDto);
     }
 
+
     @DeleteMapping("/delete/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
@@ -135,4 +163,12 @@ public class InventoryController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("@roleChecker.hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteProductInventory(@PathParam("productId") String productId, @PathParam("color") String color)
+    {
+        inventoryService.deleteProductInventory(productId,color);
+        return ResponseEntity.noContent().build();
+    }
 }
