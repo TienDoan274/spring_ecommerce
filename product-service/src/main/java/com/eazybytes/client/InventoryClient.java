@@ -31,5 +31,5 @@ public interface InventoryClient {
     ResponseEntity<Void> deleteInventoriesByProductId(@PathVariable("productId") String productId);
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteProductInventory(@PathParam("productId") String productId, @PathParam("color") String color);
+    ResponseEntity<Void> deleteProductInventory(@RequestParam("productId") String productId, @RequestParam("color") String color);
 }

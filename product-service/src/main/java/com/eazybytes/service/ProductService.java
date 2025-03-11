@@ -110,7 +110,6 @@ public class ProductService {
             inventoryDto.setCurrentPrice(inventoryRequest.getCurrentPrice());
             inventoryDto.setOriginalPrice(inventoryRequest.getOriginalPrice());
             inventoryDto.setQuantity(inventoryRequest.getQuantity());
-            inventoryDto.setVariant(inventoryRequest.getVariant());
 
             inventoryDto.setColor(inventoryRequest.getColor());
 
@@ -189,7 +188,6 @@ public class ProductService {
             inventoryDto.setCurrentPrice(inventoryRequest.getCurrentPrice());
             inventoryDto.setOriginalPrice(inventoryRequest.getOriginalPrice());
             inventoryDto.setQuantity(inventoryRequest.getQuantity());
-            inventoryDto.setVariant(inventoryRequest.getVariant());
 
             inventoryDto.setColor(inventoryRequest.getColor());
 

@@ -11,5 +11,4 @@ public class LaptopWithInventoryRequest {
     private LaptopRequest laptopRequest;
     private List<InventoryRequest> inventoryRequests;
 
-    // getters and setters
 }

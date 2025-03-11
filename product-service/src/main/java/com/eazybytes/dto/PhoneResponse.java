@@ -20,7 +20,6 @@ public class PhoneResponse extends ProductResponse {
     private List<Specification> specifications = new ArrayList<>();
     private List<String> colors = new ArrayList<>();
     private List<Integer> quantities = new ArrayList<>();
-    private List<String> variants = new ArrayList<>();
     private List<String> productNames = new ArrayList<>();
     @Data
     @AllArgsConstructor
@@ -48,21 +47,18 @@ public class PhoneResponse extends ProductResponse {
         List<String> originalPrices = new ArrayList<>();
         List<String> currentPrices = new ArrayList<>();
         List<Integer> quantities = new ArrayList<>();
-        List<String> variants = new ArrayList<>();
         List<String> productNames = new ArrayList<>();
 
         for (InventoryDto inventoryDto : inventoryDtos) {
             originalPrices.add(inventoryDto.getOriginalPrice());
             currentPrices.add(inventoryDto.getCurrentPrice());
             quantities.add(inventoryDto.getQuantity());
-            variants.add(inventoryDto.getVariant());
             productNames.add(inventoryDto.getProductName());
         }
 
         response.setOriginal_prices(originalPrices);
         response.setCurrent_prices(currentPrices);
         response.setQuantities(quantities);
-        response.setVariants(variants);
         response.setProductNames(productNames);
         List<Specification> specs = new ArrayList<>();
 

@@ -9,37 +9,41 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "product_inventory")
+@Table(name = "group_product_junction")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductInventory {
+public class GroupProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "inventory_id")
-    private Integer inventoryId;
+    @Column(name = "group_product_id")
+    private Integer groupProductId;
+
+    @Column(name = "group_id")
+    private Integer groupId;
 
     @Column(name = "product_id", nullable = false)
     private String productId;
 
-    @Column(name = "product_name", nullable = true)
+    @Column(name = "order_number", nullable = true)
+    private Integer orderNumber;
+
+    @Column(name = "variant", nullable = true)
+    private String variant;
+
+    @Column(name = "productName", nullable = true)
     private String productName;
 
-    @Column(name = "color", nullable = true)
-    private String color;
+    @Column(name = "default_original_price",nullable = true)
+    private String defaultOriginalPrice;
 
-    @Column(name = "quantity", nullable = true)
-    private Integer quantity;
-
-    @Column(name = "original_price", nullable = true)
-    private String originalPrice;
-
-    @Column(name = "current_price", nullable = true)
-    private String currentPrice;
+    @Column(name = "default_current_price",nullable = true)
+    private String defaultCurrentPrice;
 
     @CreationTimestamp
     @Column(name = "created_at")

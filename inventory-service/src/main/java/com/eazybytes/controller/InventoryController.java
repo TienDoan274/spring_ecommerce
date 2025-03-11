@@ -1,29 +1,21 @@
 package com.eazybytes.controller;
 
-import com.eazybytes.dto.GroupVariantsDto;
 import com.eazybytes.dto.InventoryDto;
+import com.eazybytes.dto.VariantDto;
 import com.eazybytes.exception.InventoryAlreadyExistsException;
-import com.eazybytes.model.GroupVariants;
 import com.eazybytes.model.ProductInventory;
-import com.eazybytes.repository.GroupVariantsRepository;
-import com.eazybytes.repository.ProductInventoryRepository;
+import com.eazybytes.service.GroupService;
 import com.eazybytes.service.InventoryService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/inventory")
@@ -32,8 +24,7 @@ import java.util.Optional;
 public class InventoryController {
 
     private final InventoryService inventoryService;
-    private final ProductInventoryRepository productInventoryRepository;
-    private final GroupVariantsRepository groupVariantsRepository;
+    private final GroupService groupService;
 
     @GetMapping("/productColorVariants/{productId}")
     public ResponseEntity<List<InventoryDto>> getProductColorVariants(@PathVariable String productId) {
@@ -44,6 +35,18 @@ public class InventoryController {
         }
 
         return ResponseEntity.ok(variants);
+    }
+
+    @GetMapping("/related/{productId}")
+    public ResponseEntity<List<VariantDto>> getRelatedProducts(@PathVariable String productId) {
+        log.debug("Received request for related products with productId: {}", productId);
+
+        List<VariantDto> relatedProductIds = groupService.findAllProductsInSameGroup(productId);
+
+        log.debug("Found {} related products for productId: {}", relatedProductIds.size(), productId);
+        log.debug("Related product IDs: {}", relatedProductIds);
+
+        return ResponseEntity.ok(relatedProductIds);
     }
 
     @GetMapping("/product")
@@ -67,27 +70,35 @@ public class InventoryController {
     @PostMapping
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     public ResponseEntity<InventoryDto> createInventory(@Valid @RequestBody InventoryDto request) {
+        log.debug("Received request to create inventory: {}", request);
         try {
+            log.debug("Checking if user has ADMIN role");
+            // Bạn có thể thêm đoạn code kiểm tra role ở đây để debug
+
+            log.debug("Calling service to create product inventory");
             ProductInventory createdInventory = inventoryService.createProductInventory(request);
+            log.debug("Successfully created inventory with ID: {}", createdInventory.getInventoryId());
 
             InventoryDto inventoryDto = InventoryDto.builder()
                     .productId(createdInventory.getProductId())
-                    .variant(createdInventory.getVariant())
                     .productName(createdInventory.getProductName())
                     .color(createdInventory.getColor())
                     .quantity(createdInventory.getQuantity())
                     .originalPrice(createdInventory.getOriginalPrice())
                     .currentPrice(createdInventory.getCurrentPrice())
                     .build();
+            log.debug("Returning created inventory DTO: {}", inventoryDto);
 
             return new ResponseEntity<>(inventoryDto, HttpStatus.CREATED);
         } catch (InventoryAlreadyExistsException e) {
             log.error("Inventory already exists: {}", e.getMessage());
+            log.debug("Request data that caused conflict: {}", request);
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new InventoryDto()); // Or return a more descriptive error DTO
         } catch (Exception e) {
             log.error("Error creating inventory: {}", e.getMessage(), e);
-            log.debug("Request data: {}", request);
+            log.debug("Request data that caused error: {}", request);
+            log.debug("Stack trace: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new InventoryDto()); // Or return a more descriptive error DTO
         }
@@ -103,7 +114,6 @@ public class InventoryController {
                 .inventoryId(updatedInventory.getInventoryId())
                 .productId(updatedInventory.getProductId())
                 .color(updatedInventory.getColor())
-                .variant(updatedInventory.getVariant())
                 .quantity(updatedInventory.getQuantity())
                 .originalPrice(updatedInventory.getOriginalPrice())
                 .currentPrice(updatedInventory.getCurrentPrice())
@@ -166,7 +176,7 @@ public class InventoryController {
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteProductInventory(@PathParam("productId") String productId, @PathParam("color") String color)
+    public ResponseEntity<Void> deleteProductInventory(@RequestParam("productId") String productId, @RequestParam("color") String color)
     {
         inventoryService.deleteProductInventory(productId,color);
         return ResponseEntity.noContent().build();

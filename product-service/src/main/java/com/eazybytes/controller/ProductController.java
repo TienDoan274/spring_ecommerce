@@ -22,20 +22,6 @@ public class ProductController {
     private final ProductService productService;
     private final InventoryClient inventoryClient;
 
-//    @GetMapping("/type/{type}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public List<?> getProductsByType(@PathVariable String type) {
-//        if ("laptop".equals(type))
-//            return productService.ge();
-//        else if("phone".equals(type))
-//            return productService.getAllPhones();
-//        else{
-//            throw new ResponseStatusException(
-//                    HttpStatus.BAD_REQUEST, "Invalid product type: " + type + ". Supported types are 'laptop' and 'phone'."
-//            );
-//        }
-//    }
-
     @GetMapping("/getPhone/{id}")
     @ResponseStatus(HttpStatus.OK)
     public PhoneResponse getPhone(@PathVariable String id) {
@@ -48,24 +34,10 @@ public class ProductController {
         return productService.getLaptopById(id);
     }
 
-
-//    @GetMapping("/searchPhones")
-//    @ResponseStatus(HttpStatus.OK)
-//    public List<PhoneResponse> searchPhones(@RequestParam String name) {
-//        return productService.getPhonesByNames(name);
-//    }
-//
-//    @GetMapping("/searchLaptops")
-//    @ResponseStatus(HttpStatus.OK)
-//    public List<LaptopResponse> searchLaptops(@RequestParam String name) {
-//        return productService.getLaptopsByNames(name);
-//    }
-
     @PostMapping("/createPhone")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public PhoneResponse createPhone(@RequestBody @Valid PhoneWithInventoryRequest phoneWithInventoryRequest) {
-        // Tạo phone trước
         PhoneResponse phoneResponse = productService.createPhone(phoneWithInventoryRequest);
         String phoneId = phoneResponse.getProductId();
 
@@ -76,6 +48,7 @@ public class ProductController {
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public LaptopResponse createLaptop(@RequestBody @Valid LaptopWithInventoryRequest laptopWithInventoryRequest) {
+        log.debug("{}",laptopWithInventoryRequest);
         LaptopResponse laptopResponse = productService.createLaptop(laptopWithInventoryRequest);
         String laptopId = laptopResponse.getProductId();
 

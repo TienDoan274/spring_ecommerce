@@ -6,8 +6,8 @@ import com.eazybytes.exception.InventoryNotFoundException;
 import com.eazybytes.model.ProductInventory;
 import com.eazybytes.repository.ProductInventoryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class InventoryService {
 
@@ -38,30 +39,41 @@ public class InventoryService {
         return inventoryOptional.get();
     }
 
-
     @Transactional
     public ProductInventory createProductInventory(InventoryDto request) {
+        log.debug("Creating product inventory for product ID: {} and color: {}",
+                request.getProductId(), request.getColor());
+
+        log.debug("Checking if inventory already exists");
         Optional<ProductInventory> existingInventory = productInventoryRepository
                 .findByProductIdAndColor(request.getProductId(), request.getColor());
 
+        log.debug("Existing inventory found: {}", existingInventory.isPresent());
+
         ProductInventory inventory;
         if (existingInventory.isPresent()) {
+            log.debug("Inventory already exists: {}", existingInventory.get());
             throw new InventoryAlreadyExistsException(
                     "Tồn kho đã tồn tại cho sản phẩm với ID: " + request.getProductId() +
                             " và màu: " + request.getColor());
         } else {
+            log.debug("Creating new inventory object");
             inventory = new ProductInventory();
             inventory.setProductId(request.getProductId());
             inventory.setColor(request.getColor());
-
         }
-        inventory.setVariant(request.getVariant());
+
+        log.debug("Setting inventory properties");
         inventory.setProductName(request.getProductName());
         inventory.setQuantity(request.getQuantity());
         inventory.setOriginalPrice(request.getOriginalPrice());
         inventory.setCurrentPrice(request.getCurrentPrice());
 
-        return productInventoryRepository.save(inventory);
+        log.debug("Saving inventory to database");
+        ProductInventory savedInventory = productInventoryRepository.save(inventory);
+        log.debug("Inventory saved successfully with ID: {}", savedInventory.getInventoryId());
+
+        return savedInventory;
     }
 
 
@@ -79,7 +91,6 @@ public class InventoryService {
             inventory.setProductId(request.getProductId());
             inventory.setColor(request.getColor());
         }
-        inventory.setVariant(request.getVariant());
         inventory.setProductName(request.getProductName());
         inventory.setQuantity(request.getQuantity());
         inventory.setOriginalPrice(request.getOriginalPrice());
@@ -143,7 +154,6 @@ public class InventoryService {
         return InventoryDto.builder()
                 .inventoryId(inventory.getInventoryId())
                 .productId(inventory.getProductId())
-                .variant(inventory.getVariant())
                 .productName(inventory.getProductName())
                 .color(inventory.getColor())
                 .quantity(inventory.getQuantity())

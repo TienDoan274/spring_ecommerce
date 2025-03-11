@@ -25,18 +25,18 @@ public class LaptopRequest extends ProductRequest{
     private String ramType;
     private String ramBusSpeed;
     private String maxRam;
-    private String storage;
+    private List<String> storage;
 
     //Màn hình
     private String screenSize;
     private String resolution;
     private String refreshRate;// tần số quét
-    private String colorGamut; // độ phủ màu
+    private List<String> colorGamut; // độ phủ màu
     private List<String> displayTechnology; // công nghệ màn hình
 
     //Đồ họa và âm thanh
     private String graphicCard; // card màn hình
-    private String audioTechnology; // công nghệ âm thanh
+    private List<String> audioTechnology; // công nghệ âm thanh
     private List<String> ports; // cổng giao tiếp
     private List<String> wirelessConnectivity; // kết nối không dây
     private String webcam;

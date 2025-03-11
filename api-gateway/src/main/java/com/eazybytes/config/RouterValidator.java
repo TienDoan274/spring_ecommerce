@@ -21,7 +21,7 @@ public class RouterValidator {
 
             "/api/inventory/product",
             "/api/inventory/productColorVariants/{productId}",
-
+            "/api/inventory/related/{productId}",
             "/api/group-variants/groups"
             );
 

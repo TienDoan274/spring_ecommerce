@@ -14,14 +14,10 @@ import lombok.NoArgsConstructor;
 @Builder
 
 public class InventoryDto {
-    private Long inventoryId;
-
-    private Long groupId;
+    private Integer inventoryId;
 
     @NotBlank(message = "Product ID cannot be blank")
     private String productId;
-
-    private String variant;
 
     private String productName;
 

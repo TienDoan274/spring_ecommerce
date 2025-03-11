@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class GroupWithProductsDto {
     private List<GroupProductDto> products;
-    private GroupVariantsDto groupVariantsDto;
+    private GroupDto groupDto;
 }

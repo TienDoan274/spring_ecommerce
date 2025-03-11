@@ -1,17 +1,20 @@
 package com.eazybytes.dto;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class GroupVariantsDto {
-    private Long groupId;
-    private Integer priorityNumber;
+public class GroupDto {
+    private Integer groupId;
+    private Integer orderNumber;
     private String image;
+    private String type;
+
 }
