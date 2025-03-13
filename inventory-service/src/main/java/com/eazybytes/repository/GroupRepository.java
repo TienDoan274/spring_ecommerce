@@ -13,6 +13,8 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     Page<Group> findAllByType(String type, Pageable pageable);
 
+    long countByType(String type);
+
     @Query("SELECT MAX(g.orderNumber) FROM Group g WHERE g.type = :type")
     Integer findMaxOrderNumberByType(@Param("type") String type);
 }

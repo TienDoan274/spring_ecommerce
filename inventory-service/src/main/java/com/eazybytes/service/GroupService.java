@@ -95,6 +95,15 @@ public class GroupService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public long countGroupsByType(String type) {
+        if (type != null && !type.isEmpty()) {
+            return groupRepository.countByType(type);
+        } else {
+            return groupRepository.count();
+        }
+    }
+
     public List<VariantDto> findAllProductsInSameGroup(String productId) {
         log.debug("Finding all products in same group (including current) for productId: {}", productId);
 
@@ -169,7 +178,7 @@ public class GroupService {
                     .productId(productId)
                     .variant(variants.get(i))
                     .productName(productNames.get(i))
-                    .defaultCurrentPrice(defaultCurrentPrices.get(i))
+                    .defaultOriginalPrice(defaultOriginalPrices.get(i))
                     .defaultCurrentPrice(defaultCurrentPrices.get(i))
                     .orderNumber(i + 1) // Xác định thứ tự dựa vào vị trí trong danh sách
                     .build();

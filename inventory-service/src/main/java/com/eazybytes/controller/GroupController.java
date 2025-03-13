@@ -39,7 +39,19 @@ public class GroupController {
             @RequestParam(required = true) String type) {
         try {
             PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "orderNumber"));
-            List<GroupWithProductsDto> response = groupService.getAllProductsByGroup(pageRequest, type);
+            List<GroupWithProductsDto> content = groupService.getAllProductsByGroup(pageRequest, type);
+
+            // Lấy thông tin tổng số phần tử
+            long totalElements = groupService.countGroupsByType(type);
+            int totalPages = (int) Math.ceil((double) totalElements / size);
+
+            // Tạo đối tượng phản hồi với dữ liệu phân trang
+            Map<String, Object> response = new HashMap<>();
+            response.put("content", content);
+            response.put("totalPages", totalPages);
+            response.put("totalElements", totalElements);
+            response.put("currentPage", page);
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
