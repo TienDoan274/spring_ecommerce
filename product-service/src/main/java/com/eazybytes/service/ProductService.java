@@ -2,28 +2,22 @@ package com.eazybytes.service;
 
 import com.eazybytes.client.InventoryClient;
 import com.eazybytes.dto.*;
-import com.eazybytes.exception.DuplicateProductNameException;
-import com.eazybytes.model.Product;
 import com.eazybytes.model.Phone;
 import com.eazybytes.model.Laptop;
 import com.eazybytes.repository.LaptopRepository;
 import com.eazybytes.repository.PhoneRepository;
-import com.eazybytes.repository.ProductRepository;
 import com.eazybytes.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ProductService {
-    private final ProductRepository productRepository;
     private final PhoneRepository phoneRepository;
     private final LaptopRepository laptopRepository;
     private final InventoryClient inventoryClient;

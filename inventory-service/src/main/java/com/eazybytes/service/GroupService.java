@@ -9,6 +9,7 @@ import com.eazybytes.repository.GroupRepository;
 import com.eazybytes.repository.ProductInventoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,47 @@ public class GroupService {
     @Autowired
     private GroupProductRepository groupProductRepository;
 
+    private int calculateSimilarity(String productName, String query) {
+        // Sử dụng Levenshtein distance để đo độ tương đồng
+        return StringUtils.getLevenshteinDistance(
+                productName.toLowerCase(),
+                query.toLowerCase()
+        );
+    }
+
+    private String normalizeSearchQuery(String query) {
+        // Loại bỏ ký tự đặc biệt
+        query = query.replaceAll("[^a-zA-Z0-9\\s]", "");
+
+        // Loại bỏ khoảng trắng thừa
+        query = query.trim().replaceAll("\\s+", " ");
+
+        return query;
+    }
+
+    public List<GroupProductDto> searchProducts(String query) {
+
+        String processedQuery = normalizeSearchQuery(query);
+
+        List<GroupProduct> products = groupProductRepository
+                .findUniqueProductsByNameGrouped(processedQuery);
+
+        return products.stream()
+                .map(this::convertToSearchDTO)
+                .sorted(Comparator.comparingInt(dto ->
+                        calculateSimilarity(dto.getProductName(), processedQuery)
+                ))
+                .collect(Collectors.toList());
+    }
+
+    private GroupProductDto convertToSearchDTO(GroupProduct product) {
+        GroupProductDto dto = new GroupProductDto();
+        dto.setProductId(product.getProductId());
+        dto.setProductName(product.getProductName());
+        dto.setDefaultOriginalPrice(product.getDefaultOriginalPrice());
+        dto.setDefaultCurrentPrice(product.getDefaultCurrentPrice());
+        return dto;
+    }
     @Transactional(readOnly = true)
     public List<GroupWithProductsDto> getAllProductsByGroup(Pageable pageable, String type) {
         try {

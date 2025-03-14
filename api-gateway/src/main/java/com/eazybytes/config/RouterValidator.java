@@ -16,13 +16,13 @@ public class RouterValidator {
             "/api/products/type/{type}",
             "/api/products/getPhone/{id}",
             "/api/products/getLaptop/{id}",
-            "/api/products/searchPhone",
-            "/api/products/searchLaptop",
+            "/api/products/search",
 
             "/api/inventory/product",
             "/api/inventory/productColorVariants/{productId}",
             "/api/inventory/related/{productId}",
-            "/api/group-variants/groups"
+            "/api/group-variants/groups",
+            "/api/group-variants/search"
             );
 
     public Predicate<ServerHttpRequest> isSecured =

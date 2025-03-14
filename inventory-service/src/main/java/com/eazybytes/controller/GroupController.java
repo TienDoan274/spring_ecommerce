@@ -32,6 +32,14 @@ public class GroupController {
     @Autowired
     private GroupRepository groupRepository;
 
+    @GetMapping("/search")
+    public ResponseEntity<List<GroupProductDto>> searchProducts(
+            @RequestParam("query") String query
+    ) {
+        List<GroupProductDto> results = groupService.searchProducts(query);
+        return ResponseEntity.ok(results);
+    }
+
     @GetMapping("/groups")
     public ResponseEntity<?> getAllProductsByGroup(
             @RequestParam(defaultValue = "0") int page,
@@ -75,7 +83,7 @@ public class GroupController {
 
         List<String> productNames = (List<String>) request.get("productNames");
 
-        List<String> defaultOriginalPrices = (List<String>) request.get("defaultOriginalPrivates");
+        List<String> defaultOriginalPrices = (List<String>) request.get("defaultOriginalPrices");
 
         List<String> defaultCurrentPrices = (List<String>) request.get("defaultCurrentPrices");
         Integer orderNumber = request.get("orderNumber") != null ?

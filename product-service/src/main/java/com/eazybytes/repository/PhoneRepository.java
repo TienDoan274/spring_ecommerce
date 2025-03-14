@@ -10,7 +10,6 @@ import java.util.Optional;
 @Repository
 public interface PhoneRepository extends MongoRepository<Phone, String> {
     List<Phone> findByType(String type);
-    List<Phone> findByProductNameContainingIgnoreCase(String productName);
     List<Phone> findByBrand(String brand);
     boolean existsByProductName(String name);
 
