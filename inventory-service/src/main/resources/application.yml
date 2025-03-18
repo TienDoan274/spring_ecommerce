@@ -8,8 +8,8 @@ spring:
     import: "optional:configserver:http://localhost:8888"
   datasource:
     url: jdbc:mysql://localhost:3307/ecommerce_inventory?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
-    username: root
-    password: root
+    username: tiendoan
+    password: tiendoan
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-timeout: 20000
