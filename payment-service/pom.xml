@@ -12,10 +12,10 @@
     </parent>
 
     <groupId>com.eazybytes</groupId>
-    <artifactId>user-service</artifactId>
+    <artifactId>payment-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>user-service</name>
-    <description>User Service for EazyBytes E-commerce</description>
+    <name>payment-service</name>
+    <description>Payment Service for EazyBytes E-commerce</description>
 
     <properties>
         <java.version>17</java.version>
