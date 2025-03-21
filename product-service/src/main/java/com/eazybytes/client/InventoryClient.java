@@ -25,7 +25,7 @@ public interface InventoryClient {
     ResponseEntity<InventoryDto> createInventory(@Valid @RequestBody InventoryDto request);
 
     @PutMapping("/api/inventory/product")
-    ResponseEntity<InventoryDto> updateProductInventory(@Valid @RequestBody InventoryDto request);
+    ResponseEntity<InventoryDto> updateInventory(@RequestParam("inventoryId") Integer inventoryId, @Valid @RequestBody InventoryDto request);
 
     @DeleteMapping("/api/inventory/delete/{productId}")
     ResponseEntity<Void> deleteInventoriesByProductId(@PathVariable("productId") String productId);
