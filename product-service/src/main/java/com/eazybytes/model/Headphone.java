@@ -28,7 +28,6 @@ public class Headphone extends BaseProduct{
 
     private String brandOrigin;
     private String manufactured;
-    private String brand;
 
     public Headphone(){
         setType("HEADPHONE");
