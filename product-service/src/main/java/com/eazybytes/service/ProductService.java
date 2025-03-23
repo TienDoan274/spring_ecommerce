@@ -462,6 +462,138 @@ public class ProductService {
         cableChargerHub.setLength(request.getLength());
         cableChargerHub.setConnectionJack(request.getConnectionJack());
     }
+    // WirelessEarphone methods
+    private WirelessEarphone createWirelessEarphoneFromRequest(WirelessEarphoneRequest request) {
+        WirelessEarphone wirelessEarphone = new WirelessEarphone();
 
+        // Thiết lập các trường cơ bản
+        setBaseProductFields(wirelessEarphone, request);
 
+        // Thiết lập các trường riêng của WirelessEarphone
+        wirelessEarphone.setBatteryLife(request.getBatteryLife());
+        wirelessEarphone.setChargingCaseBatteryLife(request.getChargingCaseBatteryLife());
+        wirelessEarphone.setChargingPort(request.getChargingPort());
+        wirelessEarphone.setAudioTechnology(request.getAudioTechnology());
+        wirelessEarphone.setCompatibility(request.getCompatibility());
+        wirelessEarphone.setConnectionApp(request.getConnectionApp());
+        wirelessEarphone.setFeatures(request.getFeatures());
+        wirelessEarphone.setSimultaneousConnections(request.getSimultaneousConnections());
+        wirelessEarphone.setConnectionTechnology(request.getConnectionTechnology());
+        wirelessEarphone.setControlType(request.getControlType());
+        wirelessEarphone.setControlButtons(request.getControlButtons());
+        wirelessEarphone.setSize(request.getSize());
+        wirelessEarphone.setBrandOrigin(request.getBrandOrigin());
+        wirelessEarphone.setManufactured(request.getManufactured());
+
+        return wirelessEarphone;
+    }
+
+    private void updateWirelessEarphoneFields(WirelessEarphone wirelessEarphone, WirelessEarphoneRequest request) {
+        // Update base fields
+        updateBaseProductFields(wirelessEarphone, request);
+
+        // Update WirelessEarphone specific fields
+        wirelessEarphone.setBatteryLife(request.getBatteryLife());
+        wirelessEarphone.setChargingCaseBatteryLife(request.getChargingCaseBatteryLife());
+        wirelessEarphone.setChargingPort(request.getChargingPort());
+        wirelessEarphone.setAudioTechnology(request.getAudioTechnology());
+        wirelessEarphone.setCompatibility(request.getCompatibility());
+        wirelessEarphone.setConnectionApp(request.getConnectionApp());
+        wirelessEarphone.setFeatures(request.getFeatures());
+        wirelessEarphone.setSimultaneousConnections(request.getSimultaneousConnections());
+        wirelessEarphone.setConnectionTechnology(request.getConnectionTechnology());
+        wirelessEarphone.setControlType(request.getControlType());
+        wirelessEarphone.setControlButtons(request.getControlButtons());
+        wirelessEarphone.setSize(request.getSize());
+        wirelessEarphone.setBrandOrigin(request.getBrandOrigin());
+        wirelessEarphone.setManufactured(request.getManufactured());
+        wirelessEarphone.setWeight(request.getWeight());
+    }
+
+    // WiredEarphone methods
+
+    private WiredEarphone createWiredEarphoneFromRequest(WiredEarphoneRequest request) {
+        WiredEarphone wiredEarphone = new WiredEarphone();
+
+        // Thiết lập các trường cơ bản
+        setBaseProductFields(wiredEarphone, request);
+
+        // Thiết lập các trường riêng của WiredEarphone
+        wiredEarphone.setCompatibility(request.getCompatibility());
+        wiredEarphone.setAudioJack(request.getAudioJack());
+        wiredEarphone.setFeatures(request.getFeatures());
+        wiredEarphone.setSimultaneousConnections(request.getSimultaneousConnections());
+        wiredEarphone.setCableLength(request.getCableLength());
+        wiredEarphone.setControlType(request.getControlType());
+        wiredEarphone.setControlButtons(request.getControlButtons());
+        wiredEarphone.setWeight(request.getWeight());
+        wiredEarphone.setBrandOrigin(request.getBrandOrigin());
+        wiredEarphone.setManufactured(request.getManufactured());
+
+        return wiredEarphone;
+    }
+
+    private void updateWiredEarphoneFields(WiredEarphone wiredEarphone, WiredEarphoneRequest request) {
+        // Update base fields
+        updateBaseProductFields(wiredEarphone, request);
+
+        // Update WiredEarphone specific fields
+        wiredEarphone.setCompatibility(request.getCompatibility());
+        wiredEarphone.setAudioJack(request.getAudioJack());
+        wiredEarphone.setFeatures(request.getFeatures());
+        wiredEarphone.setSimultaneousConnections(request.getSimultaneousConnections());
+        wiredEarphone.setCableLength(request.getCableLength());
+        wiredEarphone.setControlType(request.getControlType());
+        wiredEarphone.setControlButtons(request.getControlButtons());
+        wiredEarphone.setWeight(request.getWeight());
+        wiredEarphone.setBrandOrigin(request.getBrandOrigin());
+        wiredEarphone.setManufactured(request.getManufactured());
+    }
+
+    // Headphone methods
+    private Headphone createHeadphoneFromRequest(HeadphoneRequest request) {
+        Headphone headphone = new Headphone();
+
+        // Thiết lập các trường cơ bản
+        setBaseProductFields(headphone, request);
+
+        // Thiết lập các trường riêng của Headphone
+        headphone.setBatteryLife(request.getBatteryLife());
+        headphone.setChargingPort(request.getChargingPort());
+        headphone.setChargingPort(request.getChargingPort());
+        headphone.setAudioJack(request.getAudioJack()   );
+        headphone.setCompatibility(request.getCompatibility());
+        headphone.setWeight(request.getWeight());
+        headphone.setFeatures(request.getFeatures());
+        headphone.setSimultaneousConnections(request.getSimultaneousConnections());
+        headphone.setConnectionTechnology(request.getConnectionTechnology());
+        headphone.setControlType(request.getControlType());
+        headphone.setControlButtons(request.getControlButtons());
+        headphone.setSize(request.getSize());
+        headphone.setBrandOrigin(request.getBrandOrigin());
+        headphone.setManufactured(request.getManufactured());
+
+        return headphone;
+    }
+
+    private void updateHeadphoneFields(Headphone headphone, HeadphoneRequest request) {
+        // Update base fields
+        updateBaseProductFields(headphone, request);
+
+        // Update Headphone specific fields
+        headphone.setBatteryLife(request.getBatteryLife());
+        headphone.setChargingPort(request.getChargingPort());
+        headphone.setChargingPort(request.getChargingPort());
+        headphone.setAudioJack(request.getAudioJack()   );
+        headphone.setCompatibility(request.getCompatibility());
+        headphone.setWeight(request.getWeight());
+        headphone.setFeatures(request.getFeatures());
+        headphone.setSimultaneousConnections(request.getSimultaneousConnections());
+        headphone.setConnectionTechnology(request.getConnectionTechnology());
+        headphone.setControlType(request.getControlType());
+        headphone.setControlButtons(request.getControlButtons());
+        headphone.setSize(request.getSize());
+        headphone.setBrandOrigin(request.getBrandOrigin());
+        headphone.setManufactured(request.getManufactured());
+    }
 }

@@ -35,7 +35,7 @@ public abstract class BaseProduct {
     private List<String> promotions; // chương trình khuyến mãi
 
     private String release;
-
+    private String subType;
     private String type;
 
 }
