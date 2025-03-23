@@ -23,8 +23,8 @@ public class WiredEarphoneResponse extends ProductResponse{
     private List<Integer> quantities = new ArrayList<>();
     private List<String> productNames = new ArrayList<>();
 
-    public static PhoneResponse fromPhone(WiredEarphone wiredEarphone, List<InventoryDto> inventoryDtos) {
-        PhoneResponse response = new PhoneResponse();
+    public static WiredEarphoneResponse fromWiredEarphone(WiredEarphone wiredEarphone, List<InventoryDto> inventoryDtos) {
+        WiredEarphoneResponse response = new WiredEarphoneResponse();
 
         // Thiết lập các trường cơ bản
         response.setProductId(wiredEarphone.getProductId());

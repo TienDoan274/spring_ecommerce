@@ -29,6 +29,9 @@ public class ProductService {
     private static final String WIRELESS_EARPHONE_TYPE = "WIRELESS_EARPHONE";
     private static final String WIRED_EARPHONE_TYPE = "WIRED_EARPHONE";
     private static final String HEADPHONE_TYPE = "HEADPHONE";
+    private static final String WIRELESS_EARPHONE_TYPE = "WIRELESS_EARPHONE";
+    private static final String WIRED_EARPHONE_TYPE = "WIRED_EARPHONE";
+    private static final String HEADPHONE_TYPE = "HEADPHONE";
 
     public ProductResponse getProductById(String type, String id) {
         BaseProduct product = findProductById(id);
@@ -50,6 +53,10 @@ public class ProductService {
         if (request instanceof LaptopRequest) return LAPTOP_TYPE;
         if (request instanceof BackupChargerRequest) return BACKUP_CHARGER_TYPE;
         if (request instanceof CableChargerHubRequest) return CABLE_CHARGER_HUB_TYPE;
+        if (request instanceof WirelessEarphoneRequest) return WIRELESS_EARPHONE_TYPE;
+        if (request instanceof WiredEarphoneRequest) return WIRED_EARPHONE_TYPE;
+        if (request instanceof HeadphoneRequest) return HEADPHONE_TYPE;
+
         throw new IllegalArgumentException("Unknown product request type");
     }
 
@@ -67,6 +74,12 @@ public class ProductService {
             product = createBackupChargerFromRequest((BackupChargerRequest) productRequest);
         } else if (productRequest instanceof CableChargerHubRequest) {
             product = createCableChargerHubFromRequest((CableChargerHubRequest) productRequest);
+        } else if (productRequest instanceof WirelessEarphoneRequest) {
+            product = createWirelessEarphoneFromRequest((WirelessEarphoneRequest) productRequest);
+        } else if (productRequest instanceof WiredEarphoneRequest) {
+            product = createWiredEarphoneFromRequest((WiredEarphoneRequest) productRequest);
+        } else if (productRequest instanceof HeadphoneRequest) {
+            product = createHeadphoneFromRequest((HeadphoneRequest) productRequest);
         } else if (productRequest instanceof WirelessEarphoneRequest) {
             product = createWirelessEarphoneFromRequest((WirelessEarphoneRequest) productRequest);
         } else if (productRequest instanceof WiredEarphoneRequest) {
@@ -138,6 +151,15 @@ public class ProductService {
             case CABLE_CHARGER_HUB_TYPE:
                 updateCableChargerHubFields((CableChargerHub) product, (CableChargerHubRequest) request);
                 break;
+            case WIRELESS_EARPHONE_TYPE:
+                updateWirelessEarphoneFields((WirelessEarphone) product, (WirelessEarphoneRequest) request);
+                break;
+            case WIRED_EARPHONE_TYPE:
+                updateWiredEarphoneFields((WiredEarphone) product, (WiredEarphoneRequest) request);
+                break;
+            case HEADPHONE_TYPE:
+                updateHeadphoneFields((Headphone) product, (HeadphoneRequest) request);
+                break;
             case WIRED_EARPHONE_TYPE:
                 updateWiredEarphoneFields((WiredEarphone) product, (WiredEarphoneRequest) request);
                 break;
@@ -187,6 +209,12 @@ public class ProductService {
                 return BackupChargerResponse.fromBackupCharger((BackupCharger) product, inventoryDtos);
             case CABLE_CHARGER_HUB_TYPE:
                 return CableChargerHubResponse.fromCableChargerHub((CableChargerHub) product, inventoryDtos);
+            case WIRELESS_EARPHONE_TYPE:
+                return WirelessEarphoneResponse.fromWirelessEarphone((WirelessEarphone) product, inventoryDtos);
+            case WIRED_EARPHONE_TYPE:
+                return WiredEarphoneResponse.fromWiredEarphone((WiredEarphone) product, inventoryDtos);
+            case HEADPHONE_TYPE:
+                return HeadphoneResponse.fromHeadphone((Headphone) product, inventoryDtos);
             default:
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Invalid product type: " + type);
@@ -580,7 +608,7 @@ public class ProductService {
         headphone.setBatteryLife(request.getBatteryLife());
         headphone.setChargingPort(request.getChargingPort());
         headphone.setChargingPort(request.getChargingPort());
-        headphone.setAudioJack(request.getAudioJack()   );
+        headphone.setAudioJack(request.getAudioJack()  );
         headphone.setCompatibility(request.getCompatibility());
         headphone.setWeight(request.getWeight());
         headphone.setFeatures(request.getFeatures());
