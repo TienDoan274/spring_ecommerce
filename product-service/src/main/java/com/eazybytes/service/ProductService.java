@@ -44,9 +44,6 @@ public class ProductService {
     private static final String WIRELESS_EARPHONE_TYPE = "WIRELESS_EARPHONE";
     private static final String WIRED_EARPHONE_TYPE = "WIRED_EARPHONE";
     private static final String HEADPHONE_TYPE = "HEADPHONE";
-    private static final String WIRELESS_EARPHONE_TYPE = "WIRELESS_EARPHONE";
-    private static final String WIRED_EARPHONE_TYPE = "WIRED_EARPHONE";
-    private static final String HEADPHONE_TYPE = "HEADPHONE";
 
     public ProductResponse getProductById(String type, String id) {
         BaseProduct product = findProductById(id);
@@ -160,9 +157,6 @@ public class ProductService {
             case BACKUP_CHARGER_TYPE:
                 updateBackupChargerFields((BackupCharger) product, (BackupChargerRequest) request);
                 break;
-            case WIRELESS_EARPHONE_TYPE:
-                updateWirelessEarphoneFields((WirelessEarphone) product, (WirelessEarphoneRequest) request);
-                break;
             case CABLE_CHARGER_HUB_TYPE:
                 updateCableChargerHubFields((CableChargerHub) product, (CableChargerHubRequest) request);
                 break;
@@ -175,13 +169,7 @@ public class ProductService {
             case HEADPHONE_TYPE:
                 updateHeadphoneFields((Headphone) product, (HeadphoneRequest) request);
                 break;
-            case WIRED_EARPHONE_TYPE:
-                updateWiredEarphoneFields((WiredEarphone) product, (WiredEarphoneRequest) request);
-                break;
-            case HEADPHONE_TYPE:
-                updateHeadphoneFields((Headphone) product, (HeadphoneRequest) request);
-                break;
-            
+
             default:
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Invalid product type: " + productType);
