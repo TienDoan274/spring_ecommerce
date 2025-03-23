@@ -24,8 +24,8 @@ public class HeadphoneResponse extends ProductResponse{
     private List<Integer> quantities = new ArrayList<>();
     private List<String> productNames = new ArrayList<>();
 
-    public static PhoneResponse fromPhone(Headphone headphone, List<InventoryDto> inventoryDtos) {
-        PhoneResponse response = new PhoneResponse();
+    public static HeadphoneResponse fromHeadphone(Headphone headphone, List<InventoryDto> inventoryDtos) {
+        HeadphoneResponse response = new HeadphoneResponse();
 
         // Thiết lập các trường cơ bản
         response.setProductId(headphone.getProductId());

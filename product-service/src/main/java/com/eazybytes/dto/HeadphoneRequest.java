@@ -29,5 +29,4 @@ public class HeadphoneRequest extends ProductRequest{
 
     private String brandOrigin;
     private String manufactured;
-    private String brand;
 }
