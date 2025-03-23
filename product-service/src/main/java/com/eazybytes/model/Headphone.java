@@ -19,7 +19,7 @@ public class Headphone extends BaseProduct{
     private List<String> features;
     private String simultaneousConnections;
     private String connectionTechnology;
-    private String controlType;
+    private List<String> controlType;
 
     private List<String> controlButtons;
 

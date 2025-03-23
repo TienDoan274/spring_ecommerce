@@ -13,16 +13,16 @@ import java.util.List;
 public class WirelessEarphone extends BaseProduct{
     private String batteryLife;
     private String chargingCaseBatteryLife;
-    private String chargingPort;
-    private String audioTechnology;
+    private List<String> chargingPort;
+    private List<String> audioTechnology;
 
     private List<String> compatibility;
-    private String connectionApp;
+    private List<String> connectionApp;
     private List<String> features;
 
     private String simultaneousConnections;
-    private String connectionTechnology;
-    private String controlType;
+    private List<String> connectionTechnology;
+    private List<String> controlType;
 
     private List<String> controlButtons;
 

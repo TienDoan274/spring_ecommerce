@@ -1,5 +1,6 @@
-package com.eazybytes.dto;
+package com.eazybytes.dto.cableChargerHub;
 
+import com.eazybytes.dto.product.ProductRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,22 +1,21 @@
-package com.eazybytes.dto;
+package com.eazybytes.dto.wiredEarphone;
 
-import com.eazybytes.model.Phone;
+import com.eazybytes.dto.InventoryDto;
+import com.eazybytes.dto.product.ProductResponse;
 import com.eazybytes.model.WiredEarphone;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class WiredEarphoneResponse extends ProductResponse{
+public class WiredEarphoneResponse extends ProductResponse {
     private List<String> original_prices = new ArrayList<>();
     private List<String> current_prices = new ArrayList<>();
     private List<String> colors = new ArrayList<>();

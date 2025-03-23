@@ -2,6 +2,22 @@ package com.eazybytes.service;
 
 import com.eazybytes.client.InventoryClient;
 import com.eazybytes.dto.*;
+import com.eazybytes.dto.backupCharger.BackupChargerRequest;
+import com.eazybytes.dto.backupCharger.BackupChargerResponse;
+import com.eazybytes.dto.cableChargerHub.CableChargerHubRequest;
+import com.eazybytes.dto.cableChargerHub.CableChargerHubResponse;
+import com.eazybytes.dto.headphone.HeadphoneRequest;
+import com.eazybytes.dto.headphone.HeadphoneResponse;
+import com.eazybytes.dto.laptop.LaptopRequest;
+import com.eazybytes.dto.laptop.LaptopResponse;
+import com.eazybytes.dto.phone.PhoneRequest;
+import com.eazybytes.dto.phone.PhoneResponse;
+import com.eazybytes.dto.product.ProductRequest;
+import com.eazybytes.dto.product.ProductResponse;
+import com.eazybytes.dto.wiredEarphone.WiredEarphoneRequest;
+import com.eazybytes.dto.wiredEarphone.WiredEarphoneResponse;
+import com.eazybytes.dto.wirelessEarphone.WirelessEarphoneRequest;
+import com.eazybytes.dto.wirelessEarphone.WirelessEarphoneResponse;
 import com.eazybytes.model.*;
 import com.eazybytes.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +28,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

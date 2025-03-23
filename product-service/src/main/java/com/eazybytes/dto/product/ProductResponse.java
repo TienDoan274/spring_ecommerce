@@ -1,4 +1,4 @@
-package com.eazybytes.dto;
+package com.eazybytes.dto.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

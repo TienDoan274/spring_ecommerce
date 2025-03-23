@@ -1,5 +1,6 @@
-package com.eazybytes.dto;
+package com.eazybytes.dto.wiredEarphone;
 
+import com.eazybytes.dto.product.ProductRequest;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -11,22 +12,15 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class HeadphoneRequest extends ProductRequest{
-    private String batteryLife;
-    private String chargingPort;
+public class WiredEarphoneRequest extends ProductRequest {
     private List<String> compatibility;
     private String audioJack;
     private String cableLength;
     private List<String> features;
     private String simultaneousConnections;
-    private String connectionTechnology;
-    private String controlType;
-
+    private List<String> controlType;
     private List<String> controlButtons;
-
-    private String size;
     private String weight;
-
     private String brandOrigin;
     private String manufactured;
 }

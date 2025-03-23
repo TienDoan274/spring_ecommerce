@@ -2,7 +2,8 @@ package com.eazybytes.controller;
 
 import com.eazybytes.client.InventoryClient;
 import com.eazybytes.dto.*;
-import com.eazybytes.model.BaseProduct;
+import com.eazybytes.dto.product.ProductRequest;
+import com.eazybytes.dto.product.ProductResponse;
 import com.eazybytes.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,15 +1,14 @@
-package com.eazybytes.dto;
+package com.eazybytes.dto.headphone;
 
-import com.eazybytes.model.Phone;
+import com.eazybytes.dto.InventoryDto;
+import com.eazybytes.dto.product.ProductResponse;
 import com.eazybytes.model.Headphone;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @SuperBuilder
@@ -17,7 +16,7 @@ import java.util.Map;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
-public class HeadphoneResponse extends ProductResponse{
+public class HeadphoneResponse extends ProductResponse {
     private List<String> original_prices = new ArrayList<>();
     private List<String> current_prices = new ArrayList<>();
     private List<String> colors = new ArrayList<>();

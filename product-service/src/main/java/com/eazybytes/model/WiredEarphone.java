@@ -16,7 +16,7 @@ public class WiredEarphone extends BaseProduct{
     private String cableLength;
     private List<String> features;
     private String simultaneousConnections;
-    private String controlType;
+    private List<String> controlType;
     private List<String> controlButtons;
     private String weight;
     private String brandOrigin;

@@ -1,11 +1,17 @@
-package com.eazybytes.dto;
+package com.eazybytes.dto.product;
 
+import com.eazybytes.dto.wiredEarphone.WiredEarphoneRequest;
+import com.eazybytes.dto.wirelessEarphone.WirelessEarphoneRequest;
+import com.eazybytes.dto.backupCharger.BackupChargerRequest;
+import com.eazybytes.dto.cableChargerHub.CableChargerHubRequest;
+import com.eazybytes.dto.headphone.HeadphoneRequest;
+import com.eazybytes.dto.laptop.LaptopRequest;
+import com.eazybytes.dto.phone.PhoneRequest;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +25,9 @@ import java.util.Map;
         @JsonSubTypes.Type(value = LaptopRequest.class, name = "LAPTOP"),
         @JsonSubTypes.Type(value = BackupChargerRequest.class, name = "BACKUP_CHARGER"),
         @JsonSubTypes.Type(value = CableChargerHubRequest.class, name = "CABLE_CHARGER_HUB"),
-        @JsonSubTypes.Type(value = CableChargerHubRequest.class, name = "WIRELESS_EARPHONE"),
-        @JsonSubTypes.Type(value = CableChargerHubRequest.class, name = "WIRED_EARPHONE"),
-        @JsonSubTypes.Type(value = CableChargerHubRequest.class, name = "HEADPHONE")
+        @JsonSubTypes.Type(value = WirelessEarphoneRequest.class, name = "WIRELESS_EARPHONE"),
+        @JsonSubTypes.Type(value = WiredEarphoneRequest.class, name = "WIRED_EARPHONE"),
+        @JsonSubTypes.Type(value = HeadphoneRequest.class, name = "HEADPHONE")
 
 
 })

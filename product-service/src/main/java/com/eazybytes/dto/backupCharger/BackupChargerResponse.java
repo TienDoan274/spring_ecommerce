@@ -1,6 +1,7 @@
-package com.eazybytes.dto;
+package com.eazybytes.dto.backupCharger;
 
-import com.eazybytes.model.BackupCharger;
+import com.eazybytes.dto.InventoryDto;
+import com.eazybytes.dto.product.ProductResponse;
 import com.eazybytes.model.BackupCharger;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
