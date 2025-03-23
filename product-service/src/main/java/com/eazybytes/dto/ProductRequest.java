@@ -18,7 +18,11 @@ import java.util.Map;
         @JsonSubTypes.Type(value = PhoneRequest.class, name = "PHONE"),
         @JsonSubTypes.Type(value = LaptopRequest.class, name = "LAPTOP"),
         @JsonSubTypes.Type(value = BackupChargerRequest.class, name = "BACKUP_CHARGER"),
-        @JsonSubTypes.Type(value = CableChargerHubRequest.class, name = "CABLE_CHARGER_HUB")
+        @JsonSubTypes.Type(value = CableChargerHubRequest.class, name = "CABLE_CHARGER_HUB"),
+        @JsonSubTypes.Type(value = CableChargerHubRequest.class, name = "WIRELESS_EARPHONE"),
+        @JsonSubTypes.Type(value = CableChargerHubRequest.class, name = "WIRED_EARPHONE"),
+        @JsonSubTypes.Type(value = CableChargerHubRequest.class, name = "HEADPHONE")
+
 
 })
 public class ProductRequest {
