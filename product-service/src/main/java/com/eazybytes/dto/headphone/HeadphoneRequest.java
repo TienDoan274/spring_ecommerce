@@ -20,9 +20,8 @@ public class HeadphoneRequest extends ProductRequest {
     private String cableLength;
     private List<String> features;
     private String simultaneousConnections;
-    private String connectionTechnology;
+    private List<String> connectionTechnology;
     private List<String> controlType;
-
     private List<String> controlButtons;
 
     private String size;

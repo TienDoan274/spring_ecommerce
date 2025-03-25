@@ -18,7 +18,7 @@ public class Headphone extends BaseProduct{
     private String cableLength;
     private List<String> features;
     private String simultaneousConnections;
-    private String connectionTechnology;
+    private List<String> connectionTechnology;
     private List<String> controlType;
 
     private List<String> controlButtons;

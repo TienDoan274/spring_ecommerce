@@ -14,10 +14,9 @@ public class RouterValidator {
             "/api/auth/refresh-token",
 
             "/api/products/type/{type}",
-            "/api/products/getPhone/{id}",
-            "/api/products/getLaptop/{id}",
+
             "/api/products/search",
-            "/api/products/{type}/{id}",
+            "/api/products/get/{type}/{id}",
 
             "/api/inventory/product",
             "/api/inventory/productColorVariants/{productId}",

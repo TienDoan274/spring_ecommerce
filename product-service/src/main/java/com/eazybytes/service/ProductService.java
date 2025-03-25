@@ -142,32 +142,34 @@ public class ProductService {
         return inventoryDtos;
     }
 
-    public ProductResponse updateProduct(String id, ProductRequest request, List<InventoryDto> inventoryDtos) {
+    public ProductResponse updateProduct(String id, ProductWithInventoryRequest request) {
+        ProductRequest productRequest = request.getProductRequest();
+        List<InventoryDto> inventoryRequests = request.getInventoryRequests();
         BaseProduct product = findProductById(id);
         String productType = product.getType();
 
         // Update product fields based on type
         switch (productType) {
             case PHONE_TYPE:
-                updatePhoneFields((Phone) product, (PhoneRequest) request);
+                updatePhoneFields((Phone) product, (PhoneRequest) productRequest);
                 break;
             case LAPTOP_TYPE:
-                updateLaptopFields((Laptop) product, (LaptopRequest) request);
+                updateLaptopFields((Laptop) product, (LaptopRequest) productRequest);
                 break;
             case BACKUP_CHARGER_TYPE:
-                updateBackupChargerFields((BackupCharger) product, (BackupChargerRequest) request);
+                updateBackupChargerFields((BackupCharger) product, (BackupChargerRequest) productRequest);
                 break;
             case CABLE_CHARGER_HUB_TYPE:
-                updateCableChargerHubFields((CableChargerHub) product, (CableChargerHubRequest) request);
+                updateCableChargerHubFields((CableChargerHub) product, (CableChargerHubRequest) productRequest);
                 break;
             case WIRELESS_EARPHONE_TYPE:
-                updateWirelessEarphoneFields((WirelessEarphone) product, (WirelessEarphoneRequest) request);
+                updateWirelessEarphoneFields((WirelessEarphone) product, (WirelessEarphoneRequest) productRequest);
                 break;
             case WIRED_EARPHONE_TYPE:
-                updateWiredEarphoneFields((WiredEarphone) product, (WiredEarphoneRequest) request);
+                updateWiredEarphoneFields((WiredEarphone) product, (WiredEarphoneRequest) productRequest);
                 break;
             case HEADPHONE_TYPE:
-                updateHeadphoneFields((Headphone) product, (HeadphoneRequest) request);
+                updateHeadphoneFields((Headphone) product, (HeadphoneRequest) productRequest);
                 break;
 
             default:
@@ -177,10 +179,9 @@ public class ProductService {
 
         BaseProduct updatedProduct = productRepository.save(product);
 
-        // Update inventories if needed
-        for (InventoryDto dto : inventoryDtos) {
-            inventoryClient.updateInventory(dto.getInventoryId(), dto);
-        }
+        inventoryClient.deleteInventoriesByProductId(id);
+
+        List<InventoryDto> inventoryDtos = createInventories(updatedProduct, inventoryRequests);
 
         return mapToProductResponse(productType, updatedProduct, inventoryDtos);
     }

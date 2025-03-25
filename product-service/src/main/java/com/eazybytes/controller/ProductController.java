@@ -22,7 +22,7 @@ public class ProductController {
     private final ProductService productService;
     private final InventoryClient inventoryClient;
 
-    @GetMapping("/{type}/{id}")
+    @GetMapping("get/{type}/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponse getProduct(@PathVariable String type, @PathVariable String id) {
         return productService.getProductById(type, id);
@@ -40,9 +40,9 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public ProductResponse updateProduct(
             @PathVariable String id,
-            @RequestBody ProductRequest productRequest,
-            @RequestBody List<InventoryDto> inventoryDtos) {
-        return productService.updateProduct(id, productRequest, inventoryDtos);
+            @RequestBody @Valid ProductWithInventoryRequest request) {
+        log.debug("Update Request: {}", request);
+        return productService.updateProduct(id, request);
     }
 
     @DeleteMapping("/delete/{id}")
