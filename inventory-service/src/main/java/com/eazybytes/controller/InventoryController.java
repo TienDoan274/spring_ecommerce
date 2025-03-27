@@ -67,7 +67,7 @@ public class InventoryController {
     }
 
 
-    @PostMapping
+    @PostMapping("/create")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     public ResponseEntity<InventoryDto> createInventory(@Valid @RequestBody InventoryDto request) {
         log.debug("Received request to create inventory: {}", request);
@@ -104,7 +104,7 @@ public class InventoryController {
         }
     }
 
-    @PutMapping("/product")
+    @PutMapping("/update")
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
     public ResponseEntity<InventoryDto> updateInventory(
             @Valid @RequestBody InventoryDto request) {
@@ -114,6 +114,7 @@ public class InventoryController {
                 .inventoryId(updatedInventory.getInventoryId())
                 .productId(updatedInventory.getProductId())
                 .color(updatedInventory.getColor())
+                .productName(updatedInventory.getProductName())
                 .quantity(updatedInventory.getQuantity())
                 .originalPrice(updatedInventory.getOriginalPrice())
                 .currentPrice(updatedInventory.getCurrentPrice())
