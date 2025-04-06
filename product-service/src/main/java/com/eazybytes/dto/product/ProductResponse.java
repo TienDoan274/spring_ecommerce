@@ -29,8 +29,8 @@ public class ProductResponse {
 
     // Các trường chung cho inventory
     private List<String> colors = new ArrayList<>();
-    private List<String> original_prices = new ArrayList<>();
-    private List<String> current_prices = new ArrayList<>();
+    private List<Integer> original_prices = new ArrayList<>();
+    private List<Integer> current_prices = new ArrayList<>();
     private List<Integer> quantities = new ArrayList<>();
     private List<String> productNames = new ArrayList<>();
 

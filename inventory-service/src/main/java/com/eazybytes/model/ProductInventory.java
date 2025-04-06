@@ -36,10 +36,10 @@ public class ProductInventory {
     private Integer quantity;
 
     @Column(name = "original_price", nullable = true)
-    private String originalPrice;
+    private Integer originalPrice;
 
     @Column(name = "current_price", nullable = true)
-    private String currentPrice;
+    private Integer currentPrice;
 
     @CreationTimestamp
     @Column(name = "created_at")

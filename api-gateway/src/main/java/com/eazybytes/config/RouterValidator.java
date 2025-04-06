@@ -22,7 +22,9 @@ public class RouterValidator {
             "/api/inventory/productColorVariants/{productId}",
             "/api/inventory/related/{productId}",
             "/api/group-variants/groups",
-            "/api/group-variants/search"
+            "/api/group-variants/search",
+            "/api/tags/get",
+            "/api/group-tags/get/{groupId}"
 
             );
 

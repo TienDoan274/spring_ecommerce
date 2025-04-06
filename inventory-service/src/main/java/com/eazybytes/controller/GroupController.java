@@ -14,12 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
+
+import java.util.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/group-variants")
@@ -44,16 +42,19 @@ public class GroupController {
     public ResponseEntity<?> getAllProductsByGroup(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = true) String type) {
+            @RequestParam(required = true) String type,
+            @RequestParam(required = false) String tags,
+            @RequestParam(required = false, defaultValue = "asc") String sortByPrice,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice) {
         try {
-            PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "orderNumber"));
-            List<GroupWithProductsDto> content = groupService.getAllProductsByGroup(pageRequest, type);
+            List<String> tagList = (tags != null && !tags.isEmpty()) ? Arrays.asList(tags.split(",")) : null;
 
-            // Lấy thông tin tổng số phần tử
-            long totalElements = groupService.countGroupsByType(type);
+            List<GroupWithProductsDto> content = groupService.getAllProductsByGroup(page, size, type, tagList, sortByPrice, minPrice, maxPrice);
+
+            long totalElements = groupService.countGroupsByTypeAndTags(type, tagList);
             int totalPages = (int) Math.ceil((double) totalElements / size);
 
-            // Tạo đối tượng phản hồi với dữ liệu phân trang
             Map<String, Object> response = new HashMap<>();
             response.put("content", content);
             response.put("totalPages", totalPages);
@@ -62,12 +63,7 @@ public class GroupController {
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("status", 500);
-            errorResponse.put("code", "INTERNAL_SERVER_ERROR");
-            errorResponse.put("message", "Error processing request: " + e.getMessage());
-            errorResponse.put("timestamp", LocalDateTime.now());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
 
@@ -83,9 +79,9 @@ public class GroupController {
 
         List<String> productNames = (List<String>) request.get("productNames");
 
-        List<String> defaultOriginalPrices = (List<String>) request.get("defaultOriginalPrices");
+        List<Integer> defaultOriginalPrices = (List<Integer>) request.get("defaultOriginalPrices");
 
-        List<String> defaultCurrentPrices = (List<String>) request.get("defaultCurrentPrices");
+        List<Integer> defaultCurrentPrices = (List<Integer>) request.get("defaultCurrentPrices");
         Integer orderNumber = request.get("orderNumber") != null ?
                 Integer.parseInt(request.get("orderNumber").toString()) : null;
         log.debug("Extracted orderNumber: {}", orderNumber);
@@ -121,8 +117,8 @@ public class GroupController {
             List<String> variants = (List<String>) request.get("variants");
             List<String> productNames = (List<String>) request.get("productNames");
 
-            List<String> defaultOriginalPrices = (List<String>) request.get("defaultOriginalPrices");
-            List<String> defaultCurrentPrices = (List<String>) request.get("defaultCurrentPrices");
+            List<Integer> defaultOriginalPrices = (List<Integer>) request.get("defaultOriginalPrices");
+            List<Integer> defaultCurrentPrices = (List<Integer>) request.get("defaultCurrentPrices");
 
             Integer orderNumber = request.get("orderNumber") != null ?
                     Integer.parseInt(request.get("orderNumber").toString()) : null;
