@@ -1,0 +1,514 @@
+[
+  {
+    "id": "335588",
+    "data_name": "Điện thoại realme C75x 6GB/128GB",
+    "display_name": "realme C75x 6GB/128GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/realme-c75x-6gb-128gb",
+    "price": "4.690.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/335588/realme-c75x-xanh-thumbn-600x600.jpg"
+  },
+  {
+    "id": "320729",
+    "data_name": "Điện thoại Xiaomi Redmi Note 14 6GB/128GB",
+    "display_name": "Xiaomi Redmi Note 14 6GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-note-14",
+    "price": "4.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/320729/TimerThumb/xiaomi-redmi-note-14-(10).jpg"
+  },
+  {
+    "id": "320730",
+    "data_name": "Điện thoại Xiaomi Redmi Note 14 Pro 8GB/256GB",
+    "display_name": "Xiaomi Redmi Note 14 Pro 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-note-14-pro?utm_flashsale=1",
+    "price": "7.490.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/320730/TimerThumb/xiaomi-redmi-note-14-pro-(10).jpg"
+  },
+  {
+    "id": "334938",
+    "data_name": "Điện thoại OPPO Find N5 5G 16GB/512GB",
+    "display_name": "OPPO Find N5 5G 16GB/512GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/oppo-find-n5",
+    "price": "Dự kiến: 44.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/334938/oppo-find-n5-black-thumb-600x600.jpg"
+  },
+  {
+    "id": "332934",
+    "data_name": "Điện thoại OPPO Reno13 5G 12GB/256GB",
+    "display_name": "OPPO Reno13 5G 12GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/oppo-reno13-5g?utm_flashsale=1",
+    "price": "15.090.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/332934/TimerThumb/oppo-reno13-5g-(8).jpg"
+  },
+  {
+    "id": "332234",
+    "data_name": "Điện thoại realme C75 8GB/128GB",
+    "display_name": "realme C75 8GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/realme-c75-8gb-128gb",
+    "price": "5.690.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/332234/TimerThumb/realme-c75-8gb-128gb-(16).jpg"
+  },
+  {
+    "id": "333480",
+    "data_name": "Điện thoại HONOR X9c Smart 5G 12GB/256GB",
+    "display_name": "HONOR X9c Smart 5G 12GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/honor-x9c-smart?utm_flashsale=1",
+    "price": "7.190.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/333480/TimerThumb/honor-x9c-smart-(4).jpg"
+  },
+  {
+    "id": "332938",
+    "data_name": "Điện thoại Xiaomi Redmi Note 14 Pro 5G 8GB/256GB",
+    "display_name": "Xiaomi Redmi Note 14 Pro 5G 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-note-14-pro-5g?utm_flashsale=1",
+    "price": "8.890.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/332938/TimerThumb/xiaomi-redmi-note-14-pro-5g-(10).jpg"
+  },
+  {
+    "id": "320731",
+    "data_name": "Điện thoại Xiaomi Redmi Note 14 Pro+ 5G 8GB/256GB",
+    "display_name": "Xiaomi Redmi Note 14 Pro+ 5G 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-note-14-pro-plus",
+    "price": "10.690.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/320731/TimerThumb/xiaomi-redmi-note-14-pro-plus-(12).jpg"
+  },
+  {
+    "id": "332937",
+    "data_name": "Điện thoại OPPO Reno13 Pro 5G 12GB/512GB",
+    "display_name": "OPPO Reno13 Pro 5G 12GB/512GB",
+    "url": "https://www.thegioididong.com/dtdd/oppo-reno13-pro-5g",
+    "price": "18.490.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/332937/TimerThumb/oppo-reno13-pro-5g-(8).jpg"
+  },
+  {
+    "id": "332935",
+    "data_name": "Điện thoại OPPO Reno13 F 8GB/256GB",
+    "display_name": "OPPO Reno13 F 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/oppo-reno13-f",
+    "price": "8.790.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/332935/TimerThumb/oppo-reno13-f-(8).jpg"
+  },
+  {
+    "id": "334226",
+    "data_name": "Điện thoại vivo Y29 8GB/128GB",
+    "display_name": "vivo Y29 8GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/vivo-y29-8gb-128gb",
+    "price": "6.490.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/334226/TimerThumb/vivo-y29-8gb-128gb-(2).jpg"
+  },
+  {
+    "id": "333834",
+    "data_name": "Điện thoại HONOR X5b 4GB/64GB",
+    "display_name": "HONOR X5b 4GB/64GB",
+    "url": "https://www.thegioididong.com/dtdd/honor-x5b?utm_flashsale=1",
+    "price": "2.190.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/333834/TimerThumb/honor-x5b-(2).jpg"
+  },
+  {
+    "id": "320337",
+    "data_name": "Điện thoại Xiaomi 15 5G 12GB/256GB",
+    "display_name": "Xiaomi 15 5G 12GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-15-256gb",
+    "price": "21.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/320337/xiaomi-15-xanh-thumbai-600x600.jpg"
+  },
+  {
+    "id": "334169",
+    "data_name": "Điện thoại Xiaomi 15 Ultra 5G 16GB/512GB",
+    "display_name": "Xiaomi 15 Ultra 5G 16GB/512GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-15-ultra",
+    "price": "32.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/334169/xiaomi-15-ultra-black-thumbai-600x600.jpg"
+  },
+  {
+    "id": "334404",
+    "data_name": "Điện thoại OPPO A5 Pro 5G 8GB/256GB",
+    "display_name": "OPPO A5 Pro 5G 8GB/256GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/oppo-a5-pro-5g",
+    "price": "8.490.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/334404/oppo-a5-pro-pink-thumbn-600x600.jpg"
+  },
+  {
+    "id": "331985",
+    "data_name": "Điện thoại vivo V40 5G 12GB/256GB",
+    "display_name": "vivo V40 5G 12GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/vivo-v40-5g",
+    "price": "12.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/331985/TimerThumb/vivo-v40-5g-(18).jpg"
+  },
+  {
+    "id": "313306",
+    "data_name": "Điện thoại HONOR X5 Plus 4GB/64GB",
+    "display_name": "HONOR X5 Plus 4GB/64GB",
+    "url": "https://www.thegioididong.com/dtdd/honor-x5-plus",
+    "price": "2.490.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/313306/TimerThumb/honor-x5-plus-(18).jpg"
+  },
+  {
+    "id": "328454",
+    "data_name": "Điện thoại OPPO A3 8GB/128GB",
+    "display_name": "OPPO A3 8GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/oppo-a3-8gb-128gb",
+    "price": "5.290.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/328454/TimerThumb/oppo-a3-8gb-128gb-(16).jpg"
+  },
+  {
+    "id": "331200",
+    "data_name": "Điện thoại vivo Y19s 6GB/128GB",
+    "display_name": "vivo Y19s 6GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/vivo-y19s-6gb-128gb",
+    "price": "4.290.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/331200/TimerThumb/vivo-y19s-6gb-128gb-(16).jpg"
+  },
+  {
+    "id": "327258",
+    "data_name": "Điện thoại HONOR X6b 6GB/128GB Tím",
+    "display_name": "HONOR X6b 6GB/128GB Tím",
+    "url": "https://www.thegioididong.com/dtdd/honor-x6b-6gb-128gb",
+    "price": "3.590.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/327258/TimerThumb/honor-x6b-6gb-128gb-(16).jpg"
+  },
+  {
+    "id": "325800",
+    "data_name": "Điện thoại Xiaomi Redmi 13 6GB/128GB",
+    "display_name": "Xiaomi Redmi 13 6GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-13-6gb-128gb",
+    "price": "3.690.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/325800/TimerThumb/xiaomi-redmi-13-6gb-128gb-(16).jpg"
+  },
+  {
+    "id": "329008",
+    "data_name": "Điện thoại Xiaomi Redmi 14C 6GB/128GB",
+    "display_name": "Xiaomi Redmi 14C 6GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-14c-6gb-128gb",
+    "price": "3.390.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/329008/TimerThumb/xiaomi-redmi-14c-6gb-128gb-(8).jpg"
+  },
+  {
+    "id": "322129",
+    "data_name": "Điện thoại OPPO Find X8 Pro 5G 16GB/512GB",
+    "display_name": "OPPO Find X8 Pro 5G 16GB/512GB",
+    "url": "https://www.thegioididong.com/dtdd/oppo-find-x8-pro",
+    "price": "25.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/322129/TimerThumb/oppo-find-x8-pro-(8).jpg"
+  },
+  {
+    "id": "335228",
+    "data_name": "Điện thoại vivo Y04 4GB/128GB",
+    "display_name": "vivo Y04 4GB/128GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/vivo-y04",
+    "price": "3.490.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/335228/vivo-y04-green-thumb-600x600.jpg"
+  },
+  {
+    "id": "325136",
+    "data_name": "Điện thoại vivo V30e 5G 12GB/256GB",
+    "display_name": "vivo V30e 5G 12GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/vivo-v30e-12gb",
+    "price": "9.490.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/325136/TimerThumb/vivo-v30e-12gb-(16).jpg"
+  },
+  {
+    "id": "333147",
+    "data_name": "Điện thoại Xiaomi Redmi Note 14 8GB/128GB",
+    "display_name": "Xiaomi Redmi Note 14 8GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-note-14-8gb-128gb",
+    "price": "5.490.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/333147/TimerThumb/xiaomi-redmi-note-14-8gb-128gb-(10).jpg"
+  },
+  {
+    "id": "334323",
+    "data_name": "Điện thoại OPPO A5 Pro 8GB/256GB",
+    "display_name": "OPPO A5 Pro 8GB/256GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/oppo-a5-pro",
+    "price": "6.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/334323/TimerThumb/oppo-a5-pro.jpg"
+  },
+  {
+    "id": "325799",
+    "data_name": "Điện thoại Xiaomi Redmi 13 8GB/128GB",
+    "display_name": "Xiaomi Redmi 13 8GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-13",
+    "price": "4.090.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/325799/TimerThumb/xiaomi-redmi-13-(16).jpg"
+  },
+  {
+    "id": "332936",
+    "data_name": "Điện thoại OPPO Reno13 F 5G 8GB/256GB",
+    "display_name": "OPPO Reno13 F 5G 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/oppo-reno13-f-5g",
+    "price": "9.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/332936/TimerThumb/oppo-reno13-f-5g-(8).jpg"
+  },
+  {
+    "id": "334227",
+    "data_name": "Điện thoại vivo Y29 8GB/256GB",
+    "display_name": "vivo Y29 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/vivo-y29-8gb-256gb",
+    "price": "6.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/334227/TimerThumb/vivo-y29-8gb-256gb-(4).jpg"
+  },
+  {
+    "id": "333148",
+    "data_name": "Điện thoại Xiaomi Redmi Note 14 8GB/256GB",
+    "display_name": "Xiaomi Redmi Note 14 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-note-14-8gb-256gb",
+    "price": "6.290.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/333148/TimerThumb/xiaomi-redmi-note-14-8gb-256gb-(10).jpg"
+  },
+  {
+    "id": "335755",
+    "data_name": "Điện thoại Xiaomi Redmi 13x 6GB/128GB",
+    "display_name": "Xiaomi Redmi 13x 6GB/128GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-13x-6gb-128gb",
+    "price": "3.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/335755/xiaomi-redmi-13x-titanium-thumbn-600x600.jpg"
+  },
+  {
+    "id": "333574",
+    "data_name": "Điện thoại OPPO Reno13 F 5G 12GB/512GB",
+    "display_name": "OPPO Reno13 F 5G 12GB/512GB",
+    "url": "https://www.thegioididong.com/dtdd/oppo-reno13-f-5g-12gb-512gb?utm_flashsale=1",
+    "price": "11.490.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/333574/TimerThumb/oppo-reno13-f-5g-12gb-512gb-(8).jpg"
+  },
+  {
+    "id": "320964",
+    "data_name": "Điện thoại Samsung Galaxy M15 5G 6GB/128GB",
+    "display_name": "Samsung Galaxy M15 5G 6GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/samsung-galaxy-m15",
+    "price": "4.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/320964/TimerThumb/samsung-galaxy-m15-(24).jpg"
+  },
+  {
+    "id": "335638",
+    "data_name": "Điện thoại Xiaomi Redmi 13x 8GB/128GB",
+    "display_name": "Xiaomi Redmi 13x 8GB/128GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-13x",
+    "price": "4.390.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/335638/xiaomi-redmi-13x-blue-thumbn-600x600.jpg"
+  },
+  {
+    "id": "326016",
+    "data_name": "Điện thoại vivo Y28 8GB/128GB",
+    "display_name": "vivo Y28 8GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/vivo-y28",
+    "price": "5.090.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/326016/TimerThumb/vivo-y28-(16).jpg"
+  },
+  {
+    "id": "333770",
+    "data_name": "Điện thoại HONOR X5b Plus 4GB/128GB",
+    "display_name": "HONOR X5b Plus 4GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/honor-x5b-plus?utm_flashsale=1",
+    "price": "2.690.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/333770/TimerThumb/honor-x5b-plus-(4).jpg"
+  },
+  {
+    "id": "332235",
+    "data_name": "Điện thoại realme C75 8GB/256GB",
+    "display_name": "realme C75 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/realme-c75-8gb-256gb",
+    "price": "6.490.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/332235/TimerThumb/realme-c75-8gb-256gb-(18).jpg"
+  },
+  {
+    "id": "328502",
+    "data_name": "Điện thoại HONOR X6b 6GB/128GB Đen/Xanh lá",
+    "display_name": "HONOR X6b 6GB/128GB Đen/Xanh lá",
+    "url": "https://www.thegioididong.com/dtdd/honor-x6b-6gb-128gb-xanh-va-den",
+    "price": "3.590.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/328502/TimerThumb/honor-x6b-6gb-128gb-xanh-va-den-(16).jpg"
+  },
+  {
+    "id": "333575",
+    "data_name": "Điện thoại OPPO Reno13 5G 12GB/512GB",
+    "display_name": "OPPO Reno13 5G 12GB/512GB",
+    "url": "https://www.thegioididong.com/dtdd/oppo-reno13-5g-12gb-512gb",
+    "price": "16.590.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/333575/TimerThumb/oppo-reno13-5g-12gb-512gb-(8).jpg"
+  },
+  {
+    "id": "323563",
+    "data_name": "Điện thoại Samsung Galaxy M35 5G 8GB/256GB",
+    "display_name": "Samsung Galaxy M35 5G 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/samsung-galaxy-m35-5g",
+    "price": "8.790.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/323563/TimerThumb/samsung-galaxy-m35-5g-(16).jpg"
+  },
+  {
+    "id": "329007",
+    "data_name": "Điện thoại Xiaomi Redmi 14C 4GB/128GB",
+    "display_name": "Xiaomi Redmi 14C 4GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-14c-4gb-128gb",
+    "price": "2.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/329007/TimerThumb/xiaomi-redmi-14c-4gb-128gb-(8).jpg"
+  },
+  {
+    "id": "331512",
+    "data_name": "Điện thoại HONOR X7c 8GB/256GB",
+    "display_name": "HONOR X7c 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/honor-x7c",
+    "price": "4.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/331512/TimerThumb/honor-x7c-(16).jpg"
+  },
+  {
+    "id": "333479",
+    "data_name": "Điện thoại HONOR X9c 5G 12GB/256GB",
+    "display_name": "HONOR X9c 5G 12GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/honor-x9c",
+    "price": "8.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/333479/TimerThumb/honor-x9c-(4).jpg"
+  },
+  {
+    "id": "331201",
+    "data_name": "Điện thoại vivo Y19s 4GB/128GB",
+    "display_name": "vivo Y19s 4GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/vivo-y19s-4gb-128gb?utm_flashsale=1",
+    "price": "3.890.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/331201/TimerThumb/vivo-y19s-4gb-128gb-(16).jpg"
+  },
+  {
+    "id": "335583",
+    "data_name": "Điện thoại Xiaomi Redmi Note 14 5G 8GB/256GB",
+    "display_name": "Xiaomi Redmi Note 14 5G 8GB/256GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-redmi-note-14-5g",
+    "price": "7.290.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/335583/xiaomi-redmi-14-5g-green-thumb-600x600.jpg"
+  },
+  {
+    "id": "335307",
+    "data_name": "Điện thoại realme C75x 8GB/128GB",
+    "display_name": "realme C75x 8GB/128GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/realme-c75x",
+    "price": "5.290.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/335307/realme-c75x-pink-thumbn-600x600.jpg"
+  },
+  {
+    "id": "335579",
+    "data_name": "Điện thoại realme C75x 8GB/256GB",
+    "display_name": "realme C75x 8GB/256GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/realme-c75x-256gb",
+    "price": "5.790.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/335579/realme-c75x-pink-thumbn-600x600.jpg"
+  },
+  {
+    "id": "332236",
+    "data_name": "Điện thoại realme C75 8GB/512GB",
+    "display_name": "realme C75 8GB/512GB",
+    "url": "https://www.thegioididong.com/dtdd/realme-c75-8gb-512gb?utm_flashsale=1",
+    "price": "6.690.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/332236/TimerThumb/realme-c75-8gb-512gb-(18).jpg"
+  },
+  {
+    "id": "323567",
+    "data_name": "Điện thoại vivo V30e 5G 8GB/256GB",
+    "display_name": "vivo V30e 5G 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/vivo-v30e-8gb",
+    "price": "8.490.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/323567/TimerThumb/vivo-v30e-8gb-(8).jpg"
+  },
+  {
+    "id": "326023",
+    "data_name": "Điện thoại vivo Y28 8GB/256GB",
+    "display_name": "vivo Y28 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/vivo-y28-256gb",
+    "price": "5.690.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/326023/TimerThumb/vivo-y28-256gb-(16).jpg"
+  },
+  {
+    "id": "320336",
+    "data_name": "Điện thoại Xiaomi 15 5G 12GB/512GB",
+    "display_name": "Xiaomi 15 5G 12GB/512GB",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-15",
+    "price": "22.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/320336/xiaomi-15-white-thumbai-600x600.jpg"
+  },
+  {
+    "id": "328453",
+    "data_name": "Điện thoại OPPO A3 6GB/128GB",
+    "display_name": "OPPO A3 6GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/oppo-a3-6gb-128gb",
+    "price": "4.590.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/328453/TimerThumb/oppo-a3-6gb-128gb-(16).jpg"
+  },
+  {
+    "id": "334168",
+    "data_name": "Điện thoại OPPO Find X8 5G 16GB/512GB Hồng",
+    "display_name": "OPPO Find X8 5G 16GB/512GB Hồng",
+    "url": "https://www.thegioididong.com/dtdd/oppo-find-x8-hong",
+    "price": "21.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/334168/TimerThumb/oppo-find-x8-hong-(8).jpg"
+  },
+  {
+    "id": "333573",
+    "data_name": "Điện thoại OPPO Reno13 F 5G 12GB/256GB",
+    "display_name": "OPPO Reno13 F 5G 12GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/oppo-reno13-f-5g-12gb-256gb",
+    "price": "10.690.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/333573/TimerThumb/oppo-reno13-f-5g-12gb-256gb-(8).jpg"
+  },
+  {
+    "id": "328455",
+    "data_name": "Điện thoại OPPO A3 8GB/256GB",
+    "display_name": "OPPO A3 8GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/oppo-a3-8gb-256gb",
+    "price": "5.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/328455/TimerThumb/oppo-a3-8gb-256gb-(16).jpg"
+  },
+  {
+    "id": "335229",
+    "data_name": "Điện thoại vivo Y04 6GB/128GB",
+    "display_name": "vivo Y04 6GB/128GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/vivo-y04-6gb-128gb",
+    "price": "3.790.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/335229/vivo-y04-gold-thumb-600x600.jpg"
+  },
+  {
+    "id": "334844",
+    "data_name": "Điện thoại Xiaomi 15 Ultra 5G 16GB/512GB Trắng",
+    "display_name": "Xiaomi 15 Ultra 5G 16GB/512GB TrắngMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/xiaomi-15-ultra-trang",
+    "price": "32.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/334844/xiaomi-15-ultra-white-thumbai-600x600.jpg"
+  },
+  {
+    "id": "329134",
+    "data_name": "Điện thoại HONOR 200 5G 12GB/512GB",
+    "display_name": "HONOR 200 5G 12GB/512GB",
+    "url": "https://www.thegioididong.com/dtdd/honor-200-12gb-512gb",
+    "price": "12.190.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/329134/TimerThumb/honor-200-12gb-512gb-(16).jpg"
+  },
+  {
+    "id": "335227",
+    "data_name": "Điện thoại vivo Y04 4GB/64GB",
+    "display_name": "vivo Y04 4GB/64GBMẫu mới",
+    "url": "https://www.thegioididong.com/dtdd/vivo-y04-64gb",
+    "price": "2.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/335227/vivo-y04-gold-thumb-600x600.jpg"
+  },
+  {
+    "id": "329133",
+    "data_name": "Điện thoại HONOR 200 5G 12GB/256GB",
+    "display_name": "HONOR 200 5G 12GB/256GB",
+    "url": "https://www.thegioididong.com/dtdd/honor-200-12gb-256gb",
+    "price": "11.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/329133/TimerThumb/honor-200-12gb-256gb-(16).jpg"
+  },
+  {
+    "id": "331199",
+    "data_name": "Điện thoại vivo Y19s 8GB/128GB",
+    "display_name": "vivo Y19s 8GB/128GB",
+    "url": "https://www.thegioididong.com/dtdd/vivo-y19s-8gb-128gb",
+    "price": "4.790.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/331199/TimerThumb/vivo-y19s-8gb-128gb-(4).jpg"
+  },
+  {
+    "id": "332255",
+    "data_name": "Điện thoại HONOR Magic V3 5G 12GB/512GB",
+    "display_name": "HONOR Magic V3 5G 12GB/512GB",
+    "url": "https://www.thegioididong.com/dtdd/honor-magic-v3",
+    "price": "37.990.000₫",
+    "image_url": "https://cdn.tgdd.vn/Products/Images/42/332255/TimerThumb/honor-magic-v3-(6).jpg"
+  }
+]

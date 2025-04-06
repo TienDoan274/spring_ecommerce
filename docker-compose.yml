@@ -23,7 +23,7 @@ services:
       retries: 5
 
   mongodb:
-    image: mongo:latest
+    image: mongo:4.4.6
     container_name: mongodb
     restart: always
     ports:
@@ -161,18 +161,21 @@ services:
       - ecommerce_network
     restart: on-failure
 
-  # # Frontend service (if needed)
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   container_name: frontend
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - api-gateway
-  #   networks:
-  #     - ecommerce_network
+  chatbot:
+    build: 
+      context: ./chatbot/src
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_ENV=${FLASK_ENV:-production}
+      - LLAMA_INDEX_API_KEY=${LLAMA_INDEX_API_KEY}
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+    command: gunicorn --bind 0.0.0.0:5001 --workers 4 --threads 2 app:app
 
 volumes:
   mysql_data:
