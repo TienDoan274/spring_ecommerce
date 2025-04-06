@@ -76,12 +76,24 @@ public class GroupService {
 
     @Transactional(readOnly = true)
     public List<GroupWithProductsDto> getAllProductsByGroup(int page, int size, String type, List<String> tags, String sortByPrice, Double minPrice, Double maxPrice) {
-        // Lấy toàn bộ nhóm theo type và tags
-        List<Group> allGroups = (type != null && !type.isEmpty())
-                ? (tags != null && !tags.isEmpty()
-                ? groupRepository.findAllByTypeAndTagNames(type, tags)
-                : groupRepository.findAllByType(type))
-                : groupRepository.findAll();
+        // Lấy toàn bộ nhóm theo type và tags (AND logic cho tags)
+        List<Group> allGroups;
+
+        if (type != null && !type.isEmpty()) {
+            if (tags != null && !tags.isEmpty()) {
+                // Lấy các group có type và chứa tất cả tags
+                allGroups = groupRepository.findByTypeAndAllTags(type, tags, (long) tags.size());
+            } else {
+                allGroups = groupRepository.findAllByType(type);
+            }
+        } else {
+            if (tags != null && !tags.isEmpty()) {
+                // Lấy các group chứa tất cả tags (không quan tâm type)
+                allGroups = groupRepository.findByAllTags(tags, (long) tags.size());
+            } else {
+                allGroups = groupRepository.findAll();
+            }
+        }
 
         if (allGroups.isEmpty()) {
             log.info("No groups found for type={}, tags={}", type, tags);
@@ -90,9 +102,23 @@ public class GroupService {
 
         List<GroupWithProductsDto> result = new ArrayList<>();
 
+        // Lấy danh sách groupIds để query một lần
+        List<Integer> groupIds = allGroups.stream()
+                .map(Group::getGroupId)
+                .collect(Collectors.toList());
+
+        // Lấy tất cả products thuộc các group này
+        List<GroupProduct> allGroupProducts = groupProductRepository.findAllByGroupIdInOrderByOrderNumberAsc(groupIds);
+
+        // Nhóm products theo groupId
+        Map<Integer, List<GroupProduct>> productsByGroup = allGroupProducts.stream()
+                .collect(Collectors.groupingBy(GroupProduct::getGroupId));
+
         // Xây dựng danh sách GroupWithProductsDto
         for (Group group : allGroups) {
-            List<GroupProduct> groupProducts = groupProductRepository.findAllByGroupIdOrderByOrderNumberAsc(group.getGroupId());
+            List<GroupProduct> groupProducts = productsByGroup.getOrDefault(group.getGroupId(), Collections.emptyList());
+
+            // Filter theo giá
             List<GroupProduct> filteredProducts = filterAndSortProducts(groupProducts, null, minPrice, maxPrice);
 
             GroupDto groupDto = GroupDto.builder()
@@ -121,14 +147,14 @@ public class GroupService {
             result.add(groupWithProducts);
         }
 
-        // Sắp xếp toàn bộ danh sách theo giá của sản phẩm đầu tiên, null ở cuối
+        // Sắp xếp toàn bộ danh sách theo giá của sản phẩm đầu tiên
         Comparator<GroupWithProductsDto> priceComparator;
         if ("asc".equalsIgnoreCase(sortByPrice)) {
             priceComparator = Comparator.comparing(
                     g -> g.getProducts().isEmpty() ? null : g.getProducts().get(0).getDefaultCurrentPrice(),
                     Comparator.nullsLast(Comparator.naturalOrder())
             );
-        } else { // Mặc định là desc hoặc bất kỳ giá trị nào khác
+        } else {
             priceComparator = Comparator.comparing(
                     g -> g.getProducts().isEmpty() ? null : g.getProducts().get(0).getDefaultCurrentPrice(),
                     Comparator.nullsLast(Comparator.reverseOrder())
@@ -137,9 +163,9 @@ public class GroupService {
         result.sort(priceComparator);
 
         // Phân trang thủ công
-        int totalElements = result.size();
-        int start = Math.min(page * size, totalElements);
-        int end = Math.min(start + size, totalElements);
+        long totalElements = groupRepository.countByTypeAndAllTags(type, tags, (long) tags.size());
+        int start = (int) Math.min(page * size, totalElements);
+        int end = (int) Math.min(start + size, totalElements);
         List<GroupWithProductsDto> paginatedResult = result.subList(start, end);
 
         log.info("Fetched {} groups (out of {}) sorted by first product price for type: {}, tags: {}",
@@ -161,9 +187,10 @@ public class GroupService {
     public long countGroupsByTypeAndTags(String type, List<String> tags) {
         if (type != null && !type.isEmpty()) {
             if (tags != null && !tags.isEmpty()) {
-                return groupRepository.findAllByTypeAndTagNames(type, tags).size();
+                // Sửa thành query đếm theo AND logic (group phải có tất cả tags)
+                return groupRepository.countByTypeAndAllTags(type, tags, (long) tags.size());
             }
-            return groupRepository.findAllByType(type).size();
+            return groupRepository.countByType(type);
         }
         return groupRepository.count();
     }
