@@ -39,7 +39,7 @@ public class ProductRequest {
     private Map<String,List<Map<String,String>>> images;
     private String type;  // "PHONE" or "LAPTOP" or "BACKUP_CHARGER" or "CABLE_CHARGER_HUB"
     private String warrantyPeriod; // thời gian bảo hành
-        private List<Map<String,String>> productReviews; // bài đánh giá sản phẩm [{'title':'...','content':'...'}]
+    private List<Map<String,String>> productReviews; // bài đánh giá sản phẩm [{'title':'...','content':'...'}]
     private List<String> promotions; // chương trình khuyến mãi
     private String release; // thời điểm ra mắt
 }

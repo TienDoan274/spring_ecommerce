@@ -16,6 +16,6 @@ public class GroupProductDto {
     private String variant;
     private Integer orderNumber;
     private String productName;
-    private String defaultOriginalPrice;
-    private String defaultCurrentPrice;
+    private Integer defaultOriginalPrice;
+    private Integer defaultCurrentPrice;
 }

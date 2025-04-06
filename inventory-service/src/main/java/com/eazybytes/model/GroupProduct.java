@@ -39,11 +39,11 @@
         @Column(name = "productName", nullable = true)
         private String productName;
 
-        @Column(name = "default_original_price",nullable = true)
-        private String defaultOriginalPrice;
+        @Column(name = "default_original_price")
+        private Integer defaultOriginalPrice; // Sửa từ String thành Double
 
-        @Column(name = "default_current_price",nullable = true)
-        private String defaultCurrentPrice;
+        @Column(name = "default_current_price")
+        private Integer defaultCurrentPrice; // Sửa từ String thành Double
 
         @CreationTimestamp
         @Column(name = "created_at")
