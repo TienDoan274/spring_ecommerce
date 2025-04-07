@@ -169,7 +169,7 @@ public class InventoryService {
     }
 
     @Transactional
-    public void deleteProductInventory(String productId, String color){
+    public void deleteInventory(String productId, String color){
         productInventoryRepository.deleteByProductIdAndColor(productId,color);
     }
 }

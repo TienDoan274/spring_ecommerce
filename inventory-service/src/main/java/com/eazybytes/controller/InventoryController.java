@@ -50,7 +50,7 @@ public class InventoryController {
     }
 
     @GetMapping("/product")
-    public ResponseEntity<InventoryDto> getProductInventory(
+    public ResponseEntity<InventoryDto> getInventory(
             @RequestParam String productId,
             @RequestParam(required = false) String color) {
         ProductInventory inventory = inventoryService.getProductInventory(productId, color);
@@ -177,9 +177,9 @@ public class InventoryController {
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@roleChecker.hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteProductInventory(@RequestParam("productId") String productId, @RequestParam("color") String color)
+    public ResponseEntity<Void> deleteInventory(@RequestParam("productId") String productId, @RequestParam("color") String color)
     {
-        inventoryService.deleteProductInventory(productId,color);
+        inventoryService.deleteInventory(productId,color);
         return ResponseEntity.noContent().build();
     }
 }

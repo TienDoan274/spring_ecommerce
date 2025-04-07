@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -72,43 +73,56 @@ public class ProductService {
         throw new IllegalArgumentException("Unknown product request type");
     }
 
+    @Transactional
     public ProductResponse createProduct(ProductWithInventoryRequest request) {
         ProductRequest productRequest = request.getProductRequest();
         List<InventoryDto> inventoryRequests = request.getInventoryRequests();
 
         BaseProduct product;
-        // Sử dụng kiểu của ProductRequest để xác định loại sản phẩm
-        if (productRequest instanceof PhoneRequest) {
-            product = createPhoneFromRequest((PhoneRequest) productRequest);
-        } else if (productRequest instanceof LaptopRequest) {
-            product = createLaptopFromRequest((LaptopRequest) productRequest);
-        } else if (productRequest instanceof BackupChargerRequest) {
-            product = createBackupChargerFromRequest((BackupChargerRequest) productRequest);
-        } else if (productRequest instanceof CableChargerHubRequest) {
-            product = createCableChargerHubFromRequest((CableChargerHubRequest) productRequest);
-        } else if (productRequest instanceof WirelessEarphoneRequest) {
-            product = createWirelessEarphoneFromRequest((WirelessEarphoneRequest) productRequest);
-        } else if (productRequest instanceof WiredEarphoneRequest) {
-            product = createWiredEarphoneFromRequest((WiredEarphoneRequest) productRequest);
-        } else if (productRequest instanceof HeadphoneRequest) {
-            product = createHeadphoneFromRequest((HeadphoneRequest) productRequest);
-        } else if (productRequest instanceof WirelessEarphoneRequest) {
-            product = createWirelessEarphoneFromRequest((WirelessEarphoneRequest) productRequest);
-        } else if (productRequest instanceof WiredEarphoneRequest) {
-            product = createWiredEarphoneFromRequest((WiredEarphoneRequest) productRequest);
-        } else if (productRequest instanceof HeadphoneRequest) {
-            product = createHeadphoneFromRequest((HeadphoneRequest) productRequest);
-        } else {
+        try {
+            // Xác định loại sản phẩm
+            if (productRequest instanceof PhoneRequest) {
+                product = createPhoneFromRequest((PhoneRequest) productRequest);
+            } else if (productRequest instanceof LaptopRequest) {
+                product = createLaptopFromRequest((LaptopRequest) productRequest);
+            } else if (productRequest instanceof BackupChargerRequest) {
+                product = createBackupChargerFromRequest((BackupChargerRequest) productRequest);
+            } else if (productRequest instanceof CableChargerHubRequest) {
+                product = createCableChargerHubFromRequest((CableChargerHubRequest) productRequest);
+            } else if (productRequest instanceof WirelessEarphoneRequest) {
+                product = createWirelessEarphoneFromRequest((WirelessEarphoneRequest) productRequest);
+            } else if (productRequest instanceof WiredEarphoneRequest) {
+                product = createWiredEarphoneFromRequest((WiredEarphoneRequest) productRequest);
+            } else if (productRequest instanceof HeadphoneRequest) {
+                product = createHeadphoneFromRequest((HeadphoneRequest) productRequest);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid product type");
+            }
+
+            // Lưu product vào database
+            BaseProduct savedProduct = productRepository.save(product);
+
+            // Tạo inventory và xử lý rollback nếu có lỗi
+            List<InventoryDto> inventoryDtos;
+            try {
+                inventoryDtos = createInventories(savedProduct, inventoryRequests);
+            } catch (Exception e) {
+                // Rollback product đã lưu trong database
+                productRepository.delete(savedProduct);
+                throw e; // Ném lại exception để thông báo lỗi
+            }
+
+            // Trả về response
+            String productType = determineProductType(productRequest);
+            return mapToProductResponse(productType, savedProduct, inventoryDtos);
+
+        } catch (Exception e) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Invalid product type");
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Failed to create product: " + e.getMessage(),
+                    e
+            );
         }
-
-        BaseProduct savedProduct = productRepository.save(product);
-        List<InventoryDto> inventoryDtos = createInventories(savedProduct, inventoryRequests);
-
-        // Sử dụng kiểu thực tế để xác định loại sản phẩm trong response
-        String productType = determineProductType(productRequest);
-        return mapToProductResponse(productType, savedProduct, inventoryDtos);
     }
 
     private void setBaseProductFields(BaseProduct product, ProductRequest request) {
@@ -126,20 +140,41 @@ public class ProductService {
 
     private List<InventoryDto> createInventories(BaseProduct product, List<InventoryDto> requests) {
         List<InventoryDto> inventoryDtos = new ArrayList<>();
+        List<InventoryDto> createdInventories = new ArrayList<>(); // Lưu các inventory đã tạo để rollback nếu cần
 
-        for (InventoryDto request : requests) {
-            InventoryDto dto = new InventoryDto();
-            dto.setProductName(product.getProductName());
-            dto.setProductId(product.getProductId());
-            dto.setCurrentPrice(request.getCurrentPrice());
-            dto.setOriginalPrice(request.getOriginalPrice());
-            dto.setQuantity(request.getQuantity());
-            dto.setColor(request.getColor());
-            inventoryDtos.add(dto);
-            inventoryClient.createInventory(dto);
+        try {
+            for (InventoryDto request : requests) {
+                InventoryDto dto = new InventoryDto();
+                dto.setProductName(product.getProductName());
+                dto.setProductId(product.getProductId());
+                dto.setCurrentPrice(request.getCurrentPrice());
+                dto.setOriginalPrice(request.getOriginalPrice());
+                dto.setQuantity(request.getQuantity());
+                dto.setColor(request.getColor());
+
+                // Gọi external API để tạo inventory
+                inventoryClient.createInventory(dto); // Giả sử API trả về thành công nếu không có exception
+                createdInventories.add(dto); // Lưu lại để rollback nếu cần
+                inventoryDtos.add(dto); // Thêm vào danh sách trả về
+            }
+            return inventoryDtos;
+        } catch (Exception e) {
+            // Rollback các inventory đã tạo trên external API
+            rollbackInventories(createdInventories);
+            throw new RuntimeException("Failed to create inventories: " + e.getMessage(), e);
         }
+    }
 
-        return inventoryDtos;
+    private void rollbackInventories(List<InventoryDto> createdInventories) {
+        for (InventoryDto inventory : createdInventories) {
+            try {
+                // Giả sử inventoryClient có phương thức deleteInventory để xóa inventory
+                inventoryClient.deleteInventory(inventory.getProductId(), inventory.getColor());
+            } catch (Exception rollbackException) {
+                // Log lỗi rollback nếu cần, nhưng không ném exception để tránh che lấp lỗi chính
+                System.err.println("Failed to rollback inventory: " + rollbackException.getMessage());
+            }
+        }
     }
 
     public ProductResponse updateProduct(String id, ProductWithInventoryRequest request) {
