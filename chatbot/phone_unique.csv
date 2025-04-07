@@ -1,0 +1,107 @@
+group_id,product_id,product_name,variant
+1,67d8356d59d8fd4b8a5d4397,"Điện thoại iPhone 16e 128GB",128GB
+2,67d8357559d8fd4b8a5d439a,"Điện thoại iPhone 16 Pro Max 256GB",256GB
+3,67d8357959d8fd4b8a5d439d,"Điện thoại iPhone 16 Pro 128GB",128GB
+4,67d8357c59d8fd4b8a5d43a1,"Điện thoại Samsung Galaxy S25 5G 12GB/256GB",256GB
+5,67d8357d59d8fd4b8a5d43a3,"Điện thoại Samsung Galaxy S25 Ultra 5G 12GB/256GB",256GB
+6,67d8357f59d8fd4b8a5d43a6,"Điện thoại Xiaomi Redmi Note 14 6GB/128GB","6GB - 128GB"
+7,67d8358459d8fd4b8a5d43a9,"Điện thoại Xiaomi Redmi Note 14 Pro 8GB/256GB",NULL
+8,67d8358459d8fd4b8a5d43aa,"Điện thoại OPPO Reno13 F 5G 8GB/256GB","8GB - 256GB"
+9,67d8358759d8fd4b8a5d43ad,"Điện thoại OPPO Reno13 5G 12GB/256GB",256GB
+10,67d8358959d8fd4b8a5d43af,"Điện thoại realme C75 8GB/128GB",128GB
+11,67d8358a59d8fd4b8a5d43b2,"Điện thoại vivo V40 Lite 8GB/256GB",NULL
+12,67d8358b59d8fd4b8a5d43b3,"Điện thoại HONOR X9c 5G 12GB/256GB",X9c
+13,67d8358d59d8fd4b8a5d43b5,"Điện thoại TCL 406s 4GB/64GB",NULL
+14,67d8358f59d8fd4b8a5d43b6,"Điện thoại iPhone 16 Plus 128GB",128GB
+15,67d8359259d8fd4b8a5d43b9,"Điện thoại iPhone 16 128GB",128GB
+16,67d8359459d8fd4b8a5d43bc,"Điện thoại Samsung Galaxy S24 Ultra 5G 12GB/256GB",256GB
+17,67d8359659d8fd4b8a5d43be,"Điện thoại Samsung Galaxy A16 5G 8GB/128GB",128GB
+18,67d8359759d8fd4b8a5d43c0,"Điện thoại Xiaomi Redmi Note 14 Pro 5G 8GB/256GB",NULL
+19,67d8359859d8fd4b8a5d43c1,"Điện thoại Xiaomi Redmi Note 14 Pro+ 5G 8GB/256GB",NULL
+20,67d8359859d8fd4b8a5d43c2,"Điện thoại OPPO Reno13 Pro 5G 12GB/512GB",NULL
+21,67d8359959d8fd4b8a5d43c3,"Điện thoại OPPO Reno13 F 8GB/256GB",NULL
+22,67d8359959d8fd4b8a5d43c4,"Điện thoại realme Note 60x 3GB/64GB",3GB
+23,67d8359b59d8fd4b8a5d43c6,"Điện thoại vivo Y28 8GB/128GB",128GB
+24,67d8359d59d8fd4b8a5d43c8,"Điện thoại HONOR X5b 4GB/64GB",X5b
+25,67d8359d59d8fd4b8a5d43ca,"Điện thoại Samsung Galaxy Z Fold6 5G 12GB/256GB",256GB
+26,67d8359e59d8fd4b8a5d43cc,"Điện thoại iPhone 15 Pro Max 256GB",256GB
+27,67d835a059d8fd4b8a5d43cf,"Điện thoại Samsung Galaxy A06 4GB/128GB","4GB - 128GB"
+28,67d835a259d8fd4b8a5d43d2,"Điện thoại iPhone 15 Plus 128GB",128GB
+29,67d835a559d8fd4b8a5d43d5,"Điện thoại Samsung Galaxy A35 5G 8GB/256GB",NULL
+30,67d835a559d8fd4b8a5d43d6,"Điện thoại Xiaomi 15 5G 12GB/256GB",256GB
+31,67d835a759d8fd4b8a5d43d8,"Điện thoại Xiaomi 15 Ultra 5G 16GB/512GB",Bạc/Đen
+32,67d835a959d8fd4b8a5d43da,"Điện thoại OPPO A60 8GB/128GB",128GB
+33,67d835aa59d8fd4b8a5d43dc,"Điện thoại OPPO A3x 4GB/128GB","4GB - 128GB"
+34,67d835ad59d8fd4b8a5d43df,"Điện thoại realme 13+ 5G 8GB/256GB",8GB
+35,67d835ad59d8fd4b8a5d43e1,"Điện thoại vivo V40 5G 12GB/256GB",NULL
+36,67d835ae59d8fd4b8a5d43e2,"Điện thoại HONOR X5 Plus 4GB/64GB",NULL
+37,67d835ae59d8fd4b8a5d43e3,"Điện thoại Samsung Galaxy A05s 6GB/128GB",NULL
+38,67d835af59d8fd4b8a5d43e4,"Điện thoại iPhone 15 128GB",128GB
+39,67d835b159d8fd4b8a5d43e6,"Điện thoại iPhone 14 Plus 512GB",NULL
+40,67d835b259d8fd4b8a5d43e7,"Điện thoại iPhone 14 128GB",NULL
+41,67d835b359d8fd4b8a5d43e8,"Điện thoại Samsung Galaxy S24 FE 5G 8GB/128GB",128GB
+42,67d835b759d8fd4b8a5d43ea,"Điện thoại Samsung Galaxy A25 5G 8GB/128GB",NULL
+43,67d835b859d8fd4b8a5d43eb,"Điện thoại Samsung Galaxy S24 5G 8GB/256GB",NULL
+44,67d835ba59d8fd4b8a5d43ec,"Điện thoại Xiaomi 14T 5G 12GB/512GB Xanh","512GB Xanh"
+45,67d835bb59d8fd4b8a5d43ef,"Điện thoại Xiaomi 14T Pro 5G 12GB/256GB",NULL
+46,67d835bc59d8fd4b8a5d43f0,"Điện thoại OPPO A3 6GB/128GB","6GB - 128GB"
+47,67d835bd59d8fd4b8a5d43f3,"Điện thoại Tecno Spark GO 1 3GB/64GB",NULL
+48,67d835be59d8fd4b8a5d43f4,"Điện thoại OPPO Reno12 F 8GB/256GB",NULL
+49,67d835be59d8fd4b8a5d43f5,"Điện thoại realme C65s 6GB/128GB","6GB - 128GB"
+50,67d835c059d8fd4b8a5d43f8,"Điện thoại vivo Y19s 4GB/128GB",4GB
+51,67d835c259d8fd4b8a5d43fb,"Điện thoại HONOR X8b 8GB/512GB",NULL
+52,67d835c359d8fd4b8a5d43fc,"Điện thoại HONOR X6b 6GB/128GB Tím",Tím
+53,67d835c459d8fd4b8a5d43fe,"Điện thoại Samsung Galaxy S24+ 5G 12GB/256GB",NULL
+54,67d835c559d8fd4b8a5d43ff,"Điện thoại iPhone 13 128GB",128GB
+55,67d835c659d8fd4b8a5d4401,"Điện thoại iPhone 12 64GB",64GB
+56,67d835c759d8fd4b8a5d4403,"Điện thoại Xiaomi Redmi 13 6GB/128GB",6GB
+57,67d835c859d8fd4b8a5d4405,"Điện thoại Xiaomi Redmi A3 3GB/64GB",NULL
+58,67d835c859d8fd4b8a5d4406,"Điện thoại Xiaomi Redmi 14C 4GB/128GB",4GB
+59,67d835ca59d8fd4b8a5d4408,"Điện thoại OPPO Find X8 5G 16GB/512GB","Tiêu Chuẩn"
+60,67d835ca59d8fd4b8a5d440a,"Điện thoại realme 12 8GB/256GB",256GB
+61,67d835cb59d8fd4b8a5d440c,"Điện thoại vivo Y03 4GB/64GB",64GB
+62,67d835cb59d8fd4b8a5d440e,"Điện thoại realme Note 60 4GB/128GB","4GB - 128GB"
+63,67d835cc59d8fd4b8a5d4411,"Điện thoại vivo V30e 5G 8GB/256GB",8GB
+64,67d835ce59d8fd4b8a5d4413,"Điện thoại realme Note 50 3GB/64GB","3GB - 64GB"
+65,67d835cf59d8fd4b8a5d4415,"Điện thoại vivo V30 5G 12GB/512GB",NULL
+66,67d835d059d8fd4b8a5d4416,"Điện thoại realme C61 4GB/128GB",NULL
+67,67d835d059d8fd4b8a5d4417,"Điện thoại Viettel Sumo 4G T2",NULL
+68,67d835d159d8fd4b8a5d4418,"Điện thoại Nokia 105 4G Pro",NULL
+69,67d835d259d8fd4b8a5d4419,"Điện thoại Benco 4G G3",NULL
+70,67d835d259d8fd4b8a5d441a,"Điện thoại Samsung Galaxy A55 5G 8GB/256GB","8GB - 256GB"
+71,67d835d359d8fd4b8a5d441c,"Điện thoại Masstel IZI T6 4G",NULL
+72,67d835d359d8fd4b8a5d441d,"Điện thoại Mobell M239 4G",NULL
+73,67d835d359d8fd4b8a5d441e,"Điện thoại Nokia HMD 105 4G",NULL
+74,67d835d459d8fd4b8a5d441f,"Điện thoại Nokia 220 4G",NULL
+75,67d835d459d8fd4b8a5d4420,"Điện thoại Masstel IZI 10",NULL
+76,67d835d559d8fd4b8a5d4421,"Điện thoại Samsung Galaxy M35 5G 8GB/256GB",NULL
+77,67d835d559d8fd4b8a5d4422,"Điện thoại Nokia 110 4G Pro",NULL
+78,67d835d659d8fd4b8a5d4423,"Điện thoại Masstel Fami 50 4G",NULL
+79,67d835d659d8fd4b8a5d4424,"Điện thoại Mobell F309 4G",NULL
+80,67d835d759d8fd4b8a5d4425,"Điện thoại OPPO Reno12 5G 12GB/256GB",256GB
+81,67d835d859d8fd4b8a5d4427,"Điện thoại Samsung Galaxy S25 Plus 5G 12GB/256GB",256GB
+82,67d835d959d8fd4b8a5d4429,"Điện thoại HONOR X7c 8GB/256GB",NULL
+83,67d835da59d8fd4b8a5d442a,"Điện thoại Samsung Galaxy A16 4GB/128GB","4GB - 128GB"
+84,67d835db59d8fd4b8a5d442d,"Điện thoại Samsung Galaxy M15 5G 4GB/128GB",4GB
+85,67d835dc59d8fd4b8a5d442f,"Điện thoại Mobell M539",NULL
+86,67d835dd59d8fd4b8a5d4430,"Điện thoại Mobell M331 4G",NULL
+87,67d835de59d8fd4b8a5d4431,"Điện thoại Mobell F209",NULL
+88,67d835de59d8fd4b8a5d4432,"Điện thoại Masstel Fami 60S 4G",NULL
+89,67d835de59d8fd4b8a5d4433,"Điện thoại vivo Y18 4GB/128GB",4GB
+90,67d835df59d8fd4b8a5d4435,"Điện thoại OPPO Reno12 5G 12GB/256GB Hồng",NULL
+91,67d835df59d8fd4b8a5d4436,"Điện thoại Nokia 3210 4G",NULL
+92,67d835e059d8fd4b8a5d4437,"Điện thoại Samsung Galaxy Z Flip6 5G 12GB/256GB",256GB
+93,67d835e259d8fd4b8a5d4439,"Điện thoại OPPO Reno12 Pro 5G 12GB/512GB",NULL
+94,67d835e259d8fd4b8a5d443a,"Điện thoại Samsung Galaxy M54 5G 8GB/256GB",NULL
+95,67d835e359d8fd4b8a5d443b,"Điện thoại Itel it9211",NULL
+96,67d835e459d8fd4b8a5d443c,"Điện thoại Itel it9310",NULL
+97,67d835e559d8fd4b8a5d443d,"Điện thoại OPPO Reno12 F 5G 8GB/256GB",8GB
+98,67d835e759d8fd4b8a5d443f,"Điện thoại OPPO A38 6GB/128GB",NULL
+99,67d835eb59d8fd4b8a5d4440,"Điện thoại Samsung Galaxy S23 FE 5G 8GB/128GB Xanh mint/Trắng",NULL
+100,67d835eb59d8fd4b8a5d4441,"Điện thoại OPPO Find N3 Flip 5G 12GB/256GB Hồng",Hồng
+101,67d835ec59d8fd4b8a5d4443,"Điện thoại HONOR 200 5G 12GB/256GB",256GB
+102,67d835ed59d8fd4b8a5d4445,"Điện thoại vivo Y100 8GB/128GB",128GB
+103,67d835ee59d8fd4b8a5d4447,"Điện thoại HONOR Magic V3 5G 12GB/512GB",NULL
+104,67d835ef59d8fd4b8a5d4448,"Điện thoại OPPO Find N3 5G 16GB/512GB",NULL
+105,67d835ef59d8fd4b8a5d4449,"Điện thoại OPPO A58 8GB/128GB",NULL
+106,67d835f059d8fd4b8a5d444a,"Điện thoại Itel it2600",NULL
