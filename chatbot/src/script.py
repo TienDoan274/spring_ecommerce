@@ -5,5 +5,4 @@ model_path = hf_hub_download(repo_id="facebook/fasttext-language-identification"
 print(model_path)
 model = fasttext.load_model(model_path)
 
-
 print(model.predict("Hello, world!", k=5))

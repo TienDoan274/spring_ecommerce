@@ -31,4 +31,5 @@ public class InventoryDto {
 
     private Integer currentPrice;
 
+
 }

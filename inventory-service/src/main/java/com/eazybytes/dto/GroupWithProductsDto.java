@@ -13,4 +13,7 @@ import lombok.NoArgsConstructor;
 public class GroupWithProductsDto {
     private List<GroupProductDto> products;
     private GroupDto groupDto;
+
+    public GroupWithProductsDto(GroupDto groupDto, List<GroupProductDto> productDtos) {
+    }
 }

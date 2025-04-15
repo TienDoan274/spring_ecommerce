@@ -75,20 +75,18 @@ public class GroupService {
     }
 
     @Transactional(readOnly = true)
-    public List<GroupWithProductsDto> getAllProductsByGroup(int page, int size, String type, List<String> tags, String sortByPrice, Double minPrice, Double maxPrice) {
+    public List<GroupWithProductsDto> getAllProductsByGroup(int page, int size, String type, List<String> tags, String sortByPrice, Integer minPrice, Integer maxPrice) {
         // Lấy toàn bộ nhóm theo type và tags (AND logic cho tags)
         List<Group> allGroups;
 
         if (type != null && !type.isEmpty()) {
-            if (tags != null && !tags.isEmpty()) {
-                // Lấy các group có type và chứa tất cả tags
+            if (!tags.isEmpty()) {
                 allGroups = groupRepository.findByTypeAndAllTags(type, tags, (long) tags.size());
             } else {
                 allGroups = groupRepository.findAllByType(type);
             }
         } else {
-            if (tags != null && !tags.isEmpty()) {
-                // Lấy các group chứa tất cả tags (không quan tâm type)
+            if (!tags.isEmpty()) {
                 allGroups = groupRepository.findByAllTags(tags, (long) tags.size());
             } else {
                 allGroups = groupRepository.findAll();
@@ -163,20 +161,39 @@ public class GroupService {
         result.sort(priceComparator);
 
         // Phân trang thủ công
-        long totalElements = groupRepository.countByTypeAndAllTags(type, tags, (long) tags.size());
-        int start = (int) Math.min(page * size, totalElements);
-        int end = (int) Math.min(start + size, totalElements);
-        List<GroupWithProductsDto> paginatedResult = result.subList(start, end);
+        long totalElements = countGroupsByTypeAndTags(type, tags);
+        int start = Math.min(page * size, (int) totalElements);
+        int end = Math.min(start + size, (int) totalElements);
+        List<GroupWithProductsDto> paginatedResult;
+        if (start < result.size()) {
+            paginatedResult = result.subList(start, Math.min(end, result.size()));
+        } else {
+            paginatedResult = Collections.emptyList();
+        }
 
         log.info("Fetched {} groups (out of {}) sorted by first product price for type: {}, tags: {}",
                 paginatedResult.size(), totalElements, type != null ? type : "all", tags);
         return paginatedResult;
     }
 
-    private List<GroupProduct> filterAndSortProducts(List<GroupProduct> products, String sortByPrice, Double minPrice, Double maxPrice) {
+    public long countGroupsByTypeAndTags(String type, List<String> tags) {
+        if (type != null && !type.isEmpty()) {
+            if (!tags.isEmpty()) {
+                return groupRepository.countByTypeAndAllTags(type, tags, (long) tags.size());
+            }
+            return groupRepository.countByType(type);
+        }
+        if (!tags.isEmpty()) {
+            return groupRepository.countByAllTags(tags, (long) tags.size());
+        }
+        return groupRepository.count();
+    }
+
+    private List<GroupProduct> filterAndSortProducts(List<GroupProduct> products, String sortByPrice, Integer minPrice, Integer maxPrice) {
         List<GroupProduct> filteredProducts = new ArrayList<>(products);
 
         filteredProducts = filteredProducts.stream()
+                .filter(p -> p.getDefaultCurrentPrice() != null) // Skip products with null prices
                 .filter(p -> (minPrice == null || p.getDefaultCurrentPrice() >= minPrice))
                 .filter(p -> (maxPrice == null || p.getDefaultCurrentPrice() <= maxPrice))
                 .collect(Collectors.toList());
@@ -184,26 +201,6 @@ public class GroupService {
         return filteredProducts;
     }
 
-    public long countGroupsByTypeAndTags(String type, List<String> tags) {
-        if (type != null && !type.isEmpty()) {
-            if (tags != null && !tags.isEmpty()) {
-                // Sửa thành query đếm theo AND logic (group phải có tất cả tags)
-                return groupRepository.countByTypeAndAllTags(type, tags, (long) tags.size());
-            }
-            return groupRepository.countByType(type);
-        }
-        return groupRepository.count();
-    }
-
-
-    @Transactional(readOnly = true)
-    public long countGroupsByType(String type) {
-        if (type != null && !type.isEmpty()) {
-            return groupRepository.countByType(type);
-        } else {
-            return groupRepository.count();
-        }
-    }
 
     public List<VariantDto> findAllProductsInSameGroup(String productId) {
         log.debug("Finding all products in same group (including current) for productId: {}", productId);
@@ -237,7 +234,7 @@ public class GroupService {
     }
 
     @Transactional
-    public Integer createGroupAndAssignProducts(List<String> productIds, Integer orderNumber, String image, String type,List<String> variants,List<String> productNames,List<Integer> defaultOriginalPrices, List<Integer> defaultCurrentPrices) {
+    public Integer createGroupAndAssignProducts(List<String> productIds, Integer orderNumber, String image, String type,List<String> variants,List<String> productNames,List<Integer> defaultOriginalPrices, List<Integer> defaultCurrentPrices,String groupName) {
         log.debug("Creating group and assigning products. ProductIds: {}, orderNumber: {}, type: {}",
                 productIds, orderNumber, type);
 
@@ -261,6 +258,7 @@ public class GroupService {
                 .orderNumber(orderNumber)
                 .image(image)
                 .type(type)
+                .groupName(groupName)
                 .build();
 
         log.debug("Saving Group entity to database");

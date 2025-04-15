@@ -5,15 +5,21 @@ from typing import List, Dict, Any
 from dotenv import load_dotenv
 import os
 from typing_extensions import TypedDict
-from models import Requirements, ComparisionInput, ProductInform, Complain
+from models import Requirements
 from rag.retrieve import combine_results
 from llama_index.llms.google_genai import GoogleGenAI
 from .prompts import *
 from .tools import *
+
 load_dotenv()
 
 def create_llama_tools():
     tools = [
+        # FunctionTool.from_defaults(
+        #     fn=casual_chatchit_tool,
+        #     name="casual_chatchit_tool",
+        #     description="Use this tool when users . Requires the original query."
+        # ),
         FunctionTool.from_defaults(
             fn=product_consultation_tool,
             name="product_consultation_tool",
@@ -22,9 +28,8 @@ def create_llama_tools():
         FunctionTool.from_defaults(
             fn=product_information_tool,
             name="product_information_tool",
-            description="Use this tool to retrieve product information when users request specific details about a product or compare different products. Requires the specific product name."
+            description="Use this tool to retrieve product information when users request specific details about a product or compare different products. Requires the specific product name. "
         ),
-        
         FunctionTool.from_defaults(
             fn=product_complain_tool,
             name="product_complain_tool",
@@ -33,57 +38,43 @@ def create_llama_tools():
         FunctionTool.from_defaults(
             fn=shop_information_tool,
             name="shop_information_tool",
-            description="Use this tool when users ask about shop details such as addresses, operating hours, hotlines, promotions, warranty periods, or return policies. Requires the original query; device type is optional."
+            description="Use this tool when users ask about shop details such as addresses, operating hours, hotlines, promotions, warranty periods, or return policies. Requires the original query."
         ),
         FunctionTool.from_defaults(
-            fn=get_close_name_tool,
-            name="get_close_name_tool",
-            description="Use this tool to identify the exact product name when the user's query is vague. Returns a list of similar product names to clarify with the user."
-        )
+            fn=web_search_tool,
+            name="web_search_tool",
+            description="Use this tool to search for product information on the internet, specifically configuration details, only when the information for a product mentioned by the user is not available from product_information_tool. Input query should include 'thông tin cấu hình' followed by the product name (e.g., 'thông tin cấu hình iPhone 14').")
     ]
     return tools
 
-# Tạo LlamaIndex agent
-def create_manager_agent():
+def create_manager_agent(language):
     llm = GoogleGenAI(
         model="gemini-2.0-flash",
     )
-    tools = create_llama_tools()
-    
-    # Load prompt từ file nếu có
-    manager_instructions = MANAGER_INSTRUCTION
+    tools = create_llama_tools()    
+    print(language)
+    manager_instructions = MANAGER_INSTRUCTION.format(language=language)
     
     agent = ReActAgent.from_tools(
         tools,
         llm=llm,
         verbose=True,
-        system_prompt=manager_instructions
+        system_prompt=manager_instructions,
+        max_iterations=20
     )
     
     return agent
 
-# Xử lý chat
-async def process_chat(query: str, chat_history: List[Dict] = None):
+async def process_chat(query: str, chat_history: List[ChatMessage] = None, language: str = 'vie'):
     if chat_history is None:
         chat_history = []
+    map_language = {'vie':'Vietnamese','eng':'English'}
+    agent = create_manager_agent(map_language[language])
     
-    # Chuyển đổi lịch sử chat sang định dạng của LlamaIndex
-    llama_messages = []
-    for message in chat_history:
-        if message["role"] == "user":
-            llama_messages.append(ChatMessage(role="user", content=message["content"]))
-        elif message["role"] == "assistant":
-            llama_messages.append(ChatMessage(role="assistant", content=message["content"]))
-    
-    # Tạo agent và xử lý
-    agent = create_manager_agent()
-    
-    # Separate the query from chat history
-    if llama_messages:
-        # If there's chat history, pass it as a separate parameter
-        response = await agent.achat(query, chat_history=llama_messages)    
+    # Process the query with chat history
+    if chat_history:
+        response = await agent.achat(query, chat_history=chat_history)
     else:
-        # If there's no chat history, just pass the query
         response = await agent.achat(query)
     
     return response.response

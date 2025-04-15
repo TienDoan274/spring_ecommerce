@@ -1,15 +1,24 @@
+# app.py
+
 from flask import Flask, request, jsonify
 from concurrent.futures import ThreadPoolExecutor
 from agents.llama_agent import process_chat
 from filter.preprocess import Filter
 from dotenv import load_dotenv
+from llama_index.core.memory import ChatMemoryBuffer
+from llama_index.core.llms import ChatMessage
+from flaskext.mysql import MySQL
+from db import init_mysql
 import os
+from flask_cors import CORS
+from shared_data import CURRENT_REQUEST_GROUP_IDS
 
 load_dotenv()
 app = Flask(__name__)
+CORS(app)
 executor = ThreadPoolExecutor()
-
-conversation_history = {}
+init_mysql(app)
+memory_buffers = {}
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -38,29 +47,39 @@ def chat():
     if not query:
         return jsonify({"error": "Missing query parameter"}), 400
 
-    # Lấy lịch sử cuộc trò chuyện hoặc tạo mới
-    if thread_id not in conversation_history:
-        conversation_history[thread_id] = []
+    # Initialize or get ChatMemoryBuffer for the thread_id
+    if thread_id not in memory_buffers:
+        memory_buffers[thread_id] = ChatMemoryBuffer.from_defaults(token_limit=40000)
     
+    memory = memory_buffers[thread_id]
+
+    # Get current chat history
+    chat_history = memory.get_all()
+
     # Xử lý chat sử dụng LlamaIndex agent trong thread riêng
-    future = executor.submit(process_chat_sync, query, conversation_history[thread_id])
+    future = executor.submit(process_chat_sync, query, chat_history, filter_result[1])
     response = future.result()
     
-    # Cập nhật lịch sử cuộc trò chuyện
-    conversation_history[thread_id].append({"role": "user", "content": query})
-    conversation_history[thread_id].append({"role": "assistant", "content": str(response)})
-    
-    return jsonify({
+    # Update memory with new messages
+    memory.put(ChatMessage(role="user", content=query))
+    memory.put(ChatMessage(role="assistant", content=str(response)))
+    temp = CURRENT_REQUEST_GROUP_IDS.copy()
+    CURRENT_REQUEST_GROUP_IDS.clear()
+    # Prepare response with groupids
+    response_data = {
         "role": "assistant",
-        "content": str(response)
-    })
+        "content": str(response),
+        "groupids": temp  
+    }    
+    
+    return jsonify(response_data)
 
-def process_chat_sync(query, history):
+def process_chat_sync(query, history, language):
     """Synchronous wrapper for the async process_chat function"""
     import asyncio
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    result = loop.run_until_complete(process_chat(query, history))
+    result = loop.run_until_complete(process_chat(query, history, language))
     loop.close()
     return result
 

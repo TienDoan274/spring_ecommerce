@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/group-tags")
@@ -47,5 +49,17 @@ public class GroupTagController {
     public ResponseEntity<List<GroupTags>> getTagsByGroupId(@PathVariable Integer groupId) {
         List<GroupTags> groupTags = groupTagService.getTagsByGroupId(groupId);
         return ResponseEntity.ok(groupTags);
+    }
+
+    @GetMapping("/groups-by-tags")
+    public ResponseEntity<List<Integer>> getGroupIdsByTagIds(@RequestParam String tagIds) {
+        // Chuyển chuỗi tagIds thành List<Integer>
+        List<Integer> tagIdList = Arrays.stream(tagIds.split(","))
+                .map(String::trim) // Loại bỏ khoảng trắng
+                .map(Integer::parseInt) // Chuyển thành Integer
+                .collect(Collectors.toList());
+
+        List<Integer> groupIds = groupTagService.getGroupIdsByTagIds(tagIdList);
+        return ResponseEntity.ok(groupIds);
     }
 }

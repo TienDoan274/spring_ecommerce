@@ -3,11 +3,11 @@ from typing import Optional
 
 # Yêu cầu cho điện thoại
 class PhoneRequirements(BaseModel):
-    gaming: bool
-    battery: bool
-    camera: bool
-    streaming: bool
-    lightweight: bool
+    phone_battery: bool
+    phone_camera: bool
+    phone_highSpecs: bool
+    phone_livestream: bool
+    phone_slimLight: bool
     min_budget: Optional[int]
     max_budget: Optional[int]
     brand_preference: Optional[str]
@@ -15,13 +15,13 @@ class PhoneRequirements(BaseModel):
 
 # Yêu cầu cho laptop
 class LaptopRequirements(BaseModel):
-    ai_capable: bool
-    gaming: bool
-    office: bool
-    graphics: bool
-    engineering: bool
-    lightweight: bool
-    premium: bool
+    laptop_ai: bool
+    laptop_engineer: bool
+    laptop_gaming: bool
+    laptop_graphic: bool
+    laptop_office: bool
+    laptop_premium: bool
+    laptop_slimLight: bool 
     min_budget: Optional[int]
     max_budget: Optional[int]
     brand_preference: Optional[str]

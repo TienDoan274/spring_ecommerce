@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class GroupTagService {
@@ -62,5 +64,24 @@ public class GroupTagService {
     // Lấy tất cả tags của một group
     public List<GroupTags> getTagsByGroupId(Integer groupId) {
         return groupTagsRepository.findByGroup_GroupId(groupId);
+    }
+
+    public List<Integer> getGroupIdsByTagIds(List<Integer> tagIds) {
+        if (tagIds == null || tagIds.isEmpty()) {
+            return List.of();
+        }
+
+        List<GroupTags> groupTags = groupTagsRepository.findByTagTagIdIn(tagIds);
+
+        Map<Integer, Long> groupTagCount = groupTags.stream()
+                .collect(Collectors.groupingBy(
+                        gt -> gt.getGroup().getGroupId(),
+                        Collectors.counting()
+                ));
+
+        return groupTagCount.entrySet().stream()
+                .filter(entry -> entry.getValue() == tagIds.size())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 }

@@ -16,5 +16,8 @@ public class GroupDto {
     private Integer orderNumber;
     private String image;
     private String type;
+    private String groupName;
 
+    public GroupDto(Integer groupId) {
+    }
 }

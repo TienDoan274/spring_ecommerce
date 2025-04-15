@@ -26,14 +26,15 @@ def generate_id(object_id):
     return hashlib.md5(str(object_id).encode()).hexdigest()
 
 # Truy vấn Elasticsearch
-def search_elasticsearch(query, ids=None, size=1):
+def search_elasticsearch(query, ids=None, size=5):
+    map_type = {"phone":"PHONE","laptop":"LAPTOP"}
     body = {
         "query": {
             "bool": {
                 "must": {
                     "multi_match": {
                         "query": query,
-                        "fields": ["group_name",'content']
+                        "fields": ["group_name",'group_data']
                     }
                 }
             }
@@ -43,9 +44,15 @@ def search_elasticsearch(query, ids=None, size=1):
     if ids:
         body["query"]["bool"]["filter"] = {
             "terms": {
-                "_id": ids
+                "group_id": ids
             }
         }
+    # if device:
+    #     body["query"]['bool']['filter'] = {
+    #         "term":{
+    #             "type":map_type[device]
+    #         }
+    #     }
     try:
         response = es_client.search(index="products", body=body)
     except Exception as e:
@@ -55,38 +62,11 @@ def search_elasticsearch(query, ids=None, size=1):
     for hit in response["hits"]["hits"]:
         results.append({
             "id": hit["_id"],
-            "content": hit["_source"]["content"],
+            "group_data": hit["_source"]["group_data"],
             "score": hit["_score"],
             "group_name": hit["_source"]["group_name"],
-            "product_type": hit["_source"]["product_type"],
-        })
-    return results
+            "group_id": hit["_source"]["group_id"],
 
-def search_close_name(query, ids=None, size=3):
-
-    body = {
-        "query": {
-            "match": {
-                "group_name": {
-                    "query": query,
-                    "fuzziness": "AUTO",  # Tự động điều chỉnh độ "mờ"
-                    "max_expansions": size  # Giới hạn số kết quả gần giống
-                }
-            }
-        }
-    }
-
-    # Thực hiện truy vấn
-    response = es_client.search(index="products", body=body)
-
-    results=[]
-    for hit in response["hits"]["hits"]:
-        results.append({
-            "id": hit["_id"],
-            "score": hit["_score"],
-            "content": hit["_source"]["content"],
-            "group_name": hit["_source"]["group_name"],
-            "product_type": hit["_source"]["product_type"]
         })
     return results
 
@@ -104,9 +84,8 @@ def search_qdrant(query, vector_size=1536, size=10):
         results.append({
             "id": point.id,
             "score": point.score,
-            "content": point.payload["content"],
+            "group_data": point.payload["group_data"],
             "product_name": point.payload["product_name"],
-            "product_type": point.payload["product_type"],
             "brand": point.payload["brand"]
         })
     return results
@@ -126,9 +105,8 @@ def combine_results(query, semantic_weight=0.1, elastic_weight=0.9, size=6):
         combined_scores[result["id"]] = {
             "elastic_score": normalized_score,
             "semantic_score": 0,
-            "content": result["content"],
+            "group_data": result["group_data"],
             "product_name": result["product_name"],
-            "product_type": result["product_type"],
             "brand": result["brand"]
         }
 
@@ -142,7 +120,7 @@ def combine_results(query, semantic_weight=0.1, elastic_weight=0.9, size=6):
             combined_scores[result["id"]] = {
                 "elastic_score": 0,
                 "semantic_score": normalized_score,
-                "content": result["content"],
+                "group_data": result["group_data"],
                 "product_name": result["product_name"],
                 "product_type": result["product_type"],
                 "brand": result["brand"]

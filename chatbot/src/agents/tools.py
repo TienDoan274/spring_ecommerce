@@ -1,210 +1,278 @@
 import pandas as pd
-from dotenv import load_dotenv
+from sqlalchemy import create_engine, text
+from typing import Optional, List, Dict, Any
 import requests
 import os
 import numpy as np
 import json 
-from rag.retrieve import combine_results,search_elasticsearch,search_close_name
+from rag.retrieve import combine_results,search_elasticsearch
 from dotenv import load_dotenv
-from models import PhoneRequirements,LaptopRequirements,ComparisionInput,ProductInform, Complain
+from models import PhoneRequirements,LaptopRequirements
 from llama_index.llms.google_genai import GoogleGenAI
 from .prompts import *
+from duckduckgo_search import DDGS
+from db import mysql
+from llama_index.core.workflow import Context
+from shared_data import CURRENT_REQUEST_GROUP_IDS
+
+ctx = Context
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+base_path = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), "filtered_products2")
+
 load_dotenv()
 llm = GoogleGenAI(
     model="gemini-2.0-flash",
     api_key=os.getenv('GOOGLE_API_KEY')
 )
-load_dotenv()
-from .prompts import PRODUCT_CONSULTATION_TEMPLATE
-# openai_key = os.getenv("OPENAI_API_KEY")
-# client = OpenAI(api_key=openai_key)
-
-# def get_embedding(text: str) -> list[float]:
-#     response = client.embeddings.create(
-#         input=text,
-#         model="text-embedding-3-small"
-#     )
-
-#     return response.data[0].embedding
-
-def product_consultation_tool(device: str, query: str, k: int = 5) -> str:
-    base_path = "/home/kltn2025/spring_ecommerce/chatbot/filtered_products"
-    
-    # Chọn schema và prompt theo loại thiết bị
-    if device == "phone":
-        reqs = llm.structured_predict(PhoneRequirements, PHONE_CONSULTATION_TEMPLATE, query=query)
-        device_path = f"{base_path}/phone"
-        requirements_map = {
-            "gaming": ("gamecauhinhcao.csv", "gaming_rank"),
-            "battery": ("pinkhung.csv", "battery_rank"),
-            "camera": ("chupanhquayfim.csv", "camera_rank"),
-            "streaming": ("livestream.csv", "streaming_rank"),
-            "lightweight": ("mongnhe.csv", "lightweight_rank")
-        }
-    elif device == "laptop":
-        reqs = llm.structured_predict(LaptopRequirements, LAPTOP_CONSULTATION_TEMPLATE, query=query)
-        device_path = f"{base_path}/laptop"
-        requirements_map = {
-            "ai_capable": ("ai.csv", "ai_rank"),
-            "gaming": ("gaming.csv", "gaming_rank"),
-            "office": ("hoctapvanphong.csv", "office_rank"),
-            "graphics": ("graphics_laptops.csv", "graphics_rank"),
-            "engineering": ("kythuat.csv", "engineering_rank"),
-            "lightweight": ("mongnhe.csv", "lightweight_rank"),
-            "premium": ("premium_laptops.csv", "premium_rank")
-        }
-    else:
-        return "Loại thiết bị không được hỗ trợ. Hiện tại chỉ hỗ trợ 'phone' và 'laptop'."
-
-    # Lấy thông tin chung
-    brand = reqs.brand_preference or "không xác định"
-    min_budget = reqs.min_budget
-    max_budget = reqs.max_budget
-    print(reqs)
-    # Danh sách các bảng cần merge dựa trên yêu cầu
-    tables_to_merge = []
-    
-    # Kiểm tra từng yêu cầu và thêm bảng tương ứng
-    for req_key, (csv_file, rank_col) in requirements_map.items():
-        if getattr(reqs, req_key):  # Kiểm tra nếu yêu cầu là True
-            df = pd.read_csv(f"{device_path}/{csv_file}")
-            df[rank_col] = df.index + 1
-            tables_to_merge.append(df[["ids", "names", rank_col]])
-
-    # Nếu không có yêu cầu nào, trả về phản hồi mặc định
-    if not tables_to_merge:
-        return f"Tôi đề xuất {device} từ {brand} dựa trên sở thích thương hiệu của bạn."
-
-    # Merge các bảng
-    combined_df = tables_to_merge[0]
-    for df in tables_to_merge[1:]:
-        combined_df = pd.merge(
-            combined_df,
-            df,
-            on=["ids", "names"],
-            how="outer"
-        )
-
-    # Điền NaN bằng rank tối đa + 1
-    max_rank = max([len(df) for df in tables_to_merge]) + 1
-    for col in combined_df.columns:
-        if col.endswith("_rank"):
-            combined_df[col] = combined_df[col].fillna(max_rank)
-
-    # Tìm kiếm Elasticsearch nếu có yêu cầu cụ thể
-    if reqs.specific_requirements and reqs.specific_requirements != '':
-        print("reqs.specific_requirements",reqs.specific_requirements)
-        search_results = search_elasticsearch(reqs.specific_requirements, ids=combined_df['ids'].to_list())
-        print('search_results',search_results)
-        # Tạo DataFrame từ kết quả Elasticsearch
-        es_df = pd.DataFrame(search_results)
-        es_df = es_df.rename(columns={"id": "ids", "product_name": "names"})
+def product_consultation_tool(device: str, query: str, top_k: int = 5) -> str:
+    CURRENT_REQUEST_GROUP_IDS.clear()
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
         
-        # Nếu có kết quả từ Elasticsearch, merge với combined_df
-        if not es_df.empty:
-            combined_df = pd.merge(
-                combined_df,
-                es_df[["ids", "score"]],
-                on="ids",
-                how="left"
-            )
-            # Chuẩn hóa score (1 là tốt nhất, giá trị cao hơn là kém hơn)
-            if "score" in combined_df:
-                max_score = combined_df["score"].max()
-                min_score = combined_df["score"].min()
-                if max_score != min_score:
-                    combined_df["es_rank"] = 1 + ((max_score - combined_df["score"]) / (max_score - min_score)) * (len(combined_df) - 1)
-                else:
-                    combined_df["es_rank"] = 1
-                combined_df["es_rank"] = combined_df["es_rank"].fillna(len(combined_df) + 1)
+        # Process device type
+        if device == "phone":
+            reqs = llm.structured_predict(PhoneRequirements, PHONE_CONSULTATION_TEMPLATE, query=query)
+            tag_prefix = "phone_"
+        elif device == "laptop":
+            reqs = llm.structured_predict(LaptopRequirements, LAPTOP_CONSULTATION_TEMPLATE, query=query)
+            tag_prefix = "laptop_"
         else:
-            combined_df["es_rank"] = len(combined_df) + 1
+            cursor.close()
+            conn.close()
+            return "Loại sản phẩm này hiện tại chưa có tại cửa hàng chúng tôi."
 
-    # Merge với bảng prices nếu có min_budget hoặc max_budget
-    if min_budget or max_budget:
-        prices_df = pd.read_csv(f"{device_path}/prices.csv")
-        combined_df = pd.merge(
-            combined_df,
-            prices_df[["ids", "names", "current_prices"]],
-            on=["ids", "names"],
-            how="inner"  # Chỉ giữ các sản phẩm có giá
+        # Requirements
+        brand = reqs.brand_preference or "không xác định"
+        min_budget = reqs.min_budget
+        max_budget = reqs.max_budget
+        print(reqs)
+        # Kiểm tra nếu chỉ có thông tin giá mà không có yêu cầu khác
+        only_price = (min_budget or max_budget) and not any(
+            field for field in reqs.__dict__.keys() 
+            if field.startswith(tag_prefix) and getattr(reqs, field)
         )
-        # Lọc theo khoảng giá
-        if min_budget:
-            combined_df = combined_df[combined_df["current_prices"] >= min_budget]
-        if max_budget and max_budget!=0:
-            combined_df = combined_df[combined_df["current_prices"] <= max_budget]
+        if only_price:
+            # Trường hợp chỉ có thông tin giá
+            price_sql = """
+                SELECT gp.group_id, gp.group_name, MIN(gpj.default_current_price) AS price
+                FROM group_product gp
+                JOIN group_product_junction gpj ON gp.group_id = gpj.group_id
+                GROUP BY gp.group_id, gp.group_name
+            """
+            cursor.execute(price_sql)
+            result = cursor.fetchall()
+            combined_df = pd.DataFrame(result, columns=["group_id", "group_name", "price"])
+            
+            # Lọc theo giá
+            if min_budget:
+                combined_df = combined_df[combined_df["price"] >= min_budget]
+            if max_budget and max_budget != 0:
+                combined_df = combined_df[combined_df["price"] <= max_budget]
+                
+            # Sắp xếp theo giá từ CAO NHẤT đến THẤP NHẤT (thay đổi ascending=False)
+            combined_df = combined_df.sort_values(by="price", ascending=False).head(top_k)
+            
+            if combined_df.empty:
+                cursor.close()
+                conn.close()
+                return f"Không tìm thấy {device} phù hợp với khoảng giá bạn yêu cầu."
+            
+            # Build response
+            response = f"Dưới đây là top {top_k} {device} phù hợp với khoảng giá bạn yêu cầu (từ cao đến thấp):\n"
+            for _, product in combined_df.iterrows():
+                product_info = f"- {product['group_name']} (ID: {product['group_id']}, giá: {int(product['price']):,} đồng)"
+                response += product_info + "\n"
+            
+            cursor.close()
+            conn.close()
+            return response
 
-    # Tính combined_rank
-    rank_columns = [col for col in combined_df.columns if col.endswith("_rank")]
+        # Nếu có yêu cầu khác ngoài giá, xử lý như bình thường
+        # Active requirements
+        req_fields = [field for field in reqs.__dict__.keys() if field.startswith(tag_prefix) and getattr(reqs, field)]
+
+        # Query tags
+        tables_to_merge = []
+        for req_key in req_fields:
+            tag_name = req_key
+            sql = """
+                SELECT gp.group_id, gp.group_name
+                FROM group_product gp
+                JOIN group_tags gt ON gp.group_id = gt.group_id
+                JOIN tags t ON gt.tag_id = t.tag_id
+                WHERE t.tag_name = %s
+            """
+            cursor.execute(sql, (tag_name,))
+            result = cursor.fetchall()
+            if result:
+                df = pd.DataFrame(result, columns=["group_id", "group_name"])
+                df[f"{tag_name}_rank"] = df.index + 1
+                tables_to_merge.append(df[["group_id", "group_name", f"{tag_name}_rank"]])
+
+        if not tables_to_merge:
+            cursor.close()
+            conn.close()
+            return f"Tôi đề xuất {device} từ {brand} dựa trên sở thích thương hiệu của bạn."
+
+        # Merge DataFrames
+        combined_df = tables_to_merge[0]
+        for df in tables_to_merge[1:]:
+            combined_df = pd.merge(combined_df, df, on=["group_id", "group_name"], how="outer")
+
+        # Fill NaN ranks
+        max_rank = max([len(df) for df in tables_to_merge]) + 1
+        for col in combined_df.columns:
+            if col.endswith("_rank"):
+                combined_df[col] = combined_df[col].fillna(max_rank)
+
+        # Tìm kiếm Elasticsearch nếu có yêu cầu cụ thể
+        if hasattr(reqs, 'specific_requirements') and reqs.specific_requirements and reqs.specific_requirements != '':
+            print("reqs.specific_requirements", reqs.specific_requirements)
+            
+            # Lấy danh sách group_id từ combined_df (đảm bảo là string)
+            group_ids = combined_df['group_id'].astype(str).tolist()
+            
+            search_results = search_elasticsearch(
+                reqs.specific_requirements, 
+                ids=group_ids,
+                size=top_k*2  # Lấy nhiều hơn để có kết quả phong phú
+            )
+            print('search_results', search_results)
+            
+            # Xử lý kết quả Elasticsearch
+            if search_results:
+                es_df = pd.DataFrame(search_results)
+                
+                # Chuẩn bị dữ liệu để merge
+                es_df['group_id'] = es_df['group_id'].astype(int)  # Chuyển về cùng kiểu với MySQL
+                
+                # Thêm cột rank từ Elasticsearch
+                es_df['es_rank'] = es_df.index + 1
+                
+                # Merge với combined_df
+                combined_df = pd.merge(
+                    combined_df,
+                    es_df[['group_id', 'es_rank']],
+                    on='group_id',
+                    how='left'
+                )
+                
+                # Điền giá trị mặc định cho các sản phẩm không có trong kết quả tìm kiếm
+                combined_df['es_rank'] = combined_df['es_rank'].fillna(len(combined_df) + 1)
+            else:
+                combined_df['es_rank'] = len(combined_df) + 1
+
+        # Prices
+        if min_budget or max_budget:
+            price_sql = """
+                SELECT gpj.group_id, gp.group_name, gpj.default_current_price AS price
+                FROM group_product_junction gpj
+                JOIN group_product gp ON gpj.group_id = gp.group_id
+                WHERE (gpj.group_id, gpj.default_current_price) IN (
+                    SELECT group_id, MIN(default_current_price)
+                    FROM group_product_junction
+                    GROUP BY group_id
+                )
+            """
+            cursor.execute(price_sql)
+            result = cursor.fetchall()
+            prices_df = pd.DataFrame(result, columns=["group_id", "group_name", "price"])
+
+            if not prices_df.empty:
+                combined_df = pd.merge(combined_df, prices_df, on=["group_id", "group_name"], how="inner")
+                if min_budget:
+                    combined_df = combined_df[combined_df["price"] >= min_budget]
+                if max_budget and max_budget != 0:
+                    combined_df = combined_df[combined_df["price"] <= max_budget]
+
+        # Calculate ranks
+        rank_columns = [col for col in combined_df.columns if col.endswith("_rank")]
+        if "es_rank" in combined_df.columns:
+            rank_columns.append("es_rank")
+            
+        combined_df["combined_rank"] = combined_df[rank_columns].sum(axis=1)
+
+        # Top k
+        top_k_products = combined_df.sort_values(by="combined_rank").head(top_k)
+        if top_k_products.empty:
+            cursor.close()
+            conn.close()
+            return f"Không tìm thấy {device} phù hợp với yêu cầu của bạn."
+
+        # Build response
+        response = f"Dưới đây là top {top_k} {device} phù hợp với yêu cầu của bạn:\n"
+        for _, product in top_k_products.iterrows():
+            product_info = f"- {product['group_name']} (ID: {product['group_id']}, rank: {int(product['combined_rank'])}"
+            if "price" in product and not pd.isna(product["price"]):
+                product_info += f", giá: {int(product['price']):,} đồng"
+            product_info += ")"
+            response += product_info + "\n"
+            CURRENT_REQUEST_GROUP_IDS.append(product['group_id'])
+        cursor.close()
+        conn.close()
+        return response
+
+    except Exception as e:
+        try:
+            cursor.close()
+            conn.close()
+        except:
+            pass
+        return f"Lỗi: {e}"
     
-    # Nếu có es_rank từ Elasticsearch, thêm vào rank_columns
-    if "es_rank" in combined_df:
-        rank_columns.append("es_rank")
-    
-    combined_df["combined_rank"] = combined_df[rank_columns].sum(axis=1)
 
-    # Sắp xếp theo combined_rank từ thấp đến cao
-    combined_df = combined_df.sort_values(by="combined_rank", ascending=True)
-
-    # Lấy top k sản phẩm
-    top_k_products = combined_df.head(k)
-    
-    # Xây dựng phản hồi
-    if top_k_products.empty:
-        return f"Không tìm thấy {device} phù hợp với yêu cầu của bạn."
-    
-    response = f"Dưới đây là top {k} {device} phù hợp với yêu cầu của bạn:\n"
-    for i, product in top_k_products.iterrows():
-        product_info = f"- {product['names']} (ID: {product['ids']}, combined rank: {int(product['combined_rank'])}"
-        if "current_prices" in product:
-            product_info += f", giá: {int(product['current_prices']):,} đồng"
-        product_info += ")"
-        
-        # Thêm thông tin về các rank
-        for req_key, (_, rank_col) in requirements_map.items():
-            if getattr(reqs, req_key) and rank_col in product:
-                product_info += f", {req_key} (rank {int(product[rank_col])})"
-        
-        # Thêm thông tin score từ Elasticsearch nếu có
-        if "score" in product and not pd.isna(product["score"]):
-            product_info += f", relevance score: {product['score']:.2f}"
-        
-        response += product_info + "\n"
-    
-    # Thêm thông tin về khoảng giá nếu có
-    if min_budget and max_budget:
-        response += f"(Trong khoảng giá {min_budget:,} - {max_budget:,} đồng)"
-    elif min_budget:
-        response += f"(Giá tối thiểu {min_budget:,} đồng)"
-    elif max_budget:
-        response += f"(Giá tối đa {max_budget:,} đồng)"
-    
-    return response
-def get_close_name_tool(query: str):
-    results = search_close_name(query)
-    return f"Hỏi người dùng bạn sản phẩm mà họ đang muốn nhắc tới dựa vào các tên gần giống nhất sau:{', '.join([i.group_name for i in results])}"    
-
-def product_information_tool(query: str)-> str:
-    results = search_elasticsearch(query)
-    print(results[0])
-    return f"Đây là tài liệu về thông tin của sản phẩm mà người dùng đang nhắc tới: {results[0]['content']}"
+def web_search_tool(query: str) -> str:
+    try:
+        with DDGS() as ddgs:
+            results = ddgs.text(f"thông tin cấu hình {query}", max_results=6)
+            if not results:
+                return f"Không tìm thấy thông tin cấu hình cho '{query}' trên web."
+            config_info = ""
+            for result in results:
+                title = result.get("title", "")
+                snippet = result.get("body", "")
+                if "cấu hình" in title.lower() or "cấu hình" in snippet.lower():
+                    config_info += f"- {title}: {snippet}\n"
+            return f"Thông tin cấu hình tìm thấy trên web cho '{query}':\n{config_info}" if config_info else f"Không tìm thấy thông tin cấu hình chi tiết cho '{query}' trên web."
+    except Exception as e:
+        return f"Lỗi khi tìm kiếm web: {str(e)}. Không thể lấy thông tin cấu hình cho '{query}'."
 
 
+# Ensure this import is at the top of the file where product_information_tool is defined
+# Assuming search_elasticsearch function is defined elsewhere
+# from elasticsearch_utils import search_elasticsearch
 
-def product_complain_tool(query: Complain) -> str:
-    print(1)
+def product_information_tool(query: str) -> str:
+    CURRENT_REQUEST_GROUP_IDS.clear()
+    results = search_elasticsearch(query) # Replace with your actual search call
+    doc = ''
+
+    if not results:
+        print("--- No results found in product_information_tool ---")
+        return "Không tìm thấy thông tin sản phẩm nào khớp với truy vấn của bạn."
+
+    for i, r in enumerate(results):
+        doc += f'Sản phẩm thứ {i+1}:\n'
+        # Use .get for safety, in case keys are missing
+        doc += r.get('group_data', 'N/A')
+        doc += '\n\n'
+        group_id = r.get('group_id') # Verify 'group_id' is the correct key name
+
+        if group_id:
+            CURRENT_REQUEST_GROUP_IDS.append(group_id)
+
+    return f"Tìm trong danh sách này có thể có tài liệu về sản phẩm mà người dùng đang nhắc tới:\n {doc}"
+
+def product_complain_tool(query: str) -> str:
     print(query)
 
     return "Vui lòng điền thông tin vào form, bạn sẽ được nhận được cuộc gọi tư vấn hỗ trợ trong vòng 48 giờ tiếp theo."
 
 def shop_information_tool(query: str) -> str:
-    with open('/home/kltn2025/spring_ecommerce/chatbot/src/rag/shop_document.txt') as f:
+    with open('E:/projects/KLTN/web/untitled/chatbot/src/rag/shop_document.txt','r',encoding='utf-8') as f:
         shop_doc = f.read()
 
-    return f"Dựa vào tài liệu sau về thông tin của cửa hàng để trả lời cho người dùng: {shop_doc}"
-
-def get_related_product_tool(query: str) -> str:
-    
 
     return f"Dựa vào tài liệu sau về thông tin của cửa hàng để trả lời cho người dùng: {shop_doc}"
+

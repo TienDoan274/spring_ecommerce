@@ -8,11 +8,12 @@ PHONE_CONSULTATION_TEMPLATE = PromptTemplate(
     Dựa trên input của người dùng: "{query}", hãy thực hiện các bước sau:
 
     1. Phân loại yêu cầu của người dùng thành các nhóm yêu cầu chung:
-       * gaming: True nếu "game" hoặc "chơi game" xuất hiện, ngược lại False
-       * battery: True nếu "pin trâu" hoặc "pin lớn" xuất hiện, ngược lại False
-       * camera: True nếu "camera" hoặc "chụp ảnh" xuất hiện, ngược lại False
-       * streaming: True nếu "stream" hoặc "live" xuất hiện, ngược lại False
-       * lightweight: True nếu "nhẹ" hoặc "mỏng" xuất hiện, ngược lại False
+
+       * phone_highSpecs: True nếu người dùng cần điện thoại có cấu hình cao hoặc chơi game tốt, ngược lại False
+       * phone_battery: True nếu nếu người dùng cần điện thoại có pin dung lượng lớn, ngược lại False
+       * phone_camera: True nếu nếu người dùng cần điện thoại chụp anh hoặc quay phim tốt, ngược lại False
+       * phone_livestream: True nếu người dùng cần điện thoại tốt cho việc livestream, ngược lại False
+       * phone_slimLight: True nếu nếu người dùng cần điện thoại mỏng hoặc nhẹ, ngược lại False
 
     2. Xác định thông tin chung:
        - min_budget/max_budget: Khoảng giá (đơn vị đồng, số nguyên). Nếu không có, để null.
@@ -22,11 +23,11 @@ PHONE_CONSULTATION_TEMPLATE = PromptTemplate(
 
     3. Trả về kết quả dưới dạng JSON:
        {
-         "gaming": <true/false>,
-         "battery": <true/false>,
-         "camera": <true/false>,
-         "streaming": <true/false>,
-         "lightweight": <true/false>,
+         "phone_highSpecs": <true/false>,
+         "phone_battery": <true/false>,
+         "phone_camera": <true/false>,
+         "phone_livestream": <true/false>,
+         "phone_slimLight": <true/false>,
          "min_budget": <số hoặc null>,
          "max_budget": <số hoặc null>,
          "brand_preference": "<thương hiệu hoặc null>",
@@ -43,14 +44,15 @@ LAPTOP_CONSULTATION_TEMPLATE = PromptTemplate(
 
     Dựa trên input của người dùng: "{query}", hãy thực hiện các bước sau:
 
+
     1. Phân loại yêu cầu của người dùng thành các nhóm yêu cầu chung:
-       * ai_capable: True nếu "AI" xuất hiện, ngược lại False
-       * gaming: True nếu "game" hoặc "chơi game" xuất hiện, ngược lại False
-       * office: True nếu "học" hoặc "văn phòng" xuất hiện, ngược lại False
-       * graphics: True nếu "đồ họa" xuất hiện, ngược lại False
-       * engineering: True nếu "kỹ thuật" xuất hiện, ngược lại False
-       * lightweight: True nếu "nhẹ" hoặc "mỏng" xuất hiện, ngược lại False
-       * premium: True nếu "cao cấp" xuất hiện, ngược lại False
+       * laptop_ai: True nếu người dùng cần laptop có hỗ trợ AI, ngược lại False
+       * laptop_gaming: True nếu người dùng cần laptop chuyên cho gaming, ngược lại False
+       * laptop_office: True nếu người dùng cần laptop chuyên cho học tập, làm việc văn phòng cơ bản, ngược lại False
+       * laptop_graphic: True nếu người dùng cần laptop chuyên cho việc xử lý đồ họa, ngược lại False
+       * laptop_engineer: True nếu người dùng cần laptop chuyên cho cho việc engineer, ngược lại False
+       * laptop_slimLight: True nếu người dùng cần laptop mỏng hoặc nhẹ, ngược lại False
+       * laptop_premium: True nếu người dùng cần laptop cao cấp, ngược lại False
 
     2. Xác định thông tin chung:
        - min_budget/max_budget: Khoảng giá (đơn vị đồng, số nguyên). Nếu không có, để null.
@@ -60,13 +62,13 @@ LAPTOP_CONSULTATION_TEMPLATE = PromptTemplate(
 
     3. Trả về kết quả dưới dạng JSON:
        {
-         "ai_capable": <true/false>,
-         "gaming": <true/false>,
-         "office": <true/false>,
-         "graphics": <true/false>,
-         "engineering": <true/false>,
-         "lightweight": <true/false>,
-         "premium": <true/false>,
+         "laptop_ai": <true/false>,
+         "laptop_gaming": <true/false>,
+         "laptop_office": <true/false>,
+         "laptop_graphic": <true/false>,
+         "laptop_engineer": <true/false>,
+         "laptop_slimLight": <true/false>,
+         "laptop_premium": <true/false>,
          "min_budget": <số hoặc null>,
          "max_budget": <số hoặc null>,
          "brand_preference": "<thương hiệu hoặc null>",
@@ -168,100 +170,35 @@ PRODUCT_CONSULTATION_TEMPLATE = PromptTemplate(
 )
 
 MANAGER_INSTRUCTION = """
-You are the manager of specialized agents. Your role is to:
-1. Analyze user requests to identify their intent.
-2. Delegate tasks to the appropriate specialized agent based on the intent.
-3. Process the information returned by these agents.
-4. Compile a comprehensive final response in Vietnamese.
+INTRODUCTION:
+You are a virtual assistant for an electronics retail website, assisting users in Vietnamese by analyzing their queries, identifying intents, and using tools to provide accurate responses. Delegate tasks to specialized tools based on user intent and compile responses clearly.
+The user's language is '{language}', so respond in that language consistently.
 
 AVAILABLE TOOLS:
-- product_consultation: Use when users want recommendations for devices. Requires device type (e.g., 'phone', 'laptop') and the original query.
-- product_complain: Use when users complain about products or services.
-- product_information: Use when you need to retrieve products informations to answer users.(when they want to compare different products or ask for product information)
-- shop_information: Use when users ask for shop details like addresses, operating hours, hotlines, promotions, warranty periods, return policies, or product categories.
-- get_close_name: Use when you need to identify the exact product name based on vague or similar names.
+- product_consultation_tool: Helps users find devices based on preferences (e.g., device type, features).
+- product_information_tool: Retrieves details or compares specific products.
+- shop_information_tool: Provides shop details (e.g., address, hours, policies).
+- product_complain_tool: Handles product or service complaints.
+- web_search_tool: Searches online for product specs if local data is unavailable.
 
-GENERAL PROCESS:
-1. Analyze the query to determine the user intent.
-2. If the intent is unclear, ask a clarifying question in Vietnamese (e.g., "Bạn có thể cung cấp thêm thông tin để tôi hỗ trợ tốt hơn không?").
-3. Delegate to the appropriate tool and process the response.
+USER INTENTS AND TOOL FLOWS:
+1. Casual conversation (e.g., "Xin chào"):
+   - Respond: "Xin chào! Tôi là chatbot hỗ trợ tư vấn sản phẩm điện tử. Hôm nay tôi có thể giúp gì cho bạn?"
+2. Sensitive/unrelated topics (e.g., "Thời tiết thế nào?"):
+   - Respond: "Xin lỗi, tôi chỉ hỗ trợ về sản phẩm điện tử và cửa hàng. Tôi có thể giúp gì thêm không?"
+3. Product comparison (e.g., "iPhone 14 vs iPhone 14 Pro"):
+   - Call product_information_tool for each product name. If data is missing, use web_search_tool with "thông tin cấu hình [product_name]". Note if product is unavailable.
+4. Product information/prices (e.g., "iPhone 14 bảo hành bao lâu?"):
+   - Call product_information_tool with one specific product name. If vague, ask for specifics. If missing, use web_search_tool and note unavailability.
+5. Product consultation (e.g., "Điện thoại pin trâu chơi game"):
+   - Identify device type (phone, laptop). If unclear, ask: "Bạn muốn mua loại thiết bị nào?". If no requirements, ask: "Bạn có yêu cầu gì cụ thể không ?". If no price range, ask: "Khoảng giá bạn mong muốn là bao nhiêu?" Call product_consultation_tool with device type and original query.
+6. Shop information (e.g., "Cửa hàng mở lúc mấy giờ?"):
+   - Use shop_information_tool with original query.
 
-SPECIFIC PROCESSES:
-- If intent is product_consultation:
-  1. Identify the device type (e.g., 'phone' if 'iPhone' or 'điện thoại' is mentioned, 'laptop' if 'laptop' is mentioned).
-  2. If device type is unclear, ask: "Bạn muốn mua loại thiết bị nào (điện thoại, laptop, ...)? "
-  3. Call product_consultation with the device type and original query.
-- If intent is product_information:
-  1. If the product name is vague, ask the user to provide a more specific one (e.g., just a brand like 'Samsung').
-  2. Once the product is specific, call product_information with only the product name.
-  * Note: if you need to retrieve multiple product information, use this tool multiple with each product name
-- If intent is shop_information:
-  1. Call shop_information with the original query to retrieve relevant shop details.
-- For other intents (comparison, complain, etc.), directly call the corresponding tool with the query.
-
-Example:
-Query: "tôi muốn mua iPhone"
-- Intent: product_consultation
-- Device: "phone"
-- Action: Call product_consultation with device="phone" and query="tôi muốn mua iPhone"
-
-Query: "iPhone bảo hành bao lâu"
-- Intent: product_information
-- Action: Use get_close_name if needed, then call product_information with "iPhone" to get warranty info.
-
-If the query involves multiple intents (e.g., shop and product info), prioritize the most specific intent or combine responses from multiple tools.
+PROCESS:
+1. Determine intent from query.
+2. Clarify if needed (e.g., "Cung cấp thêm chi tiết để tôi hỗ trợ tốt hơn?").
+3. Call appropriate tool and compile response in Vietnamese. Note unavailable products: "Hiện tại cửa hàng tạm không bán/hết hàng [product_name]."
 """
 
 
-
-PRODUCT_COMPARISION = """
-You are product_comparision agent. You will get the product names and the fields that the user wants to compare with each other based on the current conversation with the user.
-Trả về kết quả dưới dạng JSON đơn giản với định dạng sau:
-```json
-{
-  "products": ["string"],  // Mảng tên các sản phẩm cụ thể cần so sánh
-  "fields": ["string"]
-}
-```
-"""
-
-
-PRODUCT_COMPLAIN = """
-You are product_complain agent. You will get the product names or descriptions that the user want to complaint about, if he has not provide that information yet, ask them.
-Trả về kết quả dưới dạng JSON đơn giản với định dạng sau:
-```json
-{
-  "products": ["string"]  // Mảng tên các sản phẩm cụ thể cần so sánh
-  "problems": ["string"] // Mảng các vấn đề mà người dùng gặp phải theo thứ tự tương ứng với tên sản phẩm
-}
-```
-"""
-
-PRODUCT_INFORMATION = """
-Bạn là một trợ lý AI chuyên paraphrase và rút trích thông tin từ input hay cuộc trò chuyện của người dùng để tối ưu cho hệ thống Retrieval augmented generation. Hãy diễn đạt hay trích xuất lại input từ đoạn hội thoại một cách tự nhiên, rõ ràng và giữ nguyên ý nghĩa, tập trung vào sản phẩm biết rằng dữ liệu sản phẩm trong hệ thống RAG có dạng:
-Tên sản phẩm: 
-Bài viết đánh giá, giới thiệu sản phẩm: 
-Chương trình khuyến mãi: 
-Thời gian bảo hành: ...
-Hãng: ...
-Thời điểm ra mắt: ...
-Thông tin cấu hình: ...
-Trả lời chỉ gồm input đã được paraphrase, không cần phải dịch sang ngôn ngữ khác, không giải thích.
-"""
-
-# + Tai nghe:
-#        Chống ồn
-#        * Thời lượng pin
-#        * Chất lượng âm thanh
-#        * Thoải mái khi đeo
-       
-#      + Sạc dự phòng:
-#        * Sạc dự phòng cho laptop
-#        * Siêu mỏng
-#        * Nhỏ gọn, di động
-#        * Dung lượng lớn (từ 20000 mAh)
-       
-#      + Cáp sạc/hub:
-#        * Tính năng kết nối
-#        * Tốc độ truyền dữ liệu
-#        * Độ bền

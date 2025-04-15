@@ -26,4 +26,5 @@ public class GroupTags {
     @JoinColumn(name = "tag_id", nullable = false)
     private Tags tag; // Liên kết với Tags
 
+
 }

@@ -32,6 +32,7 @@ public class Group {
 
     private String type;
 
+    private String groupName;
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
