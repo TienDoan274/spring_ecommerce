@@ -407,6 +407,7 @@ public class ProductService {
         laptop.setRefreshRate(request.getRefreshRate());
         laptop.setColorGamut(request.getColorGamut());
         laptop.setDisplayTechnology(request.getDisplayTechnology());
+        laptop.setTouchScreen(request.getTouchScreen());
 
         // Đồ họa và âm thanh
         laptop.setGraphicCard(request.getGraphicCard());
@@ -450,6 +451,7 @@ public class ProductService {
         laptop.setRefreshRate(request.getRefreshRate());
         laptop.setColorGamut(request.getColorGamut());
         laptop.setDisplayTechnology(request.getDisplayTechnology());
+        laptop.setTouchScreen(request.getTouchScreen());
 
         // Đồ họa và âm thanh
         laptop.setGraphicCard(request.getGraphicCard());

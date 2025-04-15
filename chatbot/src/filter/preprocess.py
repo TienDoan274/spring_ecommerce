@@ -1,13 +1,16 @@
 from transformers import pipeline
 import fasttext
 import re
+from dotenv import load_dotenv
+import env
+load_dotenv()
 
 
 class Filter:
     # Class variables instead of instance variables
     sensitive_words = ['fuck','shit','giết','chết','máu','đánh','bắn','cướp','tử hình','sát hại','xác','kill','die','death','sex','murder','rob','ass','shitty']
     common_greetings = ['hello', 'hi', 'lô', 'chào', 'xin chào', '2', 'alo','xin chao','chao']
-    model_path = "C:/Users/TIEN DOAN/.cache/huggingface/hub/models--facebook--fasttext-language-identification/snapshots/3af127d4124fc58b75666f3594bb5143b9757e78/model.bin"
+    model_path = env.get("LANGUAGE_MODEL_PATH")
     
     @classmethod
     def check_sensitive_words(cls, query):

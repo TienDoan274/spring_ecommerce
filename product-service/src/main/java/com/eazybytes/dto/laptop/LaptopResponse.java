@@ -74,6 +74,7 @@ public class LaptopResponse extends ProductResponse {
         addSpecification(specs, "Tần số quét", laptop.getRefreshRate());
         addSpecification(specs, "Độ phủ màu", laptop.getColorGamut());
         addSpecification(specs, "Công nghệ màn hình", laptop.getDisplayTechnology());
+        addSpecification(specs, "Màn hình cảm ứng", laptop.getTouchScreen());
 
         // Đồ họa và âm thanh
         addSpecification(specs, "Card màn hình", laptop.getGraphicCard());
