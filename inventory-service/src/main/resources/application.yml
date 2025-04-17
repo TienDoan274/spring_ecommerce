@@ -60,3 +60,4 @@ inventory:
     enable-email-alert: false
   metrics:
     enable: true
+

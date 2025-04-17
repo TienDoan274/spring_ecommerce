@@ -122,35 +122,31 @@ public class GroupController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = true) String type,
             @RequestParam(required = false) String tags,
-            @RequestParam(required = false) String brand, // New parameter
+            @RequestParam(required = false) String brand,
             @RequestParam(required = false, defaultValue = "asc") String sortByPrice,
             @RequestParam(required = false) Integer minPrice,
-            @RequestParam(required = false) Integer maxPrice) {
+            @RequestParam(required = false) Integer maxPrice,
+            @RequestParam(required = false) String searchQuery) { // Thêm tham số tìm kiếm
+
         try {
             List<String> tagList = (tags != null && !tags.isEmpty())
                     ? Arrays.asList(tags.split(","))
                     : Collections.emptyList();
 
             List<String> brandList = (brand != null && !brand.isEmpty())
-                    ? Arrays.asList(brand.split(",")) // Split brand string into list
+                    ? Arrays.asList(brand.split(","))
                     : Collections.emptyList();
 
             // Lấy toàn bộ dữ liệu đã lọc
             List<GroupWithProductsDto> allFilteredGroups = groupService.getAllProductsByGroup(
-                    0, Integer.MAX_VALUE, type, tagList, brandList, sortByPrice, minPrice, maxPrice);
+                    0, Integer.MAX_VALUE, type, tagList, brandList, sortByPrice, minPrice, maxPrice, searchQuery);
 
-            // Tính toán phân trang
+            // Build response
             int totalElements = allFilteredGroups.size();
             int totalPages = (int) Math.ceil((double) totalElements / size);
 
-            // Áp dụng phân trang
-            int fromIndex = page * size;
-            int toIndex = Math.min(fromIndex + size, totalElements);
-            List<GroupWithProductsDto> paginatedContent = allFilteredGroups.subList(fromIndex, toIndex);
-
-            // Xây dựng response
             Map<String, Object> response = new LinkedHashMap<>();
-            response.put("content", paginatedContent);
+            response.put("content", allFilteredGroups);
             response.put("totalElements", totalElements);
             response.put("totalPages", totalPages);
             response.put("currentPage", page);
