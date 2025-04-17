@@ -32,6 +32,8 @@ public class Group {
 
     private String type;
 
+    private String brand;
+
     private String groupName;
     @CreationTimestamp
     @Column(name = "created_at")

@@ -122,26 +122,44 @@ public class GroupController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = true) String type,
             @RequestParam(required = false) String tags,
+            @RequestParam(required = false) String brand, // New parameter
             @RequestParam(required = false, defaultValue = "asc") String sortByPrice,
             @RequestParam(required = false) Integer minPrice,
             @RequestParam(required = false) Integer maxPrice) {
         try {
-            List<String> tagList = (tags != null && !tags.isEmpty()) ? Arrays.asList(tags.split(",")) : Collections.emptyList();
+            List<String> tagList = (tags != null && !tags.isEmpty())
+                    ? Arrays.asList(tags.split(","))
+                    : Collections.emptyList();
 
-            List<GroupWithProductsDto> content = groupService.getAllProductsByGroup(page, size, type, tagList, sortByPrice, minPrice, maxPrice);
+            List<String> brandList = (brand != null && !brand.isEmpty())
+                    ? Arrays.asList(brand.split(",")) // Split brand string into list
+                    : Collections.emptyList();
 
-            long totalElements = groupService.countGroupsByTypeAndTags(type, tagList);
+            // Lấy toàn bộ dữ liệu đã lọc
+            List<GroupWithProductsDto> allFilteredGroups = groupService.getAllProductsByGroup(
+                    0, Integer.MAX_VALUE, type, tagList, brandList, sortByPrice, minPrice, maxPrice);
+
+            // Tính toán phân trang
+            int totalElements = allFilteredGroups.size();
             int totalPages = (int) Math.ceil((double) totalElements / size);
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("content", content);
-            response.put("totalPages", totalPages);
+            // Áp dụng phân trang
+            int fromIndex = page * size;
+            int toIndex = Math.min(fromIndex + size, totalElements);
+            List<GroupWithProductsDto> paginatedContent = allFilteredGroups.subList(fromIndex, toIndex);
+
+            // Xây dựng response
+            Map<String, Object> response = new LinkedHashMap<>();
+            response.put("content", paginatedContent);
             response.put("totalElements", totalElements);
+            response.put("totalPages", totalPages);
             response.put("currentPage", page);
+            response.put("pageSize", size);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 

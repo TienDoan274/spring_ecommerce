@@ -1,5 +1,3 @@
-# app.py
-
 from flask import Flask, request, jsonify
 from concurrent.futures import ThreadPoolExecutor
 from agents.llama_agent import process_chat
@@ -11,7 +9,8 @@ from flaskext.mysql import MySQL
 from db import init_mysql
 import os
 from flask_cors import CORS
-from shared_data import CURRENT_REQUEST_GROUP_IDS
+from shared_data import CURRENT_REQUEST_GROUP_IDS, CURRENT_FILTERS_PARAMS  # Thêm import
+import json  # Thêm thư viện json
 
 load_dotenv()
 app = Flask(__name__)
@@ -63,16 +62,32 @@ def chat():
     # Update memory with new messages
     memory.put(ChatMessage(role="user", content=query))
     memory.put(ChatMessage(role="assistant", content=str(response)))
-    temp = CURRENT_REQUEST_GROUP_IDS.copy()
+    
+    # Chuẩn bị response
+    temp_groups = CURRENT_REQUEST_GROUP_IDS.copy()
+    temp_filters = CURRENT_FILTERS_PARAMS.copy()  # Sao chép filters hiện tại
+    
+    # Xóa dữ liệu tạm
     CURRENT_REQUEST_GROUP_IDS.clear()
-    # Prepare response with groupids
+    CURRENT_FILTERS_PARAMS.clear()
+    
+    # Prepare response
     response_data = {
         "role": "assistant",
         "content": str(response),
-        "groupids": temp  
+        "groupids": temp_groups,
+        "filters": temp_filters  # Thêm filters vào response
     }    
     
     return jsonify(response_data)
+
+@app.route("/get-current-filters", methods=["GET"])
+def get_current_filters():
+    """Endpoint để lấy filters hiện tại"""
+    return jsonify({
+        "filters": CURRENT_FILTERS_PARAMS.copy(),
+        "groupids": CURRENT_REQUEST_GROUP_IDS.copy()
+    })
 
 def process_chat_sync(query, history, language):
     """Synchronous wrapper for the async process_chat function"""

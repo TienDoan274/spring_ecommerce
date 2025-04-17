@@ -2,7 +2,7 @@ from transformers import pipeline
 import fasttext
 import re
 from dotenv import load_dotenv
-import env
+import os
 load_dotenv()
 
 
@@ -10,7 +10,7 @@ class Filter:
     # Class variables instead of instance variables
     sensitive_words = ['fuck','shit','giết','chết','máu','đánh','bắn','cướp','tử hình','sát hại','xác','kill','die','death','sex','murder','rob','ass','shitty']
     common_greetings = ['hello', 'hi', 'lô', 'chào', 'xin chào', '2', 'alo','xin chao','chao']
-    model_path = env.get("LANGUAGE_MODEL_PATH")
+    model_path = os.getenv("LANGUAGE_MODEL_PATH")
     
     @classmethod
     def check_sensitive_words(cls, query):

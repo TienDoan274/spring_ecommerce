@@ -75,30 +75,38 @@ public class GroupService {
     }
 
     @Transactional(readOnly = true)
-    public List<GroupWithProductsDto> getAllProductsByGroup(int page, int size, String type, List<String> tags, String sortByPrice, Integer minPrice, Integer maxPrice) {
-        // Lấy toàn bộ nhóm theo type và tags (AND logic cho tags)
+    public List<GroupWithProductsDto> getAllProductsByGroup(int page, int size, String type,
+                                                            List<String> tags, List<String> brands,
+                                                            String sortByPrice, Integer minPrice, Integer maxPrice) {
+        // Lấy toàn bộ nhóm theo type, tags, và brands
         List<Group> allGroups;
 
         if (type != null && !type.isEmpty()) {
-            if (!tags.isEmpty()) {
+            if (!tags.isEmpty() && !brands.isEmpty()) {
+                allGroups = groupRepository.findByTypeAndAllTagsAndBrands(type, tags, (long) tags.size(), brands);
+            } else if (!tags.isEmpty()) {
                 allGroups = groupRepository.findByTypeAndAllTags(type, tags, (long) tags.size());
+            } else if (!brands.isEmpty()) {
+                allGroups = groupRepository.findByTypeAndBrands(type, brands);
             } else {
                 allGroups = groupRepository.findAllByType(type);
             }
         } else {
-            if (!tags.isEmpty()) {
+            if (!tags.isEmpty() && !brands.isEmpty()) {
+                allGroups = groupRepository.findByAllTagsAndBrands(tags, (long) tags.size(), brands);
+            } else if (!tags.isEmpty()) {
                 allGroups = groupRepository.findByAllTags(tags, (long) tags.size());
+            } else if (!brands.isEmpty()) {
+                allGroups = groupRepository.findByBrands(brands);
             } else {
                 allGroups = groupRepository.findAll();
             }
         }
 
         if (allGroups.isEmpty()) {
-            log.info("No groups found for type={}, tags={}", type, tags);
+            log.info("No groups found for type={}, tags={}, brands={}", type, tags, brands);
             return Collections.emptyList();
         }
-
-        List<GroupWithProductsDto> result = new ArrayList<>();
 
         // Lấy danh sách groupIds để query một lần
         List<Integer> groupIds = allGroups.stream()
@@ -112,37 +120,42 @@ public class GroupService {
         Map<Integer, List<GroupProduct>> productsByGroup = allGroupProducts.stream()
                 .collect(Collectors.groupingBy(GroupProduct::getGroupId));
 
+        List<GroupWithProductsDto> result = new ArrayList<>();
+
         // Xây dựng danh sách GroupWithProductsDto
         for (Group group : allGroups) {
             List<GroupProduct> groupProducts = productsByGroup.getOrDefault(group.getGroupId(), Collections.emptyList());
-
-            // Filter theo giá
             List<GroupProduct> filteredProducts = filterAndSortProducts(groupProducts, null, minPrice, maxPrice);
 
-            GroupDto groupDto = GroupDto.builder()
-                    .groupId(group.getGroupId())
-                    .orderNumber(group.getOrderNumber())
-                    .image(group.getImage())
-                    .type(group.getType())
-                    .build();
+            // Chỉ thêm vào kết quả nếu có sản phẩm phù hợp
+            if (!filteredProducts.isEmpty()) {
+                GroupDto groupDto = GroupDto.builder()
+                        .groupName(group.getGroupName())
+                        .groupId(group.getGroupId())
+                        .orderNumber(group.getOrderNumber())
+                        .image(group.getImage())
+                        .type(group.getType())
+                        .brand(group.getBrand()) // Include brand in DTO if needed
+                        .build();
 
-            List<GroupProductDto> products = filteredProducts.stream()
-                    .map(gp -> GroupProductDto.builder()
-                            .productId(gp.getProductId())
-                            .variant(gp.getVariant())
-                            .productName(gp.getProductName())
-                            .defaultOriginalPrice(gp.getDefaultOriginalPrice())
-                            .defaultCurrentPrice(gp.getDefaultCurrentPrice())
-                            .orderNumber(gp.getOrderNumber())
-                            .build())
-                    .collect(Collectors.toList());
+                List<GroupProductDto> products = filteredProducts.stream()
+                        .map(gp -> GroupProductDto.builder()
+                                .productId(gp.getProductId())
+                                .variant(gp.getVariant())
+                                .productName(gp.getProductName())
+                                .defaultOriginalPrice(gp.getDefaultOriginalPrice())
+                                .defaultCurrentPrice(gp.getDefaultCurrentPrice())
+                                .orderNumber(gp.getOrderNumber())
+                                .build())
+                        .collect(Collectors.toList());
 
-            GroupWithProductsDto groupWithProducts = GroupWithProductsDto.builder()
-                    .groupDto(groupDto)
-                    .products(products)
-                    .build();
+                GroupWithProductsDto groupWithProducts = GroupWithProductsDto.builder()
+                        .groupDto(groupDto)
+                        .products(products)
+                        .build();
 
-            result.add(groupWithProducts);
+                result.add(groupWithProducts);
+            }
         }
 
         // Sắp xếp toàn bộ danh sách theo giá của sản phẩm đầu tiên
@@ -161,32 +174,13 @@ public class GroupService {
         result.sort(priceComparator);
 
         // Phân trang thủ công
-        long totalElements = countGroupsByTypeAndTags(type, tags);
-        int start = Math.min(page * size, (int) totalElements);
-        int end = Math.min(start + size, (int) totalElements);
-        List<GroupWithProductsDto> paginatedResult;
-        if (start < result.size()) {
-            paginatedResult = result.subList(start, Math.min(end, result.size()));
-        } else {
-            paginatedResult = Collections.emptyList();
-        }
+        int start = page * size;
+        int end = Math.min(start + size, result.size());
+        List<GroupWithProductsDto> paginatedResult = result.subList(start, end);
 
-        log.info("Fetched {} groups (out of {}) sorted by first product price for type: {}, tags: {}",
-                paginatedResult.size(), totalElements, type != null ? type : "all", tags);
+        log.info("Fetched {} groups (out of {}) sorted by first product price for type: {}, tags: {}, brands: {}",
+                paginatedResult.size(), result.size(), type != null ? type : "all", tags, brands);
         return paginatedResult;
-    }
-
-    public long countGroupsByTypeAndTags(String type, List<String> tags) {
-        if (type != null && !type.isEmpty()) {
-            if (!tags.isEmpty()) {
-                return groupRepository.countByTypeAndAllTags(type, tags, (long) tags.size());
-            }
-            return groupRepository.countByType(type);
-        }
-        if (!tags.isEmpty()) {
-            return groupRepository.countByAllTags(tags, (long) tags.size());
-        }
-        return groupRepository.count();
     }
 
     private List<GroupProduct> filterAndSortProducts(List<GroupProduct> products, String sortByPrice, Integer minPrice, Integer maxPrice) {
@@ -200,7 +194,6 @@ public class GroupService {
 
         return filteredProducts;
     }
-
 
     public List<VariantDto> findAllProductsInSameGroup(String productId) {
         log.debug("Finding all products in same group (including current) for productId: {}", productId);

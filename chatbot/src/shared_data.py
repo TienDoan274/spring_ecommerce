@@ -4,3 +4,4 @@
 # Concurrent requests might interfere with each other's data.
 # Consider alternative approaches for production environments.
 CURRENT_REQUEST_GROUP_IDS = []
+CURRENT_FILTERS_PARAMS = {}

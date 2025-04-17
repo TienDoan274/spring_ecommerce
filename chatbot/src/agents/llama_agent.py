@@ -28,7 +28,7 @@ def create_llama_tools():
         FunctionTool.from_defaults(
             fn=product_information_tool,
             name="product_information_tool",
-            description="Use this tool to retrieve product information when users request specific details about a product or compare different products. Requires the specific product name. "
+            description="Use this tool to retrieve product information when users request specific details about a product or compare different products. Requires the product names as a comma-separated string. "
         ),
         FunctionTool.from_defaults(
             fn=product_complain_tool,

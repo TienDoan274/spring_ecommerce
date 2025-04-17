@@ -27,14 +27,14 @@ def generate_id(object_id):
 
 # Truy vấn Elasticsearch
 def search_elasticsearch(query, ids=None, size=5):
-    map_type = {"phone":"PHONE","laptop":"LAPTOP"}
+    map_type = {"phone":"Phone","laptop":"Laptop"}
     body = {
         "query": {
             "bool": {
                 "must": {
                     "multi_match": {
                         "query": query,
-                        "fields": ["group_name",'group_data']
+                        "fields": ['document']
                     }
                 }
             }
@@ -62,7 +62,51 @@ def search_elasticsearch(query, ids=None, size=5):
     for hit in response["hits"]["hits"]:
         results.append({
             "id": hit["_id"],
-            "group_data": hit["_source"]["group_data"],
+            "document": hit["_source"]["document"],
+            "score": hit["_score"],
+            "group_name": hit["_source"]["name"],
+            "group_id": hit["_source"]["group_id"],
+
+        })
+    return results
+
+def search_name(query, ids=None, size=5):
+    map_type = {"phone":"PHONE","laptop":"LAPTOP"}
+    body = {
+        "query": {
+            "bool": {
+                "must": {
+                    "multi_match": {
+                        "query": query,
+                        "fields": ["group_name"]
+                    }
+                }
+            }
+        },
+        "size": size
+    }
+    if ids:
+        body["query"]["bool"]["filter"] = {
+            "terms": {
+                "group_id": ids
+            }
+        }
+    # if device:
+    #     body["query"]['bool']['filter'] = {
+    #         "term":{
+    #             "type":map_type[device]
+    #         }
+    #     }
+    try:
+        response = es_client.search(index="products", body=body)
+    except Exception as e:
+        print("Elasticsearch error:", str(e))
+        return []
+    results = []
+    for hit in response["hits"]["hits"]:
+        results.append({
+            "id": hit["_id"],
+            "document": hit["_source"]["document"],
             "score": hit["_score"],
             "group_name": hit["_source"]["group_name"],
             "group_id": hit["_source"]["group_id"],
@@ -84,7 +128,7 @@ def search_qdrant(query, vector_size=1536, size=10):
         results.append({
             "id": point.id,
             "score": point.score,
-            "group_data": point.payload["group_data"],
+            "document": point.payload["document"],
             "product_name": point.payload["product_name"],
             "brand": point.payload["brand"]
         })
@@ -105,7 +149,7 @@ def combine_results(query, semantic_weight=0.1, elastic_weight=0.9, size=6):
         combined_scores[result["id"]] = {
             "elastic_score": normalized_score,
             "semantic_score": 0,
-            "group_data": result["group_data"],
+            "document": result["document"],
             "product_name": result["product_name"],
             "brand": result["brand"]
         }
@@ -120,7 +164,7 @@ def combine_results(query, semantic_weight=0.1, elastic_weight=0.9, size=6):
             combined_scores[result["id"]] = {
                 "elastic_score": 0,
                 "semantic_score": normalized_score,
-                "group_data": result["group_data"],
+                "document": result["document"],
                 "product_name": result["product_name"],
                 "product_type": result["product_type"],
                 "brand": result["brand"]
@@ -135,7 +179,7 @@ def combine_results(query, semantic_weight=0.1, elastic_weight=0.9, size=6):
             "combined_score": combined_score,
             "elastic_score": scores["elastic_score"],
             "semantic_score": scores["semantic_score"],
-            "content": scores["content"],
+            "document": scores["document"],
             "product_name": scores["product_name"],
             "product_type": scores["product_type"],
             "brand": scores["brand"]

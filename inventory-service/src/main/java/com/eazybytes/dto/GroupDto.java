@@ -17,7 +17,7 @@ public class GroupDto {
     private String image;
     private String type;
     private String groupName;
-
+    private String brand;
     public GroupDto(Integer groupId) {
     }
 }

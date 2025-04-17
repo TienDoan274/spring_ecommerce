@@ -5,7 +5,7 @@ import requests
 import os
 import numpy as np
 import json 
-from rag.retrieve import combine_results,search_elasticsearch
+from rag.retrieve import combine_results,search_elasticsearch,search_name
 from dotenv import load_dotenv
 from models import PhoneRequirements,LaptopRequirements
 from llama_index.llms.google_genai import GoogleGenAI
@@ -13,7 +13,7 @@ from .prompts import *
 from duckduckgo_search import DDGS
 from db import mysql
 from llama_index.core.workflow import Context
-from shared_data import CURRENT_REQUEST_GROUP_IDS
+from shared_data import CURRENT_REQUEST_GROUP_IDS,CURRENT_FILTERS_PARAMS
 
 ctx = Context
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -26,6 +26,8 @@ llm = GoogleGenAI(
 )
 def product_consultation_tool(device: str, query: str, top_k: int = 5) -> str:
     CURRENT_REQUEST_GROUP_IDS.clear()
+    CURRENT_FILTERS_PARAMS.clear()  # Reset filters
+    
     try:
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -34,15 +36,46 @@ def product_consultation_tool(device: str, query: str, top_k: int = 5) -> str:
         if device == "phone":
             reqs = llm.structured_predict(PhoneRequirements, PHONE_CONSULTATION_TEMPLATE, query=query)
             tag_prefix = "phone_"
+            device_type = "PHONE"
         elif device == "laptop":
             reqs = llm.structured_predict(LaptopRequirements, LAPTOP_CONSULTATION_TEMPLATE, query=query)
             tag_prefix = "laptop_"
+            device_type = "LAPTOP"
         else:
             cursor.close()
             conn.close()
             return "Loại sản phẩm này hiện tại chưa có tại cửa hàng chúng tôi."
 
-        # Requirements
+        # Lưu các tham số filter vào CURRENT_FILTERS_PARAMS
+        CURRENT_FILTERS_PARAMS.update({
+            "type": device_type,
+        })
+
+        # Xử lý ngân sách
+        if reqs.min_budget:
+            CURRENT_FILTERS_PARAMS["minPrice"] = reqs.min_budget
+        if reqs.max_budget:
+            CURRENT_FILTERS_PARAMS["maxPrice"] = reqs.max_budget
+
+        # Xử lý brand preference
+        if reqs.brand_preference and reqs.brand_preference != "không xác định":
+            CURRENT_FILTERS_PARAMS["brand"] = reqs.brand_preference
+
+        # Xử lý các tags
+        active_tags = []
+        for field, value in reqs.dict().items():
+            if field.startswith(tag_prefix) and value:
+                tag_name = field.replace(tag_prefix, "")
+                active_tags.append(f"{device}_{tag_name}")
+        
+        if active_tags:
+            CURRENT_FILTERS_PARAMS["tags"] = ",".join(active_tags)
+
+        # Xử lý specific requirements (tìm kiếm full-text)
+        if reqs.specific_requirements:
+            CURRENT_FILTERS_PARAMS["search"] = reqs.specific_requirements
+
+        # Phần còn lại của hàm giữ nguyên...
         brand = reqs.brand_preference or "không xác định"
         min_budget = reqs.min_budget
         max_budget = reqs.max_budget
@@ -126,42 +159,47 @@ def product_consultation_tool(device: str, query: str, top_k: int = 5) -> str:
             if col.endswith("_rank"):
                 combined_df[col] = combined_df[col].fillna(max_rank)
 
-        # Tìm kiếm Elasticsearch nếu có yêu cầu cụ thể
+        # Trong phần xử lý specific_requirements
         if hasattr(reqs, 'specific_requirements') and reqs.specific_requirements and reqs.specific_requirements != '':
             print("reqs.specific_requirements", reqs.specific_requirements)
             
             # Lấy danh sách group_id từ combined_df (đảm bảo là string)
             group_ids = combined_df['group_id'].astype(str).tolist()
             
-            search_results = search_elasticsearch(
-                reqs.specific_requirements, 
-                ids=group_ids,
-                size=top_k*2  # Lấy nhiều hơn để có kết quả phong phú
-            )
+            # Tìm kiếm chính xác cụm từ (không dùng slop)
+            search_results = search_elasticsearch({
+                "query": {
+                    "bool": {
+                        "must": [
+                            {
+                                "match_phrase": {
+                                    "content": reqs.specific_requirements  # Không có slop
+                                }
+                            },
+                            {
+                                "terms": {"group_id": group_ids}
+                            }
+                        ]
+                    }
+                },
+                "size": len(group_ids)
+            })
             print('search_results', search_results)
             
-            # Xử lý kết quả Elasticsearch
-            if search_results:
-                es_df = pd.DataFrame(search_results)
+            # Chỉ giữ lại các sản phẩm có trong kết quả tìm kiếm
+            if search_results and search_results.get('hits', {}).get('hits'):
+                matched_group_ids = [int(hit['_source']['group_id']) for hit in search_results['hits']['hits']]
+                combined_df = combined_df[combined_df['group_id'].isin(matched_group_ids)]
                 
-                # Chuẩn bị dữ liệu để merge
-                es_df['group_id'] = es_df['group_id'].astype(int)  # Chuyển về cùng kiểu với MySQL
-                
-                # Thêm cột rank từ Elasticsearch
-                es_df['es_rank'] = es_df.index + 1
-                
-                # Merge với combined_df
-                combined_df = pd.merge(
-                    combined_df,
-                    es_df[['group_id', 'es_rank']],
-                    on='group_id',
-                    how='left'
-                )
-                
-                # Điền giá trị mặc định cho các sản phẩm không có trong kết quả tìm kiếm
-                combined_df['es_rank'] = combined_df['es_rank'].fillna(len(combined_df) + 1)
+                # Nếu không còn sản phẩm nào phù hợp
+                if combined_df.empty:
+                    cursor.close()
+                    conn.close()
+                    return f"Không tìm thấy {device} có tính năng '{reqs.specific_requirements}'"
             else:
-                combined_df['es_rank'] = len(combined_df) + 1
+                cursor.close()
+                conn.close()
+                return f"Không tìm thấy {device} có tính năng '{reqs.specific_requirements}'"
 
         # Prices
         if min_budget or max_budget:
@@ -192,7 +230,7 @@ def product_consultation_tool(device: str, query: str, top_k: int = 5) -> str:
             rank_columns.append("es_rank")
             
         combined_df["combined_rank"] = combined_df[rank_columns].sum(axis=1)
-
+        CURRENT_REQUEST_GROUP_IDS.append(combined_df['group_id'].tolist())
         # Top k
         top_k_products = combined_df.sort_values(by="combined_rank").head(top_k)
         if top_k_products.empty:
@@ -208,7 +246,6 @@ def product_consultation_tool(device: str, query: str, top_k: int = 5) -> str:
                 product_info += f", giá: {int(product['price']):,} đồng"
             product_info += ")"
             response += product_info + "\n"
-            CURRENT_REQUEST_GROUP_IDS.append(product['group_id'])
         cursor.close()
         conn.close()
         return response
@@ -239,30 +276,50 @@ def web_search_tool(query: str) -> str:
         return f"Lỗi khi tìm kiếm web: {str(e)}. Không thể lấy thông tin cấu hình cho '{query}'."
 
 
-# Ensure this import is at the top of the file where product_information_tool is defined
-# Assuming search_elasticsearch function is defined elsewhere
-# from elasticsearch_utils import search_elasticsearch
-
 def product_information_tool(query: str) -> str:
+    
     CURRENT_REQUEST_GROUP_IDS.clear()
-    results = search_elasticsearch(query) # Replace with your actual search call
-    doc = ''
+    
+    # Split and clean product names
+    product_names = [name.strip() for name in query.split(',') if name.strip()]
+    if not product_names:
+        return "Vui lòng cung cấp tên sản phẩm cách nhau bằng dấu phẩy."
 
-    if not results:
-        print("--- No results found in product_information_tool ---")
-        return "Không tìm thấy thông tin sản phẩm nào khớp với truy vấn của bạn."
+    output = []
+    score_threshold_percent = 0.10  # 10% threshold
 
-    for i, r in enumerate(results):
-        doc += f'Sản phẩm thứ {i+1}:\n'
-        # Use .get for safety, in case keys are missing
-        doc += r.get('group_data', 'N/A')
-        doc += '\n\n'
-        group_id = r.get('group_id') # Verify 'group_id' is the correct key name
+    for product_name in product_names:
+        # Search for each product
+        results = search_name(product_name)
+        if not results:
+            output.append(f"Không tìm thấy thông tin cho sản phẩm: {product_name}")
+            continue
 
-        if group_id:
-            CURRENT_REQUEST_GROUP_IDS.append(group_id)
+        # Sort results by score (descending)
+        results.sort(key=lambda x: x.get('score', 0), reverse=True)
+        top_score = results[0].get('score', 0)
+        min_score = top_score * (1 - score_threshold_percent)
 
-    return f"Tìm trong danh sách này có thể có tài liệu về sản phẩm mà người dùng đang nhắc tới:\n {doc}"
+        # Filter results within 10% of top score
+        qualified_results = [r for r in results if r.get('score', 0) >= min_score]
+        if not qualified_results:
+            output.append(f"Không có kết quả đủ tốt cho sản phẩm: {product_name}")
+            continue
+
+        # Add product information to output
+        output.append(f"\n=== Kết quả cho '{product_name}' ===")
+        for i, r in enumerate(qualified_results, 1):
+            output.append(f"\nSản phẩm {i}:")
+            output.append(r.get('group_data', 'Thông tin không khả dụng'))
+            output.append(f"Độ phù hợp: {r.get('score', 0):.2f} (Top score: {top_score:.2f})")
+            
+            if group_id := r.get('group_id'):
+                CURRENT_REQUEST_GROUP_IDS.append(group_id)
+
+    if len(output) == 0:
+        return "Không tìm thấy thông tin phù hợp cho bất kỳ sản phẩm nào."
+
+    return "\n".join(output)
 
 def product_complain_tool(query: str) -> str:
     print(query)
