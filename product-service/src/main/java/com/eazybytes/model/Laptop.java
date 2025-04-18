@@ -51,6 +51,6 @@ public class Laptop extends BaseProduct {
 
 
     public Laptop() {
-        setType("LAPTOP");
+        setType("laptop");
     }
 }

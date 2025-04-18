@@ -21,13 +21,13 @@ import java.util.Map;
 @NoArgsConstructor
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = PhoneRequest.class, name = "PHONE"),
-        @JsonSubTypes.Type(value = LaptopRequest.class, name = "LAPTOP"),
-        @JsonSubTypes.Type(value = BackupChargerRequest.class, name = "BACKUP_CHARGER"),
-        @JsonSubTypes.Type(value = CableChargerHubRequest.class, name = "CABLE_CHARGER_HUB"),
-        @JsonSubTypes.Type(value = WirelessEarphoneRequest.class, name = "WIRELESS_EARPHONE"),
-        @JsonSubTypes.Type(value = WiredEarphoneRequest.class, name = "WIRED_EARPHONE"),
-        @JsonSubTypes.Type(value = HeadphoneRequest.class, name = "HEADPHONE")
+        @JsonSubTypes.Type(value = PhoneRequest.class, name = "phone"),
+        @JsonSubTypes.Type(value = LaptopRequest.class, name = "laptop"),
+        @JsonSubTypes.Type(value = BackupChargerRequest.class, name = "backup_charger"),
+        @JsonSubTypes.Type(value = CableChargerHubRequest.class, name = "cable_charger_hub"),
+        @JsonSubTypes.Type(value = WirelessEarphoneRequest.class, name = "wireless_earphone"),
+        @JsonSubTypes.Type(value = WiredEarphoneRequest.class, name = "wired_earphone"),
+        @JsonSubTypes.Type(value = HeadphoneRequest.class, name = "headphone")
 
 
 })

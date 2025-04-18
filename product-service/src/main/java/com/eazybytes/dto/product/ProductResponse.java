@@ -21,7 +21,7 @@ public class ProductResponse {
 
     private String brand;
     private Map<String,List<Map<String,String>>> images;
-    private String type;  // "PHONE" or "LAPTOP"
+    private String type;
     private String warrantyPeriod; // thời gian bảo hành
     private List<Map<String,String>> productReviews; // bài đánh giá sản phẩm
     private List<String> promotions; // chương trình khuyến mãi

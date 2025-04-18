@@ -38,13 +38,13 @@ public class ProductService {
     private final InventoryClient inventoryClient;
 
     // Product type constants
-    private static final String PHONE_TYPE = "PHONE";
-    private static final String LAPTOP_TYPE = "LAPTOP";
-    private static final String BACKUP_CHARGER_TYPE = "BACKUP_CHARGER";
-    private static final String CABLE_CHARGER_HUB_TYPE = "CABLE_CHARGER_HUB";
-    private static final String WIRELESS_EARPHONE_TYPE = "WIRELESS_EARPHONE";
-    private static final String WIRED_EARPHONE_TYPE = "WIRED_EARPHONE";
-    private static final String HEADPHONE_TYPE = "HEADPHONE";
+    private static final String PHONE_TYPE = "phone";
+    private static final String LAPTOP_TYPE = "laptop";
+    private static final String BACKUP_CHARGER_TYPE = "backup_charger";
+    private static final String CABLE_CHARGER_HUB_TYPE = "cable_charger_hub";
+    private static final String WIRELESS_EARPHONE_TYPE = "wireless_earphone";
+    private static final String WIRED_EARPHONE_TYPE = "wired_earphone";
+    private static final String HEADPHONE_TYPE = "headphone";
 
     public ProductResponse getProductById(String type, String id) {
         BaseProduct product = findProductById(id);
