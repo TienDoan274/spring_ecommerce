@@ -247,7 +247,7 @@ public class GroupService {
     }
 
     @Transactional
-    public Integer createGroupAndAssignProducts(List<String> productIds, Integer orderNumber, String image, String type,List<String> variants,List<String> productNames,List<Integer> defaultOriginalPrices, List<Integer> defaultCurrentPrices,String groupName) {
+    public Integer createGroupAndAssignProducts(List<String> productIds, Integer orderNumber, String image, String type,List<String> variants,List<String> productNames,List<Integer> defaultOriginalPrices, List<Integer> defaultCurrentPrices,String groupName,String brand) {
         log.debug("Creating group and assigning products. ProductIds: {}, orderNumber: {}, type: {}",
                 productIds, orderNumber, type);
 
@@ -272,6 +272,7 @@ public class GroupService {
                 .image(image)
                 .type(type)
                 .groupName(groupName)
+                .brand(brand)
                 .build();
 
         log.debug("Saving Group entity to database");

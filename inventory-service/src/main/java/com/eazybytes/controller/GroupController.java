@@ -164,6 +164,9 @@ public class GroupController {
     public ResponseEntity<Map<String, Integer>> createGroup(@RequestBody Map<String, Object> request) {
         log.debug("Received request to create group: {}", request);
         String groupName = (String) request.get("groupName");
+
+        String brand = (String) request.get("brand");
+
         List<String> productIds = (List<String>) request.get("productIds");
         log.debug("Extracted productIds: {}", productIds);
 
@@ -185,7 +188,7 @@ public class GroupController {
         log.debug("Extracted type: {}", type);
 
         log.debug("Calling groupService.createGroupAndAssignProducts");
-        Integer groupId = groupService.createGroupAndAssignProducts(productIds, orderNumber, image, type,variants,productNames,defaultOriginalPrices,defaultCurrentPrices,groupName);
+        Integer groupId = groupService.createGroupAndAssignProducts(productIds, orderNumber, image, type,variants,productNames,defaultOriginalPrices,defaultCurrentPrices,groupName,brand);
         log.debug("Created group with ID: {}", groupId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("groupId", groupId));
